@@ -5,6 +5,7 @@ export type TabId = "skin" | "hair" | "steroid" | "verify";
 export type BodyArea =
   | "Face"
   | "Under-Eyes"
+  | "Lips"
   | "Neck & Underarms"
   | "Back & Chest"
   | "Arms & Legs"

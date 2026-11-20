@@ -123,22 +123,29 @@ export function BentoPrescriptionResult({
     const buyUrl = resolveStepBuyUrl(step);
     const hasProduct = Boolean(step.brand || step.productName || step.productId);
     const usageCautionText = step.usageCaution?.[language]?.trim();
+    const formattedStepNumber = String(step.stepNumber).padStart(2, "0");
+
     return (
       <div
         key={`${step.stepNumber}-${step.title.en}`}
-        className="flex min-w-0 flex-col justify-between gap-4 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-5"
+        className="flex min-w-0 flex-col justify-between gap-4 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-5 shadow-[0_6px_20px_-10px_rgba(181,101,118,0.12)] transition-all"
       >
         <div className="min-w-0 space-y-3">
-          {/* Row 1: Compact pill badge + usage caution badge stacked cleanly */}
-          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-            <span className="inline-block max-w-full whitespace-normal break-words rounded-full bg-[#F6ECEF] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#B56576]">
-              {t(step.timingBadge)}
-            </span>
-            {usageCautionText && (
-              <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#FDF4F5] px-2.5 py-1 text-[10px] font-bold text-[#8C3B4A]">
-                ⚠ {usageCautionText}
+          {/* Row 1: Editorial step number + AM/PM/Weekly pill badge + caution pill */}
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
+            <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+              <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#EAD8DC] bg-white/95 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8C3B4A]">
+                {t(step.timingBadge)}
               </span>
-            )}
+              {usageCautionText && (
+                <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#FDF4F5] px-2.5 py-1 text-[10px] font-semibold text-[#8C3B4A]">
+                  ⚠ {usageCautionText}
+                </span>
+              )}
+            </div>
+            <span className="font-editorial text-xl font-semibold italic leading-none text-[#B56576]/85">
+              {formattedStepNumber}
+            </span>
           </div>
 
           {jenpharmAffiliateUrl && (
@@ -147,19 +154,19 @@ export function BentoPrescriptionResult({
                 href={jenpharmAffiliateUrl}
                 target="_blank"
                 rel="sponsored noopener noreferrer"
-                className="inline-flex min-h-[36px] max-w-full items-center justify-center rounded-full bg-[#B56576] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#9E5263] active:scale-95"
+                className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-4.5 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95"
               >
                 Buy at the best price here →
               </a>
             </div>
           )}
 
-          {/* Row 2: Bold, clear Product / Step Name */}
-          <h4 className="min-w-0 break-words font-heading text-sm font-bold leading-snug text-[#1E181A]">
-            {step.stepNumber}. {t(step.title)}
+          {/* Row 2: Editorial Product / Step Name */}
+          <h4 className="min-w-0 break-words font-editorial text-lg font-semibold leading-snug text-[#1E181A]">
+            {t(step.title)}
           </h4>
 
-          {/* Row 3: 3 crisp, scannable micro-bullets with bold labels */}
+          {/* Row 3: 3 crisp, scannable micro-bullets with relaxed leading */}
           <ul className="min-w-0 space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
             <li className="min-w-0 break-words">
               <strong className="font-semibold text-[#1E181A]">
@@ -188,14 +195,14 @@ export function BentoPrescriptionResult({
           </ul>
         </div>
 
-        {/* Row 4: Real affiliate button if configured, else safe non-clickable stockist pill */}
+        {/* Row 4: Real affiliate button if configured, else safe stockist / link */}
         {!jenpharmAffiliateUrl &&
           (buyUrl ? (
             <a
               href={buyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-xl border border-[#E6DCE0] bg-white px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576] hover:bg-[#F6ECEF]/70 hover:text-[#B56576] active:scale-95"
+              className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:-translate-y-0.5 hover:border-[#B56576] hover:bg-[#F6ECEF]/75 hover:text-[#B56576] active:scale-95"
             >
               <span>
                 {language === "ur"
@@ -205,7 +212,7 @@ export function BentoPrescriptionResult({
               <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
             </a>
           ) : hasProduct ? (
-            <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#F6ECEF] px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
+            <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#EAD8DC] bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
               Available at: Official Brand Store • Dvago • Naheed • Daraz Mall
             </span>
           ) : null)}
@@ -216,29 +223,29 @@ export function BentoPrescriptionResult({
   return (
     <div className="min-w-0 space-y-6">
       {/* Top Editorial Summary Header */}
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white px-6 py-4 shadow-[0_12px_40px_rgba(35,24,28,0.05)]">
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 px-6 py-5 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md">
         <div className="flex min-w-0 items-center gap-2.5">
-          <FileText className="h-4 w-4 shrink-0 text-[#B56576]" />
-          <span className="min-w-0 break-words font-editorial text-lg font-semibold text-[#1E181A]">
+          <FileText className="h-4.5 w-4.5 shrink-0 text-[#B56576]" />
+          <span className="min-w-0 break-words font-editorial text-xl font-semibold text-[#1E181A]">
             {t(data.primaryConcernTag)}
           </span>
         </div>
-        <span className="inline-block max-w-full whitespace-normal rounded-full bg-[#EFF7F2] px-3.5 py-1 text-xs font-semibold text-[#2D6A4F]">
+        <span className="inline-block max-w-full whitespace-normal rounded-full border border-[#C3DFCE] bg-[#EFF7F2] px-3.5 py-1 text-xs font-semibold text-[#2D6A4F]">
           {t(data.confidenceLabel)}
         </span>
       </div>
 
       {/* Clear Triage Decision Banner */}
       <div
-        className={`min-w-0 overflow-x-hidden rounded-3xl border p-5 sm:px-6 ${
+        className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md sm:px-7 ${
           isUrgentDoctorTriage
-            ? "border-[#E8C5CA] bg-[#FDF4F5]"
-            : "border-[#C3DFCE] bg-[#EFF7F2]"
+            ? "border-[#E8C5CA] bg-[#FDF4F5]/90"
+            : "border-[#C3DFCE] bg-[#EFF7F2]/90"
         }`}
       >
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <span
-            className={`inline-flex max-w-full items-center gap-1.5 self-start whitespace-normal break-words rounded-full bg-white px-4 py-1.5 text-xs font-bold shadow-2xs ${
+            className={`inline-flex max-w-full items-center gap-1.5 self-start whitespace-normal break-words rounded-full bg-white/95 px-4 py-1.5 text-xs font-bold shadow-2xs ${
               isUrgentDoctorTriage ? "text-[#8C3B4A]" : "text-[#2D6A4F]"
             }`}
           >
@@ -246,7 +253,7 @@ export function BentoPrescriptionResult({
           </span>
         </div>
         <p
-          className={`mt-2.5 break-words text-xs font-medium leading-relaxed ${
+          className={`mt-3 break-words text-xs font-medium leading-relaxed ${
             isUrgentDoctorTriage ? "text-[#8C3B4A]" : "text-[#1E181A]"
           }`}
         >
@@ -255,13 +262,13 @@ export function BentoPrescriptionResult({
       </div>
 
       {/* Card 1: Visual Assessment & Ranked Possibilities */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
-        <div className="mb-5 flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#F6ECEF] text-[#B56576]">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+        <div className="mb-5 flex min-w-0 items-center gap-3.5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <Eye className="h-4.5 w-4.5" />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B56576]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B56576]">
               {language === "ur"
                 ? "01 · Mumkina Wajoohat (Ranked)"
                 : "01 · Ranked Possibilities"}
@@ -274,10 +281,10 @@ export function BentoPrescriptionResult({
           </div>
         </div>
 
-        <ul className="min-w-0 space-y-2 text-sm leading-relaxed text-[#5E5055]">
+        <ul className="min-w-0 space-y-2.5 text-sm leading-relaxed text-[#5E5055]">
           {tl(data.assessment.summaryBullets).map((bullet, idx) => (
             <li key={idx} className="flex min-w-0 items-start gap-2.5">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
+              <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
               <span className="min-w-0 break-words">{bullet}</span>
             </li>
           ))}
@@ -285,8 +292,8 @@ export function BentoPrescriptionResult({
 
         {data.assessment.hairBreakdown && (
           <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-4">
-              <p className="mb-2 font-heading text-xs font-bold text-[#1E181A]">
+            <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4">
+              <p className="mb-2 font-editorial text-base font-semibold text-[#1E181A]">
                 Scalp &amp; Hairline
               </p>
               <ul className="space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
@@ -301,8 +308,8 @@ export function BentoPrescriptionResult({
               </ul>
             </div>
 
-            <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-4">
-              <p className="mb-2 font-heading text-xs font-bold text-[#1E181A]">
+            <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4">
+              <p className="mb-2 font-editorial text-base font-semibold text-[#1E181A]">
                 Middle Hair
               </p>
               <ul className="space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
@@ -315,8 +322,8 @@ export function BentoPrescriptionResult({
               </ul>
             </div>
 
-            <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-4">
-              <p className="mb-2 font-heading text-xs font-bold text-[#1E181A]">
+            <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4">
+              <p className="mb-2 font-editorial text-base font-semibold text-[#1E181A]">
                 Hair Ends
               </p>
               <ul className="space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
@@ -332,11 +339,11 @@ export function BentoPrescriptionResult({
         )}
 
         {data.assessment.angleObservations.length > 0 && (
-          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             {data.assessment.angleObservations.map((obs, idx) => (
               <div
                 key={`${obs.slotLabel}-${idx}`}
-                className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6DCE0]/80 bg-[#F8F5F4]/50 p-4"
+                className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4"
               >
                 <p className="mb-1.5 break-words font-heading text-xs font-bold text-[#1E181A]">
                   {obs.slotLabel}
@@ -355,7 +362,7 @@ export function BentoPrescriptionResult({
         )}
 
         {tl(data.assessment.triggersIdentified).length > 0 && (
-          <p className="mt-5 break-words border-t border-[#E6DCE0] pt-4 text-xs text-[#5E5055]">
+          <p className="mt-5 break-words border-t border-[#EAD8DC] pt-4 text-xs leading-relaxed text-[#5E5055]">
             <strong className="font-semibold text-[#B56576]">
               {language === "ur" ? "Asal Wajoohat: " : "Possible Causes: "}
             </strong>
@@ -364,14 +371,14 @@ export function BentoPrescriptionResult({
         )}
       </section>
 
-      {/* Card 2: Daily Morning & Night Routine */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
-        <div className="mb-6 flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#F6ECEF] text-[#B56576]">
+      {/* Card 2: Daily Morning & Night Routine (Clinical Dossier) */}
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+        <div className="mb-6 flex min-w-0 items-center gap-3.5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <Sun className="h-4.5 w-4.5" />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B56576]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B56576]">
               {isHairScan
                 ? language === "ur"
                   ? "02 · Mukammal 6-Step Hair Care Plan"
@@ -402,9 +409,9 @@ export function BentoPrescriptionResult({
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Column 1 */}
             <div className="min-w-0 space-y-4">
-              <div className="flex items-center gap-2 border-b border-[#E6DCE0] pb-2.5">
+              <div className="flex items-center gap-2 border-b border-[#EAD8DC] pb-2.5">
                 <Sun className="h-4 w-4 shrink-0 text-[#B56576]" />
-                <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-[#1E181A]">
+                <h4 className="font-heading text-xs font-bold uppercase tracking-[0.12em] text-[#1E181A]">
                   {isHairScan
                     ? language === "ur"
                       ? "Steps 1–3 · Shampoo, Mask Aur Serum"
@@ -421,9 +428,9 @@ export function BentoPrescriptionResult({
 
             {/* Column 2 */}
             <div className="min-w-0 space-y-4">
-              <div className="flex items-center gap-2 border-b border-[#E6DCE0] pb-2.5">
+              <div className="flex items-center gap-2 border-b border-[#EAD8DC] pb-2.5">
                 <Moon className="h-4 w-4 shrink-0 text-[#B56576]" />
-                <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-[#1E181A]">
+                <h4 className="font-heading text-xs font-bold uppercase tracking-[0.12em] text-[#1E181A]">
                   {isHairScan
                     ? language === "ur"
                       ? "Steps 4–6 · Tel, Bonnet Aur Drying"
@@ -442,13 +449,13 @@ export function BentoPrescriptionResult({
       </section>
 
       {/* Card 3: Safe Pakistani Pharmacy Picks */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
-        <div className="mb-6 flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#F6ECEF] text-[#B56576]">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+        <div className="mb-6 flex min-w-0 items-center gap-3.5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <ShoppingBag className="h-4.5 w-4.5" />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B56576]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B56576]">
               {language === "ur"
                 ? "03 · Safe Pharmacy Products"
                 : "03 · Safe Pharmacy Picks"}
@@ -462,28 +469,33 @@ export function BentoPrescriptionResult({
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {hydratedProducts.map((item) => (
+          {hydratedProducts.map((item, idx) => (
             <div
               key={item.key}
-              className="flex min-w-0 flex-col justify-between gap-4 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-5"
+              className="flex min-w-0 flex-col justify-between gap-4 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-5 shadow-[0_6px_20px_-10px_rgba(181,101,118,0.1)]"
             >
               <div className="min-w-0 space-y-2.5">
-                <span className="inline-block max-w-full whitespace-normal break-words rounded-full bg-[#EFF7F2] px-3 py-1 text-[11px] font-semibold tabular-nums text-[#2D6A4F]">
-                  {item.approxPricePkr}
-                </span>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#C3DFCE] bg-[#EFF7F2] px-3 py-1 text-[11px] font-semibold tabular-nums text-[#2D6A4F]">
+                    {item.approxPricePkr}
+                  </span>
+                  <span className="font-editorial text-lg font-semibold italic leading-none text-[#B56576]/75">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                </div>
 
                 <div className="min-w-0">
-                  <p className="break-words text-[11px] font-semibold text-[#B56576]">
+                  <span className="inline-block rounded-full border border-[#EAD8DC] bg-white/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#B56576]">
                     {item.brand} · {item.subCategory}
-                  </p>
-                  <h4 className="break-words font-heading text-sm font-bold text-[#1E181A]">
+                  </span>
+                  <h4 className="mt-1.5 break-words font-editorial text-lg font-semibold leading-snug text-[#1E181A]">
                     {item.name}
                   </h4>
                 </div>
 
                 <ul className="min-w-0 space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
-                  {tl(item.bullets).map((b, idx) => (
-                    <li key={idx} className="flex min-w-0 items-start gap-2">
+                  {tl(item.bullets).map((b, bIdx) => (
+                    <li key={bIdx} className="flex min-w-0 items-start gap-2">
                       <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#B56576]" />
                       <span className="min-w-0 break-words">{b}</span>
                     </li>
@@ -491,10 +503,10 @@ export function BentoPrescriptionResult({
                 </ul>
               </div>
 
-              <div className="border-t border-[#E6DCE0] pt-3">
+              <div className="border-t border-[#EAD8DC] pt-3">
                 {item.jenpharmAffiliateUrl ? (
-                  <div className="flex min-w-0 flex-col items-start gap-2">
-                    <p className="break-words text-[11px] text-[#5E5055]">
+                  <div className="flex min-w-0 flex-col items-start gap-2.5">
+                    <p className="break-words text-[11px] leading-relaxed text-[#5E5055]">
                       {language === "ur" ? "Kahan milega: " : "Where to buy: "}
                       <strong className="text-[#1E181A]">
                         {item.whereToBuy}
@@ -504,14 +516,14 @@ export function BentoPrescriptionResult({
                       href={item.jenpharmAffiliateUrl}
                       target="_blank"
                       rel="sponsored noopener noreferrer"
-                      className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#9E5263] active:scale-95"
+                      className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95"
                     >
                       Buy at the best price here →
                     </a>
                   </div>
                 ) : item.buyUrl ? (
                   <div className="space-y-2.5 text-[11px]">
-                    <p className="break-words text-[#5E5055]">
+                    <p className="break-words leading-relaxed text-[#5E5055]">
                       {language === "ur" ? "Kahan milega: " : "Where to buy: "}
                       <strong className="text-[#1E181A]">
                         {item.whereToBuy}
@@ -521,7 +533,7 @@ export function BentoPrescriptionResult({
                       href={item.buyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-xl border border-[#E6DCE0] bg-white px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576] hover:bg-[#F6ECEF]/70 hover:text-[#B56576] active:scale-95"
+                      className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:-translate-y-0.5 hover:border-[#B56576] hover:bg-[#F6ECEF]/75 hover:text-[#B56576] active:scale-95"
                     >
                       <span>
                         {language === "ur"
@@ -532,7 +544,7 @@ export function BentoPrescriptionResult({
                     </a>
                   </div>
                 ) : (
-                  <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#F6ECEF] px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
+                  <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#EAD8DC] bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
                     Available at: Official Brand Store • Dvago • Naheed • Daraz Mall
                   </span>
                 )}
@@ -545,18 +557,18 @@ export function BentoPrescriptionResult({
       {/* Card 4 & Card 5 Split on Tablet/Laptop */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Card 4: Water & Daily Habits */}
-        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
-          <div className="mb-4 flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#F6ECEF] text-[#B56576]">
+        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+          <div className="mb-4 flex min-w-0 items-center gap-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
               <Droplets className="h-4.5 w-4.5" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B56576]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B56576]">
                 {language === "ur"
                   ? "04 · Paani Aur Aadaat"
                   : "04 · Water & Daily Habits"}
               </p>
-              <h3 className="font-editorial break-words text-xl font-semibold text-[#1E181A]">
+              <h3 className="font-editorial break-words text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Paani, Mausam Aur Daily Aadaat"
                   : "Water, Climate & Daily Habits"}
@@ -564,7 +576,7 @@ export function BentoPrescriptionResult({
             </div>
           </div>
 
-          <div className="mb-4 rounded-2xl border border-[#E6DCE0]/80 bg-[#F8F5F4]/60 p-4">
+          <div className="mb-4 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4">
             <ul className="space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
               {tl(data.lifestyleAndWater.waterAndClimateBullets).map(
                 (item, idx) => (
@@ -577,7 +589,7 @@ export function BentoPrescriptionResult({
             </ul>
           </div>
 
-          <ul className="space-y-2">
+          <ul className="space-y-2.5">
             {tl(data.lifestyleAndWater.habitChecklist).map((item, idx) => (
               <li
                 key={idx}
@@ -591,18 +603,18 @@ export function BentoPrescriptionResult({
         </section>
 
         {/* Card 5: Doctor Alert */}
-        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5] p-6 sm:p-8">
-          <div className="mb-4 flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#E8C5CA] bg-white text-[#8C3B4A]">
+        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5]/90 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md sm:p-8">
+          <div className="mb-4 flex min-w-0 items-center gap-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#E8C5CA] bg-white/90 text-[#8C3B4A]">
               <AlertTriangle className="h-4.5 w-4.5" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#8C3B4A]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8C3B4A]">
                 {language === "ur"
                   ? "05 · Doctor Alert"
                   : "05 · Doctor Alert"}
               </p>
-              <h3 className="font-editorial break-words text-xl font-semibold text-[#8C3B4A]">
+              <h3 className="font-editorial break-words text-2xl font-semibold text-[#8C3B4A]">
                 {language === "ur"
                   ? "Kab Skin Doctor Ko Dikhayein"
                   : "When to Visit a Skin Doctor"}
@@ -619,7 +631,7 @@ export function BentoPrescriptionResult({
             ))}
           </ul>
 
-          <div className="rounded-2xl border border-[#E8C5CA]/80 bg-white/80 p-4">
+          <div className="rounded-2xl border border-[#E8C5CA]/80 bg-white/85 p-4">
             <ul className="space-y-1.5 text-xs leading-relaxed text-[#8C3B4A]">
               {tl(data.redFlags.whenToSeeDermatologist).map((flag, idx) => (
                 <li key={idx} className="flex min-w-0 items-start gap-2">

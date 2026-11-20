@@ -153,7 +153,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     <div className="min-w-0 space-y-6">
       <TabHeaderIllustration variant="verify" language={language} />
 
-      <div className="min-w-0 space-y-5 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="min-w-0 space-y-1.5">
             <label
@@ -170,7 +170,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="e.g., The Ordinary Niacinamide 10%, CeraVe Cleanser"
-              className="w-full rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4] px-4 py-3 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:bg-white focus:outline-none"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
@@ -189,11 +189,11 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={storeInput}
               onChange={(e) => setStoreInput(e.target.value)}
               placeholder="e.g., theordinary.com, urapra.com, dvago.pk, Instagram page..."
-              className="w-full rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4] px-4 py-3 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:bg-white focus:outline-none"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/50 p-4 md:col-span-2">
+          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4 md:col-span-2">
             <div className="space-y-2">
               <label
                 htmlFor="verify-suspicious-signs"
@@ -220,7 +220,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6DCE0] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -235,7 +235,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={suspiciousSigns}
               onChange={(e) => setSuspiciousSigns(e.target.value)}
               placeholder="e.g. Price market se aadhi hai, smell ajeeb/tezi wali hai, ya bottom par batch code nahi hai..."
-              className="w-full rounded-xl border border-[#E6DCE0] bg-white px-3.5 py-2.5 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:outline-none"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
         </div>
@@ -268,7 +268,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
           disabled={isVerifying}
           aria-busy={isVerifying}
           onClick={handleVerifyProduct}
-          className="flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(181,101,118,0.55)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Search className="h-4 w-4 shrink-0" />
           <span>
@@ -309,13 +309,13 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
       {result && (
         <div className="min-w-0 space-y-6">
           <div
-            className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 sm:p-8 ${
+            className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md sm:p-8 ${
               result.storeCheck.status === "verified"
-                ? "border-[#C3DFCE] bg-[#EFF7F2]"
+                ? "border-[#C3DFCE] bg-[#EFF7F2]/90"
                 : result.storeCheck.status === "unverified" ||
                     result.storeCheck.status === "potential_copycat"
-                  ? "border-[#E8C5CA] bg-[#FDF4F5]"
-                  : "border-[#E6DCE0] bg-white"
+                  ? "border-[#E8C5CA] bg-[#FDF4F5]/90"
+                  : "border-[#EAD8DC] bg-white/85"
             }`}
           >
             <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -330,7 +330,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                         : "text-[#B56576]"
                   }`}
                 />
-                <h3 className="font-editorial text-xl font-semibold text-[#1E181A]">
+                <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
                   {language === "ur"
                     ? "Store Aur Brand Check Result"
                     : "Store & Brand Check"}
@@ -340,10 +340,10 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               <span
                 className={`inline-block max-w-full self-start whitespace-normal break-words rounded-full px-3.5 py-1 text-xs font-bold ${
                   result.storeCheck.status === "verified"
-                    ? "bg-white text-[#2D6A4F]"
+                    ? "bg-white/95 text-[#2D6A4F]"
                     : result.storeCheck.status === "unverified" ||
                         result.storeCheck.status === "potential_copycat"
-                      ? "bg-white text-[#8C3B4A]"
+                      ? "bg-white/95 text-[#8C3B4A]"
                       : "bg-[#F6ECEF] text-[#B56576]"
                 }`}
               >
@@ -356,7 +356,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
             </p>
 
             {result.storeCheck.officialDomainSuggestion && (
-              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-[#E8C5CA] bg-white px-3.5 py-2 text-xs font-semibold text-[#8C3B4A]">
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-[#E8C5CA] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#8C3B4A]">
                 <span>
                   {language === "ur"
                     ? "Asli Official Website:"
@@ -369,7 +369,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
             )}
           </div>
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
             <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
                 <PackageCheck className="h-5 w-5 shrink-0 text-[#B56576]" />
@@ -407,7 +407,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                 {result.packagingChecks.map((chk, idx) => (
                   <div
                     key={idx}
-                    className="flex min-w-0 items-start gap-2.5 overflow-x-hidden rounded-2xl border border-[#E6DCE0]/80 bg-[#F8F5F4]/60 p-4"
+                    className="flex min-w-0 items-start gap-2.5 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4"
                   >
                     {chk.status === "pass" ? (
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#2D6A4F]" />
@@ -420,7 +420,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                       <p className="break-words font-heading text-xs font-bold text-[#1E181A]">
                         {chk.checkName[language]}
                       </p>
-                      <p className="mt-1 break-words text-xs text-[#5E5055]">
+                      <p className="mt-1 break-words text-xs leading-relaxed text-[#5E5055]">
                         {chk.detail[language]}
                       </p>
                     </div>
@@ -429,13 +429,13 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               </div>
             )}
 
-            <div className="mt-5 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-5">
+            <div className="mt-5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-5">
               <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-[#1E181A]">
                 {language === "ur"
                   ? "Pakistan Mein Naqli Product Pehchanne Ke Tareeqay"
                   : "How to Spot Fakes in Pakistan"}
               </h4>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-3 space-y-2 leading-relaxed">
                 {result.pakistanCounterfeitTips[language].map((tip, i) => (
                   <li
                     key={i}
@@ -446,7 +446,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                   </li>
                 ))}
               </ul>
-              <ul className="mt-4 space-y-1.5 border-t border-[#E6DCE0] pt-3 text-xs font-medium text-[#1E181A]">
+              <ul className="mt-4 space-y-1.5 border-t border-[#EAD8DC] pt-3 text-xs font-medium leading-relaxed text-[#1E181A]">
                 {result.nextStepBullets[language].map((step, i) => (
                   <li key={i} className="flex min-w-0 items-start gap-2">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />

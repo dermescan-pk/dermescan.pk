@@ -534,24 +534,24 @@ export function TabHeaderIllustration({
   return (
     <div
       ref={containerRef}
-      className="min-w-0 overflow-hidden rounded-3xl border border-[#E6DCE0] bg-gradient-to-r from-white via-[#FDF8F9] to-[#F6ECEF]/75 px-5 py-3.5 shadow-[0_10px_30px_rgba(35,24,28,0.04)] sm:px-7"
+      className="min-w-0 overflow-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 px-6 py-5 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:px-8"
     >
       <div className="flex min-w-0 items-center justify-between gap-4">
-        <div className="min-w-0 space-y-0.5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#B56576]">
+        <div className="min-w-0 space-y-1">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#B56576]">
             {copy.eyebrow[language]}
           </p>
-          <h2 className="font-editorial break-words text-xl font-semibold leading-tight text-[#1E181A] sm:text-2xl">
+          <h2 className="font-editorial break-words text-2xl font-semibold leading-tight text-[#1E181A] sm:text-[26px]">
             {copy.title[language]}
           </h2>
-          <p className="break-words text-xs leading-snug text-[#5E5055]">
+          <p className="break-words text-xs leading-relaxed text-[#5E5055]">
             {copy.subtitle[language]}
           </p>
         </div>
 
         <div
           data-anim-paused={isAnimationPaused ? "true" : "false"}
-          className="tab-anim-stage flex min-h-16 min-w-28 shrink-0 items-center justify-center rounded-2xl border border-[#E6DCE0]/80 bg-white/80 px-2 py-1 sm:min-h-20 sm:min-w-36"
+          className="tab-anim-stage flex min-h-16 min-w-28 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-2 py-1 sm:min-h-20 sm:min-w-36"
         >
           {isActive && (
             <>

@@ -190,14 +190,14 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
         </div>
       </div>
 
-      <div className="min-w-0 space-y-5 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
         <div>
-          <h3 className="font-editorial text-xl font-semibold text-[#1E181A]">
+          <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
             {language === "ur"
               ? "1. Cream / Product Ka Naam Aur Box Photo"
               : "1. Cream / Product Name & Packaging Photo"}
           </h3>
-          <p className="mb-3 text-xs text-[#5E5055]">
+          <p className="mb-3 text-xs leading-relaxed text-[#5E5055]">
             {language === "ur"
               ? "Saaf roshni mein front aur peechay likhay ingredients ki photo lein."
               : "Take clear close-ups of the front tube/jar and the ingredients list on the back."}
@@ -238,12 +238,12 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 ? "Maslan: Dermovate + Golden Pearl mix, Clobetasol, Betnovate-N, ya ingredients list likhein..."
                 : "e.g., Clobetasol, Dermovate, Betnovate-N, Golden Pearl, or paste ingredients here..."
             }
-            className="w-full rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4] p-3.5 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:bg-white focus:outline-none"
+            className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 p-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
           />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/50 p-4">
+          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4">
             <div className="space-y-2">
               <label
                 htmlFor="steroid-duration-reason"
@@ -270,7 +270,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6DCE0] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -285,11 +285,11 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
               value={durationAndReason}
               onChange={(e) => setDurationAndReason(e.target.value)}
               placeholder="e.g. 4 months se daily raat ko fairness ya melasma ke liye laga rahe hain..."
-              className="w-full rounded-xl border border-[#E6DCE0] bg-white px-3.5 py-2.5 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:outline-none"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/50 p-4">
+          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4">
             <div className="space-y-2">
               <label
                 htmlFor="steroid-side-effects"
@@ -316,7 +316,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6DCE0] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -331,7 +331,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
               value={sideEffectsNoticed}
               onChange={(e) => setSideEffectsNoticed(e.target.value)}
               placeholder="e.g. Chhorne par cheeks laal aur dark ho jate hain, veins dikh rahi hain, ya baal barh rahe hain..."
-              className="w-full rounded-xl border border-[#E6DCE0] bg-white px-3.5 py-2.5 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:outline-none"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
         </div>
@@ -341,7 +341,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           disabled={isChecking}
           aria-busy={isChecking}
           onClick={handleInspectCream}
-          className="flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(181,101,118,0.55)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           <FlaskConical className="h-4 w-4 shrink-0" />
           <span>
@@ -438,7 +438,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           </div>
 
           {result.detectedRiskyIngredients.length > 0 && (
-            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
               <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Cream Mein Kya Shamil Hai"
@@ -448,13 +448,13 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 {result.detectedRiskyIngredients.map((item, idx) => (
                   <div
                     key={idx}
-                    className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-4"
+                    className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4"
                   >
                     <div className="mb-2 space-y-1.5">
-                      <span className="inline-block max-w-full whitespace-normal break-words rounded-full bg-[#F6ECEF] px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#B56576]">
+                      <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#EAD8DC] bg-white/90 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#B56576]">
                         {item.category}
                       </span>
-                      <p className="break-words font-heading text-sm font-bold text-[#1E181A]">
+                      <p className="break-words font-editorial text-lg font-semibold text-[#1E181A]">
                         {item.ingredient}
                       </p>
                     </div>
@@ -472,7 +472,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
           )}
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
             <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
               {language === "ur"
                 ? "Mumkina Nuqsanat Aur Safe Tarika"
@@ -481,11 +481,11 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {result.potentialSideEffects[language].length > 0 && (
-                <div className="min-w-0 rounded-2xl border border-[#E8C5CA] bg-[#FDF4F5] p-5">
+                <div className="min-w-0 rounded-2xl border border-[#E8C5CA] bg-[#FDF4F5]/90 p-5">
                   <p className="mb-2.5 font-heading text-xs font-bold uppercase tracking-wider text-[#8C3B4A]">
                     {language === "ur" ? "Jild Ko Nuqsan" : "Possible Skin Damage"}
                   </p>
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-1.5 leading-relaxed">
                     {result.potentialSideEffects[language].map((eff, i) => (
                       <li
                         key={i}
@@ -499,7 +499,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 </div>
               )}
 
-              <div className="min-w-0 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-5">
+              <div className="min-w-0 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-5">
                 <p className="mb-2.5 font-heading text-xs font-bold uppercase tracking-wider text-[#1E181A]">
                   {language === "ur"
                     ? "Cream Aahista Chhorne Aur Jild Theek Karne Ka Plan"
@@ -515,7 +515,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                     )
                   )}
                 </ul>
-                <ul className="space-y-1.5 border-t border-[#E6DCE0] pt-3">
+                <ul className="space-y-1.5 border-t border-[#EAD8DC] pt-3 leading-relaxed">
                   {result.safeRecoveryPlan.steps[language].map((step, i) => (
                     <li
                       key={i}
@@ -531,7 +531,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           </div>
 
           {hydratedReplacements.length > 0 && (
-            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
               <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Safe, Steroid-Free Pharmacy Badal"
@@ -541,16 +541,16 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 {hydratedReplacements.map((item) => (
                   <div
                     key={item.key}
-                    className="flex min-w-0 flex-col justify-between gap-3 overflow-x-hidden rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/60 p-5"
+                    className="flex min-w-0 flex-col justify-between gap-3 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-5"
                   >
                     <div className="min-w-0 space-y-2">
-                      <span className="inline-block max-w-full whitespace-normal rounded-full bg-[#EFF7F2] px-2.5 py-0.5 text-[10px] font-semibold tabular-nums text-[#2D6A4F]">
+                      <span className="inline-block max-w-full whitespace-normal rounded-full border border-[#C3DFCE] bg-[#EFF7F2] px-2.5 py-0.5 text-[10px] font-semibold tabular-nums text-[#2D6A4F]">
                         {item.approxPricePkr}
                       </span>
-                      <p className="break-words font-heading text-sm font-bold text-[#1E181A]">
+                      <p className="break-words font-editorial text-lg font-semibold text-[#1E181A]">
                         {item.brand} {item.name}
                       </p>
-                      <ul className="space-y-1 text-xs text-[#5E5055]">
+                      <ul className="space-y-1 text-xs leading-relaxed text-[#5E5055]">
                         {item.bullets[language].map((b, i) => (
                           <li key={i} className="flex min-w-0 items-start gap-2">
                             <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#B56576]" />
@@ -560,13 +560,13 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                       </ul>
                     </div>
 
-                    <div className="border-t border-[#E6DCE0] pt-3">
+                    <div className="border-t border-[#EAD8DC] pt-3">
                       {item.buyUrl ? (
                         <a
                           href={item.buyUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-xl border border-[#E6DCE0] bg-white px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576] hover:bg-[#F6ECEF]/70 hover:text-[#B56576] active:scale-95"
+                          className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:-translate-y-0.5 hover:border-[#B56576] hover:bg-[#F6ECEF]/75 hover:text-[#B56576] active:scale-95"
                         >
                           <span>
                             {language === "ur"
@@ -576,7 +576,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                           <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
                         </a>
                       ) : (
-                        <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#F6ECEF] px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
+                        <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#EAD8DC] bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
                           Available at: Official Brand Store • Dvago • Naheed • Daraz Mall
                         </span>
                       )}
@@ -587,8 +587,8 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
           )}
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5] p-6 text-xs leading-relaxed text-[#8C3B4A]">
-            <strong className="mb-2 block font-editorial text-lg font-semibold">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5]/90 p-6 text-xs leading-relaxed text-[#8C3B4A] shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md">
+            <strong className="mb-2 block font-editorial text-xl font-semibold">
               {language === "ur"
                 ? "Doctor Alert"
                 : "Doctor Alert"}

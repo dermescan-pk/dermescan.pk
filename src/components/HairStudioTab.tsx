@@ -71,8 +71,8 @@ function SegmentedSelector({
               onClick={() => onChange(opt)}
               className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
                 active
-                  ? "bg-[#B56576] text-white shadow-xs"
-                  : "border border-[#E6DCE0] bg-[#F8F5F4] text-[#5E5055] hover:bg-[#F6ECEF]"
+                  ? "bg-gradient-to-b from-[#BF6E7F] to-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
+                  : "border border-[#E6D2D6] bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
               }`}
             >
               {opt}
@@ -154,7 +154,7 @@ function HairStructuredBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/50 p-4 ${
+      className={`flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4 ${
         fullWidth ? "md:col-span-2" : ""
       }`}
     >
@@ -163,7 +163,7 @@ function HairStructuredBox({
           <label htmlFor={id} className="block text-xs font-bold text-[#1E181A]">
             {label}
           </label>
-          <p className="text-[11px] leading-snug text-[#5E5055]">{instruction}</p>
+          <p className="text-[11px] leading-relaxed text-[#5E5055]">{instruction}</p>
         </div>
 
         <div className="flex flex-wrap gap-1.5">
@@ -181,7 +181,7 @@ function HairStructuredBox({
                 className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                   isSelected
                     ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                    : "border-[#E6DCE0] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                    : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                 }`}
               >
                 + {chip}
@@ -197,7 +197,7 @@ function HairStructuredBox({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-[#E6DCE0] bg-white px-3.5 py-2.5 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:outline-none"
+        className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
       />
     </div>
   );
@@ -328,21 +328,21 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
 
       <PhotoGuideBanner language={language} />
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
         <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
           <div className="min-w-0">
-            <h2 className="font-editorial text-xl font-semibold text-[#1E181A]">
+            <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
               {language === "ur"
                 ? "Step 1: Sar, Hairline Aur Baalon Ki Photos Add Karein"
                 : "Step 1: Add Hair & Scalp Photos"}
             </h2>
-            <p className="text-xs text-[#5E5055]">
+            <p className="text-xs leading-relaxed text-[#5E5055]">
               {language === "ur"
                 ? "1 se 4 photos add karein taake sar, baal aur neeche ke hissay alag check hon."
                 : "Add 1 to 4 photos so we can check your scalp, hair body, and ends separately."}
             </p>
           </div>
-          <span className="shrink-0 rounded-full bg-[#F6ECEF] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
+          <span className="shrink-0 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
             {uploadedList.length}/4
           </span>
         </div>
@@ -367,8 +367,8 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-5 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
-        <h2 className="font-editorial text-xl font-semibold text-[#1E181A]">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+        <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
           {language === "ur"
             ? "Step 2: Baal Ki Type, Paani Aur Masla Likhein"
             : "Step 2: Hair Type, Water & Your Concerns"}
@@ -489,7 +489,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
           disabled={isScanning}
           aria-busy={isScanning}
           onClick={handleRunHairScan}
-          className="flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(181,101,118,0.55)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Scissors className="h-4 w-4 shrink-0" />
           <span>

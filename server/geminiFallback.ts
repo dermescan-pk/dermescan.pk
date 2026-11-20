@@ -1,26 +1,28 @@
 import {
   GoogleGenAI,
-  ThinkingLevel,
   type GenerateContentParameters,
   type GenerateContentResponse,
 } from "@google/genai";
 
-export const GEMINI_35_MODELS = [
-  "gemini-3.5-flash",
-  "gemini-3.5-flash-lite",
+export const GEMINI_FALLBACK_MODELS = [
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
+  "gemini-2.0-flash",
 ] as const;
+
+export const GEMINI_35_MODELS = GEMINI_FALLBACK_MODELS;
+
+export const FALLBACK_BACKOFF_MS = 800;
 
 export const API_KEY_ALERT_MESSAGE =
   "GEMINI_API_KEY is not configured yet. Add your Google AI Studio key in Project Settings -> Secrets / Environment Variables to activate live scans.";
 
-export const HIGH_TRAFFIC_MESSAGE =
-  "High traffic right now — please wait 30 seconds and try again.";
+export const PEAK_DEMAND_RETRY_MESSAGE =
+  "Our AI skin specialist is experiencing peak demand right now — please tap Scan again in 5 seconds.";
 
-export const MODEL_OVERLOAD_MESSAGE =
-  "Gemini servers are temporarily busy right now — please wait a few seconds and tap Scan again.";
-
-export const TIMEOUT_TRAFFIC_MESSAGE =
-  "The AI scan took too long under high demand — please wait a few seconds and tap Scan again.";
+export const HIGH_TRAFFIC_MESSAGE = PEAK_DEMAND_RETRY_MESSAGE;
+export const MODEL_OVERLOAD_MESSAGE = PEAK_DEMAND_RETRY_MESSAGE;
+export const TIMEOUT_TRAFFIC_MESSAGE = PEAK_DEMAND_RETRY_MESSAGE;
 
 export class GeminiKeyError extends Error {
   constructor(message = API_KEY_ALERT_MESSAGE) {
@@ -34,9 +36,32 @@ const PLACEHOLDER_KEYS = new Set([
   "your_google_ai_studio_api_key_here",
 ]);
 
-export function getConfiguredGeminiKeys(): string[] {
+export function extractUserGeminiKey(
+  headers?: Record<string, string | string[] | undefined>
+): string | undefined {
+  if (!headers) return undefined;
+
+  for (const [headerName, rawValue] of Object.entries(headers)) {
+    if (headerName.toLowerCase() !== "x-user-gemini-key") continue;
+    const candidate = Array.isArray(rawValue) ? rawValue[0] : rawValue;
+    const trimmed = typeof candidate === "string" ? candidate.trim() : "";
+    if (trimmed && !PLACEHOLDER_KEYS.has(trimmed)) {
+      return trimmed;
+    }
+  }
+
+  return undefined;
+}
+
+export function getConfiguredGeminiKeys(userGeminiKey?: string): string[] {
+  const cleanUserKey = (userGeminiKey || "").trim();
+  const primaryKey =
+    cleanUserKey && !PLACEHOLDER_KEYS.has(cleanUserKey)
+      ? cleanUserKey
+      : process.env.GEMINI_API_KEY;
+
   const candidates = [
-    process.env.GEMINI_API_KEY,
+    primaryKey,
     process.env.GEMINI_API_KEY_2,
     process.env.GEMINI_API_KEY_3,
   ];
@@ -67,6 +92,7 @@ function extractGeminiErrorDetails(error: unknown): {
   const errObj = error as {
     name?: string;
     status?: number;
+    statusCode?: number;
     code?: number;
     message?: string;
     cause?: unknown;
@@ -74,9 +100,11 @@ function extractGeminiErrorDetails(error: unknown): {
   let httpStatus =
     typeof errObj.status === "number"
       ? errObj.status
-      : typeof errObj.code === "number"
-        ? errObj.code
-        : undefined;
+      : typeof errObj.statusCode === "number"
+        ? errObj.statusCode
+        : typeof errObj.code === "number"
+          ? errObj.code
+          : undefined;
   let readableMessage = (errObj.message || "").trim();
   const causeMsg =
     errObj.cause instanceof Error ? errObj.cause.message.toLowerCase() : "";
@@ -138,6 +166,8 @@ function extractGeminiErrorDetails(error: unknown): {
     httpStatus = 429;
   } else if (!httpStatus && /\b503\b|UNAVAILABLE/i.test(readableMessage)) {
     httpStatus = 503;
+  } else if (!httpStatus && /\b500\b|\bINTERNAL\b/i.test(readableMessage)) {
+    httpStatus = 500;
   } else if (!httpStatus && /\b404\b|NOT_FOUND/i.test(readableMessage)) {
     httpStatus = 404;
   }
@@ -173,6 +203,8 @@ function isRetryableTransientFailure(error: unknown): boolean {
   return (
     httpStatus === 429 ||
     httpStatus === 404 ||
+    httpStatus === 500 ||
+    httpStatus === 502 ||
     httpStatus === 503 ||
     httpStatus === 504 ||
     lower.includes("quota") ||
@@ -180,12 +212,16 @@ function isRetryableTransientFailure(error: unknown): boolean {
     lower.includes("rate limit") ||
     lower.includes("unavailable") ||
     lower.includes("overloaded") ||
+    lower.includes("internal error") ||
     lower.includes("high demand") ||
+    lower.includes("peak demand") ||
     lower.includes("not found") ||
     lower.includes("no longer available") ||
     lower.includes("timed out") ||
     lower.includes("took too long") ||
-    lower.includes("abort")
+    lower.includes("abort") ||
+    lower.includes("fetch failed") ||
+    lower.includes("econnreset")
   );
 }
 
@@ -202,24 +238,17 @@ export function getFriendlyGeminiErrorMessage(
 ): { status: number; message: string } {
   const { httpStatus, readableMessage } = extractGeminiErrorDetails(error);
 
-  if (httpStatus === 429) {
+  if (
+    httpStatus === 429 ||
+    httpStatus === 500 ||
+    httpStatus === 502 ||
+    httpStatus === 503 ||
+    httpStatus === 504 ||
+    isRetryableTransientFailure(error)
+  ) {
     return {
-      status: 429,
-      message: HIGH_TRAFFIC_MESSAGE,
-    };
-  }
-
-  if (httpStatus === 503) {
-    return {
-      status: 503,
-      message: MODEL_OVERLOAD_MESSAGE,
-    };
-  }
-
-  if (httpStatus === 504) {
-    return {
-      status: 504,
-      message: TIMEOUT_TRAFFIC_MESSAGE,
+      status: httpStatus && httpStatus >= 400 && httpStatus < 600 ? httpStatus : 503,
+      message: PEAK_DEMAND_RETRY_MESSAGE,
     };
   }
 
@@ -238,39 +267,36 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export interface GeminiFallbackParams
+  extends Omit<GenerateContentParameters, "model"> {
+  userApiKey?: string;
+}
+
 /**
- * Multi-key Gemini 3.5 failover:
- * 1) Tries `gemini-3.5-flash` across GEMINI_API_KEY -> GEMINI_API_KEY_2 -> GEMINI_API_KEY_3
- * 2) If all keys hit 429/404/503/timeout on `gemini-3.5-flash`, falls back to `gemini-3.5-flash-lite` across the same keys.
- * 3) If Pass 1 fails solely due to transient 503/504/429 spikes and budget remains, waits briefly and runs a recovery pass on `gemini-3.5-flash-lite`.
+ * Multi-model + multi-key automatic fallback chain across peak traffic spikes:
+ * For primary key (`x-user-gemini-key` header if provided, else `process.env.GEMINI_API_KEY`):
+ *   1) `gemini-2.5-flash` (with `thinkingConfig: { thinkingBudget: 0 }`)
+ *   2) `gemini-2.5-flash-lite`
+ *   3) `gemini-2.0-flash`
+ * Then retries the exact same 3-model chain with `GEMINI_API_KEY_2` (and `GEMINI_API_KEY_3` if set),
+ * applying a fast 800ms backoff on 429, 503, or 500 errors.
  */
-export async function generateContentWithGemini35Fallback(
-  params: Omit<GenerateContentParameters, "model">
-): Promise<GenerateContentResponse> {
-  const keys = getConfiguredGeminiKeys();
+export async function generateContentWithGeminiFallback({
+  userApiKey,
+  ...params
+}: GeminiFallbackParams): Promise<GenerateContentResponse> {
+  const keys = getConfiguredGeminiKeys(userApiKey);
   if (keys.length === 0) {
     throw new GeminiKeyError(API_KEY_ALERT_MESSAGE);
   }
 
   const startedAt = Date.now();
-  const maxTotalBudgetMs = 92_000;
+  const maxTotalBudgetMs = 95_000;
   let lastError: unknown;
   let sawNonKeyFailure = false;
 
-  const attemptSequence: Array<{
-    model: (typeof GEMINI_35_MODELS)[number];
-    apiKey: string;
-    keyNumber: number;
-  }> = [];
-
-  for (const model of GEMINI_35_MODELS) {
-    keys.forEach((apiKey, idx) => {
-      attemptSequence.push({ model, apiKey, keyNumber: idx + 1 });
-    });
-  }
-
   const runSingleAttempt = async (
-    model: (typeof GEMINI_35_MODELS)[number],
+    model: (typeof GEMINI_FALLBACK_MODELS)[number],
     apiKey: string,
     timeoutMs: number
   ): Promise<GenerateContentResponse> => {
@@ -288,11 +314,14 @@ export async function generateContentWithGemini35Fallback(
     });
 
     const baseConfig = params.config || {};
-    const requestConfig = !baseConfig.thinkingConfig
+    const shouldSetZeroThinking =
+      model === "gemini-2.5-flash" && !baseConfig.thinkingConfig;
+
+    const requestConfig = shouldSetZeroThinking
       ? {
           ...baseConfig,
           thinkingConfig: {
-            thinkingLevel: ThinkingLevel.MINIMAL,
+            thinkingBudget: 0,
           },
           abortSignal: AbortSignal.timeout(timeoutMs),
         }
@@ -308,7 +337,7 @@ export async function generateContentWithGemini35Fallback(
         config: requestConfig,
       });
     } catch (err) {
-      if (!baseConfig.thinkingConfig && isThinkingConfigRejection(err)) {
+      if (shouldSetZeroThinking && isThinkingConfigRejection(err)) {
         return await ai.models.generateContent({
           ...params,
           model,
@@ -322,74 +351,79 @@ export async function generateContentWithGemini35Fallback(
     }
   };
 
-  for (let i = 0; i < attemptSequence.length; i++) {
-    const { model, apiKey, keyNumber } = attemptSequence[i];
-    const elapsedMs = Date.now() - startedAt;
-    const remainingBudgetMs = maxTotalBudgetMs - elapsedMs;
-    if (i > 0 && remainingBudgetMs < 14_000) {
-      break;
-    }
-    const isLastInPass1 = i === attemptSequence.length - 1;
+  for (let keyIndex = 0; keyIndex < keys.length; keyIndex++) {
+    const apiKey = keys[keyIndex];
+    const keyNumber = keyIndex + 1;
 
-    const defaultAttemptTimeout =
-      keys.length === 1
-        ? model === "gemini-3.5-flash"
-          ? 40_000
-          : 45_000
-        : isLastInPass1
-          ? 40_000
-          : 28_000;
+    for (
+      let modelIndex = 0;
+      modelIndex < GEMINI_FALLBACK_MODELS.length;
+      modelIndex++
+    ) {
+      const model = GEMINI_FALLBACK_MODELS[modelIndex];
+      const elapsedMs = Date.now() - startedAt;
+      const remainingBudgetMs = maxTotalBudgetMs - elapsedMs;
+      const isVeryFirstAttempt = keyIndex === 0 && modelIndex === 0;
 
-    const timeoutMs = Math.min(defaultAttemptTimeout, Math.max(14_000, remainingBudgetMs));
-
-    try {
-      return await runSingleAttempt(model, apiKey, timeoutMs);
-    } catch (err) {
-      lastError = err;
-      const keyFailure = isGeminiKeyFailure(err);
-      if (!keyFailure) {
-        sawNonKeyFailure = true;
+      if (!isVeryFirstAttempt && remainingBudgetMs < 8_000) {
+        break;
       }
 
-      const canRotate = keyFailure || isRetryableTransientFailure(err);
-      if (!canRotate) {
-        throw err;
-      }
+      const isFinalAttemptOverall =
+        keyIndex === keys.length - 1 &&
+        modelIndex === GEMINI_FALLBACK_MODELS.length - 1;
 
-      const details = extractGeminiErrorDetails(err);
-      console.info(
-        `[DerméScan] Model "${model}" with key #${keyNumber} failed (${details.httpStatus ?? "err"}); failing over...`
+      const preferredTimeout = isFinalAttemptOverall
+        ? 38_000
+        : model === "gemini-2.5-flash"
+          ? 28_000
+          : 24_000;
+
+      const timeoutMs = Math.min(
+        preferredTimeout,
+        Math.max(8_000, remainingBudgetMs)
       );
 
-      if (!isLastInPass1 && (details.httpStatus === 503 || details.httpStatus === 429)) {
-        const remainingAfter = maxTotalBudgetMs - (Date.now() - startedAt);
-        if (remainingAfter > 22_000) {
-          await sleep(900);
-        }
-      }
-    }
-  }
-
-  // Pass 2 transient recovery on gemini-3.5-flash-lite if Pass 1 failed on 503/504/429 and time remains
-  const elapsedAfterPass1 = Date.now() - startedAt;
-  if (
-    sawNonKeyFailure &&
-    isRetryableTransientFailure(lastError) &&
-    maxTotalBudgetMs - elapsedAfterPass1 > 18_000
-  ) {
-    await sleep(1_500);
-    for (let kIdx = 0; kIdx < keys.length; kIdx++) {
-      const remaining = maxTotalBudgetMs - (Date.now() - startedAt);
-      if (remaining < 14_000) break;
-
-      const apiKey = keys[kIdx];
-      const timeoutMs = Math.min(32_000, remaining);
       try {
-        return await runSingleAttempt("gemini-3.5-flash-lite", apiKey, timeoutMs);
-      } catch (retryErr) {
-        lastError = retryErr;
-        if (!isRetryableTransientFailure(retryErr) && !isGeminiKeyFailure(retryErr)) {
-          throw retryErr;
+        return await runSingleAttempt(model, apiKey, timeoutMs);
+      } catch (err) {
+        lastError = err;
+        const keyFailure = isGeminiKeyFailure(err);
+        if (!keyFailure) {
+          sawNonKeyFailure = true;
+        }
+
+        const canRotate = keyFailure || isRetryableTransientFailure(err);
+        if (!canRotate) {
+          throw err;
+        }
+
+        const details = extractGeminiErrorDetails(err);
+        console.info(
+          `[DerméScan] Model "${model}" with key #${keyNumber} failed (${details.httpStatus ?? "err"}); failing over...`
+        );
+
+        // If the API key itself is invalid/unauthorized, skip remaining models on this key
+        // and rotate straight to the next configured key.
+        if (
+          keyFailure &&
+          (details.httpStatus === 401 ||
+            details.readableMessage.toLowerCase().includes("api_key_invalid") ||
+            details.readableMessage.toLowerCase().includes("api key not valid"))
+        ) {
+          break;
+        }
+
+        const isBackoffStatus =
+          details.httpStatus === 429 ||
+          details.httpStatus === 503 ||
+          details.httpStatus === 500;
+
+        if (!isFinalAttemptOverall && isBackoffStatus) {
+          const remainingAfter = maxTotalBudgetMs - (Date.now() - startedAt);
+          if (remainingAfter > 10_000) {
+            await sleep(FALLBACK_BACKOFF_MS);
+          }
         }
       }
     }
@@ -401,3 +435,6 @@ export async function generateContentWithGemini35Fallback(
 
   throw lastError;
 }
+
+export const generateContentWithGemini35Fallback =
+  generateContentWithGeminiFallback;

@@ -723,9 +723,31 @@ MODERN NON-COMEDOGENIC SUNSCREENS SOLD IN PAKISTAN (STRICT — NEVER RECOMMEND U
   * **Dry / Sensitive Skin:** *Primary Skin Barrier Sunscreen*, *Neue Derma Hydrating Sunscreen*, *CeraVe Hydrating Mineral Sunscreen / AM Facial Moisturizing Lotion SPF 30*, or *Bioderma Photoderm Aquafluide*.
   * **Melasma / Pigmentation:** *Jenpharm Spectra Block Max 100 (Tinted)* or *Bioderma Photoderm M Tinted SPF 50+*.`;
 
+export const VERIFIED_PK_LIP_CATALOG_PROMPT = `VERIFIED PAKISTANI CLINICAL LIP CARE CATALOG (ONLY RECOMMEND FROM THIS LIP-SAFE LIST FOR LIPS):
+- **Daytime UV Protection (Essential for Dark / Pigmented Lips):**
+  * *Sebamed* — "Sebamed Lip Defense SPF 30" (PKR 1,050 – 1,450)
+  * *Nivea* — "Nivea Sun Protect Lip Balm SPF 30" (PKR 850 – 1,250)
+  * *Neutrogena* — "Neutrogena Revitalizing Lip Balm SPF 20" (PKR 1,400 – 1,950)
+- **Deep Overnight Barrier Repair & Chapping:**
+  * *Vaseline* — "Vaseline Pure Petroleum Jelly (Original)" (PKR 250 – 450)
+  * *Aquaphor* — "Aquaphor Healing Ointment" (PKR 1,800 – 2,600)
+  * *CeraVe* — "CeraVe Healing Ointment" (PKR 2,800 – 4,200)
+  * *Bioderma* — "Bioderma Atoderm Lèvres Moisturizing Stick" (PKR 1,450 – 1,950)
+- **Gentle Lip Pigmentation Care (Non-Irritating):**
+  * *AccuFix Cosmetics* — "AccuFix Lip Brightening Balm" (PKR 1,100 – 1,450)
+  * *Conatural* — "Conatural Organic Lip Balm" (PKR 650 – 950) — ALWAYS pair daytime use with a dedicated SPF 30 lip balm!
+- **Where to Buy Lip Care in Pakistan:** Pharmacies • Naheed • Al-Fatah • Vegas.pk • Daraz Mall.
+- **STRICT SAFETY BAN FOR LIPS:** NEVER recommend facial acids (*MandelAC*, *Salicylic Acid*, *Glycolic Acid*, *Retinol*, *Adapalene*, *Tretinoin*) or standard foaming face washes for lips — lip mucosa lacks oil glands and burns easily.`;
+
 export function buildApprovedBrandsPrompt(
-  scope: "skin" | "hair" | "all" = "all"
+  scope: "skin" | "hair" | "lips" | "all" = "all"
 ): string {
+  if (scope === "lips") {
+    return `\n${VERIFIED_PK_LIP_CATALOG_PROMPT}
+- For each item in "recommendedProducts", fill: exact "brand", exact "name" from the lip list above, 2–3 word "subCategory", realistic "approxPricePkr", "whereToBuy": "Pharmacies • Naheed • Al-Fatah • Vegas.pk • Daraz Mall", and 2 short "bullets".
+- On each product routine step, include matching "brand" and "productName" alongside "title".`;
+  }
+
   const sections: string[] = [
     `THE 95% STRICT MASTER CATALOG PRIORITY RULE (ZERO INVENTED NAMES — FOLLOW STRICTLY):
 - **95% Primary Rule:** At least 95% of ALL recommendations MUST come strictly from our Master Trusted Catalog below using exact, real product names.
@@ -839,7 +861,9 @@ export function hydrateProductPicks(
       if (!match) {
         return {
           ...pick,
-          whereToBuy: "Official Brand Store • Dvago • Naheed • Daraz Mall",
+          whereToBuy:
+            pick.whereToBuy?.trim() ||
+            "Official Brand Store • Dvago • Naheed • Daraz Mall",
         };
       }
       return {
@@ -967,6 +991,22 @@ function buildAreaSpecificProtocolPrompt(bodyArea: string): string {
 - Strictly forbid strong facial acids, harsh scrubs, heavy oils (if milia), or steroid/whitening formula creams around thin eye skin.
 - URGENT DOCTOR / EYE SPECIALIST ALERT: Trigger "triageDecision.status": "see_dermatologist_directly" and "redFlags.urgencyLevel": "urgent" immediately if **painful eyelid swelling**, **one-sided sudden swelling (One Eye Only)**, or **vision discomfort / eye redness** is reported — warn user to see a PMDC Dermatologist or Eye Specialist (Ophthalmologist) directly before applying eye products.`;
 
+    case "Lips":
+      return `AREA-SPECIFIC PROTOCOL — CLINICAL LIP CARE (STRICT — PAKISTANI PHARMACY LIP SAFETY):
+- **ZERO FACIAL ACIDS OR FACE WASHES ON LIPS:** Because lip mucosa lacks oil glands and has a thin barrier that burns easily, you MUST NEVER recommend facial acids (*Jenpharm MandelAC*, *Salicylic Acid*, *Glycolic Acid*, *Retinol*, *Adapalene*, *Tretinoin*) or standard face washes for lips!
+- **STRICTLY RECOMMEND ONLY DERMATOLOGIST-TRUSTED LIP PRODUCTS AVAILABLE IN PAKISTAN (Pharmacies, Daraz Mall, Naheed, Al-Fatah, Vegas.pk):**
+  * **Daytime UV Protection (Essential for Dark/Pigmented Lips):** *Sebamed Lip Defense SPF 30*, *Nivea Sun Protect Lip Balm SPF 30*, or *Neutrogena Revitalizing Lip Balm SPF 20*.
+  * **Deep Overnight Barrier Repair & Chapping:** *Vaseline Pure Petroleum Jelly (Original)*, *Aquaphor Healing Ointment*, *CeraVe Healing Ointment*, or *Bioderma Atoderm Lèvres Moisturizing Stick*.
+  * **Gentle Lip Pigmentation Care (Non-Irritating):** *AccuFix Lip Brightening Balm* or *Conatural Organic Lip Balm* (MUST pair strictly with a daytime SPF 30 lip balm so UV rays do not darken pigment further).
+- **STRICT DIY & HABIT WARNINGS ("lifestyleAndWater.habitChecklist" & "redFlags.warningBullets"):**
+  * Strongly warn against DIY **lemon juice**, **baking soda**, **toothpaste**, or **harsh sugar scrubs** — these strip thin lip skin and trigger rebound hyperpigmentation and contact dermatitis!
+  * Warn against lip licking, peeling dead skin with teeth/fingers, heavily fragranced matte lipsticks during flare-ups, and steroid/whitening formula creams on lips.
+- **CLINICAL RED-FLAG TRIAGE FOR LIPS:**
+  * If photos or boxes show **painful cracks at the corners of the mouth (angular cheilitis)**, **blisters / fever blisters / cold sores**, or **lip swelling / allergy burning**:
+    - Clearly advise consulting a **PMDC Dermatologist or Pharmacist** for targeted antifungal (for angular cheilitis) or antiviral (for cold sores) treatment rather than relying on cosmetic balms alone.
+    - If painful blisters/cold sores or noticeable lip swelling is present, trigger "triageDecision.status": "see_dermatologist_directly" and "redFlags.urgencyLevel": "urgent" (keep routine steps bland barrier-only hold + plain cool rinse, and warn not to share balms/utensils or pick blisters).
+    - For angular cheilitis without severe swelling, set urgencyLevel to "consult_soon" (or "urgent" if cracking/bleeding is severe) and highlight checking iron/Vitamin B12 deficiency in Card 5.`;
+
     case "Neck & Underarms":
       return `AREA-SPECIFIC PROTOCOL — NECK & UNDERARMS (STRICT):
 - Recommend ONLY verified targeted care:
@@ -1063,7 +1103,7 @@ export function buildSkinAnalysisPrompt(body: AnalyzeSkinRequestBody): string {
 
 STEP 1 — PHOTO CHECK (DO THIS FIRST):
 - Look at each uploaded photo (${body.images.length} angle(s) for area: "${body.bodyArea}").
-- If ANY photo is too blurry, way too dark, blocked, or NOT human skin/nails, set "isValidPhoto" to false, list those exact slot labels in "retakeSlots", and write a short polite "retakeMessage" explaining what to retake in natural light.
+- If ANY photo is too blurry, way too dark, blocked, or NOT human skin, lips, or nails, set "isValidPhoto" to false, list those exact slot labels in "retakeSlots", and write a short polite "retakeMessage" explaining what to retake in natural light.
 - Otherwise, set "isValidPhoto" to true and "retakeSlots" to [].
 
 STEP 2 — IF PHOTOS ARE CLEAR, CROSS-REFERENCE PHOTOS + ALL 7 BOXES + HEALTH PROFILE:
@@ -1086,7 +1126,15 @@ ${
 - Box 5 — Sleep, Screen & Eye Triggers: ${(s.triggersAndClimate || "").trim() || "(Not specified)"}
 - Box 6 — Past & Current Eye / Face Products: ${currentRoutine || "(Not specified)"}
 - Box 7 — Family & Health Context: ${(s.familyAndHouseholdHistory || "").trim() || "(Not specified)"}`
-    : body.bodyArea === "Hands & Nails"
+    : body.bodyArea === "Lips"
+      ? `- Box 1 — Duration: ${(s.duration || "").trim() || "(Not specified)"}
+- Box 2 — Main Lip Concern & Sensation: ${(s.sensation || "").trim() || "(Not specified)"}
+- Box 3 — Lip Look & Texture: ${(s.texture || "").trim() || "(Not specified)"}
+- Box 4 — Exact Lip Zone & Corners: ${(s.spreadingPattern || "").trim() || "(Not specified)"}
+- Box 5 — Daily Lip Triggers: ${(s.triggersAndClimate || "").trim() || "(Not specified)"}
+- Box 6 — Past Lip Products & DIY Remedies: ${currentRoutine || "(Not specified)"}
+- Box 7 — Dehydration, Vitamins & Meds History: ${(s.familyAndHouseholdHistory || "").trim() || "(Not specified)"}`
+      : body.bodyArea === "Hands & Nails"
       ? `- Box 1 — Duration: ${(s.duration || "").trim() || "(Not specified)"}
 - Box 2 — Hand & Nail Sensation: ${(s.sensation || "").trim() || "(Not specified)"}
 - Box 3 — Skin & Nail Texture: ${(s.texture || "").trim() || "(Not specified)"}
@@ -1129,11 +1177,12 @@ MANDATORY CLINICAL TRIAGE & OUTPUT RULES:
    - Format the first 2–3 bullets in "assessment.summaryBullets" cleanly as ranked possibilities from most likely to alternative possibilities, e.g.:
      * "1st Most Likely: Fungal / sweat bumps — matches humid itching and tiny uniform bumps."
      * "2nd Possibility: Friction rash — possible if tight clothes or heat worsen it."
-     * Plus 1 crisp audit bullet telling the user what to **STOP** right away from Box 6 if anything clashes (e.g., whitening/steroid formula creams, walnut scrubs, home blade cutting on feet, heavy oils causing milia, or clashing acids).
+     * Plus 1 crisp audit bullet telling the user what to **STOP** right away from Box 6 if anything clashes (e.g., whitening/steroid formula creams, walnut scrubs, lemon/toothpaste/sugar scrubs on lips, home blade cutting on feet, heavy oils causing milia, or clashing acids).
 
 2. **CLEAR TRIAGE DECISION BADGE ("triageDecision" — CRITICAL):**
    - Carefully check BOTH the uploaded photos and Boxes 1–7 + Health Profile for URGENT MEDICAL RED FLAGS:
      * Painful eyelid swelling, sudden one-sided eye swelling, or vision discomfort (needs direct PMDC dermatologist / eye specialist check!)
+     * Lip blisters / cold sores, sudden lip swelling, or painful raw cracked lip corners (angular cheilitis needs PMDC dermatologist or pharmacist check for targeted antiviral/antifungal treatment!)
      * Spreading hot redness, warmth, throbbing swelling, nail-fold throbbing infection (paronychia), or streaks (possible cellulitis)
      * Honey-colored crusted sores or oozing blisters (possible impetigo)
      * Suspected scabies (worse itching at night + finger webs/wrist/body creases + someone else at home itching too)
@@ -1164,7 +1213,7 @@ MANDATORY CLINICAL TRIAGE & OUTPUT RULES:
    }
 - Select 3 to 4 best-matched verified products in "recommendedProducts".
 
-${buildApprovedBrandsPrompt("skin")}
+${buildApprovedBrandsPrompt(body.bodyArea === "Lips" ? "lips" : "skin")}
 
 ${BULLET_DISCIPLINE_PROMPT}
 

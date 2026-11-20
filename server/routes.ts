@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
   API_KEY_ALERT_MESSAGE,
-  generateContentWithGemini35Fallback,
+  PEAK_DEMAND_RETRY_MESSAGE,
+  extractUserGeminiKey,
+  generateContentWithGeminiFallback,
   getFriendlyGeminiErrorMessage,
   isGeminiKeyFailure,
 } from "./geminiFallback.ts";
@@ -63,6 +65,7 @@ function handleRouteError(
   const friendly = getFriendlyGeminiErrorMessage(error, fallbackMsg);
   const isTransientOverload =
     friendly.status === 429 ||
+    friendly.status === 500 ||
     friendly.status === 502 ||
     friendly.status === 503 ||
     friendly.status === 504;
@@ -71,9 +74,9 @@ function handleRouteError(
     console.info(
       `[DerméScan] ${fallbackMsg} (${friendly.status}): ${friendly.message}`
     );
-    return res.status(429).json({
+    return res.status(friendly.status === 429 ? 429 : 503).json({
       errorCode: "HIGH_TRAFFIC_OR_OVERLOAD",
-      message: friendly.message,
+      message: PEAK_DEMAND_RETRY_MESSAGE,
     });
   }
 
@@ -84,24 +87,89 @@ function handleRouteError(
   });
 }
 
-const SKIN_CLINICAL_INDICATION_RULES = `CLINICAL INDICATION MAPPING RULES (STRICT — RECOMMEND ONLY WHEN GENUINELY INDICATED):
-- Prioritize authentic, dermatologist-trusted Pakistani pharmacy products (including CeraVe, Physiogel, Skinoren, AccuFix, Conatural, and the exact verified Jenpharm formulations below) ONLY when clinically appropriate for the user's exact photos, body area, symptoms, skin type, and Health Profile.
-- NEVER force any product for an unrelated issue, and NEVER break Pregnancy/Breastfeeding or Urgent Red-Flag safety overrides.
-- When a Jenpharm formulation genuinely fits the user's skin condition, use the exact full product name below in "brand", "productName", "title", and "recommendedProducts":
-  * Oily / Clogged Pores / Active Acne: "Jenpharm Clarevo Salicylic Acid Facewash" (cleanser; avoid in pregnancy or damaged barrier), "Jenpharm Dermive Oil-Free Moisturizer" (or "Jenpharm Dermive Oil-Free Moisturizer SPF 20" for lightweight daytime hydration + mild SPF), "Jenpharm Spectramatt SPF 50 Sebum Control Gel Sunscreen" (matte sunscreen).
-  * Mild Texture / Whiteheads / Gentle Exfoliation: "Jenpharm MandelAC Face Wash", "Jenpharm MandelAC Serum", or "Jenpharm MandelAC Cream" (2–3x/week only; NEVER combine with Retinol/Retinoids).
-  * Dry / Sensitive / Post-Steroid Damaged Barrier: "Jenpharm Dermive Moisturizing Face Wash" + "Jenpharm Dermive Sensitive Moisturizer" (or "Jenpharm Dermive Oily Moisturizer" for very dry skin without fungal acne; alongside gentle barrier options like Physiogel / CeraVe).
-  * Melasma / Post-Acne Dark Marks / Sun Tan: "Jenpharm Spectra Block Tinted Sunscreen SPF 100" (blocks visible light for melasma) or "Jenpharm Spectra Block Aqua Fluid Sunscreen SPF 60" + "Jenpharm Maxdif Serum" / "Jenpharm Maxdif Skin Brightening Cream" / "Jenpharm Maxdif Brightening Moisturizer" / "Jenpharm Cerulic Glow Boosting Serum" (only on intact, non-irritated skin).
-  * Adult Anti-Aging / Fine Lines: "Jenpharm Eternyx Advanced Retinol Serum" (PM only, 1–2x/week; STRICTLY NEVER with exfoliating acids like MandelAC/Clarevo, NEVER under 18, and STRICTLY FORBIDDEN during pregnancy or breastfeeding).`;
+const MASTER_TRUSTED_BRANDS_SUMMARY = `MASTER TRUSTED PAKISTANI & PHARMACY BRAND CATALOG (DRAW WIDELY ACROSS THIS FULL LIST):
+- Trusted Brands: CeraVe, Physiogel, Cetaphil, Simple, Bioderma, La Roche-Posay, Neutrogena, Sebamed, Skinoren, AccuFix, Conatural, Trego, Saeed Ghani, BNB, The Ordinary, Garnier, Eucerin, Vaseline, Aquaphor, plus all 22 verified Jenpharm formulations below.
+- DIVERSITY & ANTI-REPETITION RULE (MANDATORY):
+  * Draw widely across the full Master Trusted Pakistani Brand Catalog — do NOT repeat the same 3 default products for every scan.
+  * Every product recommended (in both "routine" steps and "recommendedProducts") MUST state the **exact active ingredient** and **why it fits this exact body zone or hair porosity**.
+  * Never force an unrelated Jenpharm or non-Jenpharm SKU just to fill a slot; recommend any of the 22 verified Jenpharm SKUs ONLY when genuinely indicated using its exact full name below.`;
 
-const HAIR_CLINICAL_INDICATION_RULES = `CLINICAL INDICATION MAPPING RULES (STRICT — RECOMMEND ONLY WHEN GENUINELY INDICATED):
-- Prioritize authentic, dermatologist-trusted Pakistani pharmacy products (including Conatural, AccuFix, CeraVe, Bioderma, L'Oréal Elvive, and the exact verified Jenpharm formulations below) ONLY when clinically appropriate for the user's exact scalp condition, hair porosity, and shedding pattern.
-- NEVER force any product for an unrelated scalp/hair issue, and NEVER claim topical shampoos, serums, or oils regrow circular alopecia areata bald patches.
-- When a Jenpharm formulation genuinely fits the user's hair or scalp condition, use the exact full product name below in "brand", "productName", "title", and "recommendedProducts":
-  * Hair Shedding / Thinning: "Jenpharm Anagrow Anti Hair Loss Shampoo" + "Jenpharm Anagrow Foamy Hair Growth Serum".
-  * Dandruff / Flaky Scalp: "Jenpharm Anti-Dandruff Drops Serum" (paired with dual-shampoo rotation, and STRICTLY avoid raw hair oils on dandruff or seborrheic/fungal scalp).
-  * Dry Scalp Pre-Wash Care (STRICTLY NO dandruff, NO oily flakes, NO fungal/pimply scalp): "Jenpharm Rosemary Oil" (diluted pre-wash care only).
-  * High-Porosity / Frizzy Hair Ends: "Jenpharm Anagrow Anti-Frizz Serum" (apply strictly on mid-lengths & ends only — never on scalp roots).`;
+const SKIN_CLINICAL_INDICATION_RULES = `${MASTER_TRUSTED_BRANDS_SUMMARY}
+
+STRICT ZONE-BY-ZONE SKIN & BODY ROUTINE DIFFERENTIATION (NEVER OUTPUT A GENERIC FACE ROUTINE FOR NON-FACE ZONES):
+- You MUST enforce distinct, anatomically appropriate brands and active ingredients for the user's selected Body Area:
+  * **Face:** Match strictly to skin type & concern across our full catalog:
+    - Gentle / Sensitive / Dry Barrier: "Simple Refreshing Facial Wash", "Cetaphil Gentle Skin Cleanser", "CeraVe Hydrating Facial Cleanser", "Bioderma Sensibio Gel Moussant", "Physiogel Daily Moisture Therapy Cream", "La Roche-Posay Cicaplast Baume B5+", "Jenpharm Dermive Moisturizing Face Wash", "Jenpharm Dermive Sensitive Moisturizer", "Jenpharm Dermive Oily Moisturizer" (for very dry skin without fungal acne).
+    - Oily / Clogged Pores / Active Acne / Texture: "CeraVe Foaming Facial Cleanser", "La Roche-Posay Effaclar Purifying Foaming Gel", "AccuFix Salicylic Acid Cleanser", "The Ordinary Niacinamide 10% + Zinc 1%", "Jenpharm Clarevo Salicylic Acid Facewash" (avoid in pregnancy or damaged barrier), "Jenpharm Dermive Oil-Free Moisturizer" (or "Jenpharm Dermive Oil-Free Moisturizer SPF 20"), "Jenpharm Spectramatt SPF 50 Sebum Control Gel Sunscreen", "Jenpharm MandelAC Face Wash" / "Jenpharm MandelAC Serum" / "Jenpharm MandelAC Cream" (2–3x/week; NEVER with Retinol).
+    - Redness / Dark Marks / Melasma: "Skinoren Cream (Azelaic Acid 20%)", "AccuFix Powerhouse Niacinamide + Alpha Arbutin Serum", "The Ordinary Alpha Arbutin 2% + HA", "Jenpharm Spectra Block Tinted Sunscreen SPF 100" (visible light shield for melasma), "Jenpharm Spectra Block Aqua Fluid Sunscreen SPF 60", "Jenpharm Maxdif Serum" / "Jenpharm Maxdif Skin Brightening Cream" / "Jenpharm Maxdif Brightening Moisturizer", "Jenpharm Cerulic Glow Boosting Serum" (only on intact, non-irritated skin).
+    - Adult Anti-Aging / Fine Lines: "Jenpharm Eternyx Advanced Retinol Serum" (PM only, 1–2x/week; STRICTLY NEVER with MandelAC/Clarevo, NEVER under 18, and STRICTLY FORBIDDEN during pregnancy or breastfeeding).
+  * **Under-Eyes:** Gentle orbital-safe actives ONLY ("The Ordinary Caffeine Solution 5% + EGCG", "CeraVe Eye Repair Cream", "Neutrogena Hydro Boost Eye Gel-Cream", "Garnier Vitamin C Eye Cream" / "Garnier Bright Complete Eye Serum", "Bioderma Sensibio Eye"). Distinguish structural hollowness (cannot be filled by creams) vs. vascular vs. pigmented dark circles, and warn against heavy oils/Vaseline near eyes if milia are present.
+  * **Neck & Underarms (Acanthosis / Friction Darkening):** Gentle barrier-safe brightening ("AccuFix AHA/BHA Body Lotion" / "AccuFix", "The Ordinary Glycolic Acid 7% Toning Solution" max 2x/week on intact body/underarms ONLY — warn NEVER right after shaving or waxing, "Conatural" gentle cleansers/brightening care, "Simple" fragrance-free lotion, "Physiogel"). Explicitly warn against harsh scrubbing/loofahs; advise blood sugar/PCOS check if velvety acanthosis nigricans is visible.
+  * **Back & Chest (Body Acne / Keratosis Pilaris / Strawberry Skin):** Body-strength actives ("AccuFix Salicylic Acid Body Wash", "AccuFix AHA/BHA Body Lotion", "CeraVe SA Smoothing Cream" / "CeraVe SA Smoothing Cleanser", "Neutrogena Body Clear Body Wash", "Cetaphil Moisturizing Lotion", "Vaseline Intensive Care" light non-greasy lotion, plus "Conaz 2%" / "Selsun Blue" short-contact if fungal folliculitis/tinea versicolor).
+  * **Arms & Legs / Hands & Nails (Tan, Dryness, Eczema):** Hand/arm barrier & UV care ("Neutrogena Norwegian Formula Hand Cream", "CeraVe Therapeutic Hand Cream" / "CeraVe Reparative Hand Cream", "Physiogel Calming Relief A.I. Cream" / "Physiogel Daily Moisture Therapy Body Lotion", "Eucerin UreaRepair 5% Hand Cream", "La Roche-Posay Cicaplast Mains", "Vaseline Intensive Care" / SPF body lotions or "Jenpharm Spectra Block Aqua Fluid Sunscreen SPF 60" for exposed arms/hands, plus "Saeed Ghani" / "Conatural" Sweet Almond Oil on brittle cuticles). Never prescribe harsh facial acne acids on eczema-prone hands!
+  * **Feet & Heels (Cracked Heels, Hard Calluses, Athlete's Foot):** High-urea & occlusive foot care ONLY ("Eucerin UreaRepair Foot Cream", "CeraVe SA Renewing Foot Cream", "Vaseline Pure Petroleum Jelly" + clean cotton socks overnight, "Hydrophil 20% Urea Heel & Foot Cream", "Jenpharm Dermive Urea Moisturizer", "Saeed Ghani" / "Conatural" foot care, or "Canesten"/"Lamisil" if fungal toe-web peeling). **STRICT BAN:** NEVER recommend delicate face serums, eye creams, or facial cleansers for feet!`;
+
+function getZoneClinicalFocusDirective(
+  bodyArea: string,
+  skinType?: string
+): string {
+  switch (bodyArea) {
+    case "Face":
+      return `ACTIVE ZONE FOCUS — FACE: Match Cleanser + Treatment/Serum + Moisturizer + Sunscreen strictly to the user's Face skin type (${skinType || "specified in Context"}) and visible concerns across the full catalog (Simple, Cetaphil, CeraVe, Physiogel, AccuFix, Skinoren, La Roche-Posay, Bioderma, The Ordinary, and matching Jenpharm SKUs). State exact active ingredient and why it fits this face concern in every product bullet.`;
+    case "Under-Eyes":
+      return `ACTIVE ZONE FOCUS — UNDER-EYES: Recommend ONLY orbital-safe eye care ("The Ordinary Caffeine Solution 5% + EGCG", "CeraVe Eye Repair Cream", "Neutrogena Hydro Boost Eye Gel-Cream", "Garnier Vitamin C Eye", "Bioderma Sensibio Eye") + honest structural hollowness vs. vascular vs. pigment triage. NEVER prescribe facial acne washes or peeling acids for under-eyes.`;
+    case "Neck & Underarms":
+      return `ACTIVE ZONE FOCUS — NECK & UNDERARMS: Recommend ONLY underarm/neck-safe brightening & barrier care ("AccuFix", "The Ordinary Glycolic Acid 7% Toning Solution" max 2x/week on body/underarms ONLY, "Conatural", "Simple" fragrance-free lotion). Explicitly warn against harsh scrubbing, lemon, or applying glycolic acid right after shaving/waxing.`;
+    case "Back & Chest":
+      return `ACTIVE ZONE FOCUS — BACK & CHEST (BODY ACNE / FOLLICULITIS): Recommend body-strength washes & lotions ("AccuFix Salicylic Acid Body Wash", "CeraVe SA Smoothing Cream", "Neutrogena Body Clear Body Wash", "Cetaphil Moisturizing Lotion", "Vaseline Intensive Care", or "Conaz 2%"/"Selsun Blue" if fungal). Do NOT prescribe tiny facial eye creams or delicate face-only serums.`;
+    case "Arms & Legs":
+      return `ACTIVE ZONE FOCUS — ARMS & LEGS: For Keratosis Pilaris (strawberry skin) use body keratolytics ("CeraVe SA Smoothing Cream", "AccuFix Salicylic Acid Body Wash", "The Ordinary Glycolic Acid 7%"); for body dryness/eczema use "Physiogel Calming Relief", "Cetaphil Moisturizing Lotion", "Vaseline Intensive Care"; for sun tan add body UV care.`;
+    case "Hands & Nails":
+      return `ACTIVE ZONE FOCUS — HANDS & NAILS: Prioritize barrier-rebuilding hand creams ("Neutrogena Norwegian Formula Hand Cream", "CeraVe Therapeutic / Reparative Hand Cream", "Physiogel Calming Relief", "Eucerin UreaRepair 5% Hand Cream", "Vaseline Pure Petroleum Jelly", plus "Saeed Ghani" / "Conatural" cuticle oil or "Canesten"/"Lamisil" if nail fungus). Never prescribe drying face acne washes for hands.`;
+    case "Feet & Heels":
+      return `ACTIVE ZONE FOCUS — FEET & HEELS: Prescribe ONLY high-urea / foot-strength keratolytics & overnight occlusives ("Eucerin UreaRepair Foot Cream", "CeraVe SA Renewing Foot Cream", "Vaseline Pure Petroleum Jelly" + cotton socks overnight, "Hydrophil 20% Urea Heel & Foot Cream", "Jenpharm Dermive Urea Moisturizer", "Saeed Ghani" / "Conatural" foot care). STRICTLY FORBID delicate face serums or facial washes for feet.`;
+    default:
+      return `ACTIVE ZONE FOCUS — "${bodyArea}": Match strictly to the exact body area described by the user across the full Master Trusted Catalog, stating exact active ingredients and zone-fit reasoning.`;
+  }
+}
+
+const LIPS_CLINICAL_INDICATION_RULES = `${MASTER_TRUSTED_BRANDS_SUMMARY}
+
+CLINICAL LIP CARE RULES (STRICT — NEVER PRESCRIBE FACIAL ACIDS OR FACE WASHES FOR LIPS):
+- Lip mucosa lacks oil glands and burns easily. When Body Area is "Lips" OR any uploaded photo shows lips:
+  * **STRICTLY FORBIDDEN ON LIPS:** NEVER recommend facial acids (*Jenpharm MandelAC*, *Salicylic Acid*, *Glycolic Acid*, *Retinol*, *Adapalene*, *Tretinoin*) or standard foaming face washes for lips!
+  * **RECOMMEND ONLY DERMATOLOGIST-TRUSTED LIP PRODUCTS AVAILABLE IN PAKISTAN (Pharmacies, Daraz Mall, Naheed, Al-Fatah, Vegas.pk):**
+    - Daytime UV Protection (Essential for Dark / Pigmented Lips): "Sebamed Lip Defense SPF 30", "Nivea Sun Protect Lip Balm SPF 30", or "Neutrogena Revitalizing Lip Balm SPF 20".
+    - Deep Overnight Barrier Repair & Chapping: "Vaseline Pure Petroleum Jelly (Original)", "Aquaphor Healing Ointment", "CeraVe Healing Ointment", or "Bioderma Atoderm Lèvres Moisturizing Stick".
+    - Gentle Lip Pigmentation Care (Non-Irritating): "AccuFix Lip Brightening Balm" or "Conatural Organic Lip Balm" — paired STRICTLY with a daytime SPF 30 lip balm.
+  * **WHAT TO AVOID (STRICT SAFETY WARNING):** Warn clearly against DIY lemon, baking soda, toothpaste, and harsh sugar scrubs on lips, which strip the thin barrier and worsen lip hyperpigmentation.
+  * **CLINICAL RED-FLAG TRIAGE FOR LIPS:** If the photo or description shows painful cracks at the corners of the mouth (angular cheilitis), blisters/cold sores, or noticeable lip swelling, clearly advise consulting a PMDC dermatologist or pharmacist for targeted antifungal/antiviral treatment rather than relying on cosmetic balms alone.`;
+
+const HAIR_CLINICAL_INDICATION_RULES = `${MASTER_TRUSTED_BRANDS_SUMMARY}
+
+STRICT LOW vs. MEDIUM vs. HIGH HAIR POROSITY DIFFERENTIATION (NEVER SUGGEST THE SAME PRODUCTS ACROSS POROSITY LEVELS):
+- Pull distinct lightweight vs. balanced vs. rich formulations from our Master Trusted Catalog (CeraVe, Bioderma, Sebamed, AccuFix, Conatural, Trego, Saeed Ghani, BNB, The Ordinary, Garnier, L'Oréal, TRESemmé, plus matching Jenpharm SKUs) tailored strictly to the user's Hair Porosity:
+  * **Low Porosity (Cuticles tightly closed; heavy oils/butters cause greasy buildup):**
+    - MUST recommend lightweight, water-based, humectant-rich formulas: "Conatural Hair Growth Water (Rosemary & Mint)", "Conatural Hair Growth Shampoo (Sulfate-Free)", "Simple" lightweight cleanser / "Garnier Fructis Hair Food Aloe" (Aloe Vera lightweight), "L'Oréal Paris Elvive Hyaluron Moisture 72H", "Jenpharm Anagrow Foamy Hair Growth Serum", plus warm-water rinse and 1x/week clarifying ("AccuFix Salicylic Acid Shampoo" or "Pantene Lively Clean").
+    - **EXPLICIT SAFETY BAN:** Explicitly warn against heavy castor oil, thick coconut oil, or thick shea butters (SheaMoisture) because they cannot penetrate closed cuticles and cause greasy buildup!
+  * **Medium / Normal Porosity (Balanced cuticle; needs gentle maintenance & hard-water defense):**
+    - Recommend balanced moisture-protein rotation: "Conatural Intense Repair Shampoo (Sulfate-Free)" / daily gentle wash, "Trego" / "BNB" balanced conditioners, "Jenpharm Anagrow Anti Hair Loss Shampoo" (for shedding), light leave-in mist ("Conatural Hair Growth Water"), plus hard-water chelating defense.
+  * **High Porosity (Raised/damaged cuticles from heat, bleach, or hard water; frizzes & dries fast):**
+    - MUST recommend cuticle-sealing proteins, rich masks, and sealing serums: "Garnier Fructis Hair Food Banana / Papaya Mask", "Conatural Hair Repair Mask", "L'Oréal Paris Elvive Extraordinary Oil / Total Repair 5", "TRESemmé Keratin Smooth", "Jenpharm Anagrow Anti-Frizz Serum" (mid-lengths & ends ONLY — never on scalp roots), and "Jenpharm Rosemary Oil" diluted pre-wash ONLY if scalp has NO dandruff, NO oily flakes, and NO fungal/pimply scalp.
+  * **Dandruff / Seborrheic Flakes / Scalp Pimples Override:**
+    - Use "Jenpharm Anti-Dandruff Drops Serum", "Conaz 2%", "Selsun Blue", or "Sebamed Anti-Dandruff" 1–2x/week rotated with a porosity-matched everyday shampoo — and STRICTLY forbid applying raw oils (including Rosemary/Castor/Coconut oil) onto a dandruff or oily/pimply scalp!
+  * **Alopecia Areata / Bald Patch Safety:** NEVER claim shampoos, serums, or oils regrow circular autoimmune bald patches.`;
+
+function getPorosityClinicalFocusDirective(hairPorosity: string): string {
+  const normalized = (hairPorosity || "").toLowerCase();
+  if (normalized.includes("low")) {
+    return `ACTIVE POROSITY MANDATE — LOW POROSITY: Prescribe ONLY lightweight, water-based, humectant-rich formulas ("Conatural Hair Growth Water", "Conatural Sulfate-Free Shampoo", "Simple" / "Garnier Fructis Hair Food Aloe", "L'Oréal Elvive Hyaluron Moisture 72H", "Jenpharm Anagrow Foamy Hair Growth Serum", warm-water rinse) and EXPLICITLY warn against heavy castor oil, coconut oil, and thick butters!`;
+  }
+  if (normalized.includes("high")) {
+    return `ACTIVE POROSITY MANDATE — HIGH POROSITY: Prescribe cuticle-sealing proteins, rich masks, and sealing serums ("Garnier Fructis Hair Food Banana / Papaya Mask", "Conatural Hair Repair Mask", "L'Oréal Elvive Extraordinary Oil / Total Repair 5", "TRESemmé Keratin Smooth", "Jenpharm Anagrow Anti-Frizz Serum" on ends, and "Jenpharm Rosemary Oil" pre-wash ONLY if scalp has zero dandruff/flakes).`;
+  }
+  return `ACTIVE POROSITY MANDATE — MEDIUM / NORMAL POROSITY (${hairPorosity || "Balanced"}): Prescribe balanced moisture-protein rotation ("Conatural Intense Repair / Daily Shampoo", "Trego" / "BNB" balanced conditioners, "Jenpharm Anagrow Anti Hair Loss Shampoo", light leave-in mist) plus hard-water defense without overly heavy butters or overly stripping clarifying every wash.`;
+}
 
 export async function handleAnalyzeSkin(
   req: ApiRequestLike,
@@ -123,7 +191,14 @@ export async function handleAnalyzeSkin(
       });
     }
 
-    const systemPrompt = `${buildSkinAnalysisPrompt(body)}\n\n${SKIN_CLINICAL_INDICATION_RULES}`;
+    const indicationRules =
+      body.bodyArea === "Lips"
+        ? LIPS_CLINICAL_INDICATION_RULES
+        : `${SKIN_CLINICAL_INDICATION_RULES}\n\n${getZoneClinicalFocusDirective(
+            body.bodyArea,
+            body.context?.skinType
+          )}`;
+    const systemPrompt = `${buildSkinAnalysisPrompt(body)}\n\n${indicationRules}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }
@@ -139,7 +214,8 @@ export async function handleAnalyzeSkin(
       });
     }
 
-    const response = await generateContentWithGemini35Fallback({
+    const response = await generateContentWithGeminiFallback({
+      userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
         responseMimeType: "application/json",
@@ -185,7 +261,10 @@ export async function handleAnalyzeHair(
       });
     }
 
-    const systemPrompt = `${buildHairAnalysisPrompt(body)}\n\n${HAIR_CLINICAL_INDICATION_RULES}`;
+    const porosityDirective = getPorosityClinicalFocusDirective(
+      body.context?.hairPorosity || "Not Sure"
+    );
+    const systemPrompt = `${buildHairAnalysisPrompt(body)}\n\n${HAIR_CLINICAL_INDICATION_RULES}\n\n${porosityDirective}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }
@@ -201,7 +280,8 @@ export async function handleAnalyzeHair(
       });
     }
 
-    const response = await generateContentWithGemini35Fallback({
+    const response = await generateContentWithGeminiFallback({
+      userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
         responseMimeType: "application/json",
@@ -261,7 +341,8 @@ export async function handleCheckCream(
       });
     }
 
-    const response = await generateContentWithGemini35Fallback({
+    const response = await generateContentWithGeminiFallback({
+      userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
         responseMimeType: "application/json",
@@ -332,7 +413,8 @@ export async function handleVerifyProduct(
       });
     }
 
-    const response = await generateContentWithGemini35Fallback({
+    const response = await generateContentWithGeminiFallback({
+      userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
         responseMimeType: "application/json",

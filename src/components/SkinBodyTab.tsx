@@ -26,6 +26,7 @@ import type {
 const BODY_AREAS: BodyArea[] = [
   "Face",
   "Under-Eyes",
+  "Lips",
   "Neck & Underarms",
   "Back & Chest",
   "Arms & Legs",
@@ -33,6 +34,24 @@ const BODY_AREAS: BodyArea[] = [
   "Feet & Heels",
   "Other Body Area",
 ];
+
+function LipIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.85}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M3 12.2c2.8-2.9 5.3-4.1 7.3-2.5.8.6 1.2.9 1.7.9s.9-.3 1.7-.9c2-1.6 4.5-.4 7.3 2.5-2.6 3.7-5.6 5.5-9 5.5s-6.4-1.8-9-5.5Z" />
+      <path d="M4.2 12.3c2.7.8 5.2 1 7.8 1s5.1-.2 7.8-1" />
+    </svg>
+  );
+}
 
 function getSlotsForBodyArea(area: BodyArea): AngleSlotConfig[] {
   switch (area) {
@@ -48,6 +67,12 @@ function getSlotsForBodyArea(area: BodyArea): AngleSlotConfig[] {
         { slotId: "eye-straight", slotLabel: "1. Straight Gaze (Uniform Light)" },
         { slotId: "eye-left", slotLabel: "2. Left Under-Eye Close-Up" },
         { slotId: "eye-right", slotLabel: "3. Right Under-Eye Close-Up" },
+      ];
+    case "Lips":
+      return [
+        { slotId: "lip-front", slotLabel: "1. Front Lips (Natural Light)" },
+        { slotId: "lip-corners", slotLabel: "2. Lip Corners / Smile Folds" },
+        { slotId: "lip-closeup", slotLabel: "3. Close-Up of Lip Texture / Pigment" },
       ];
     case "Feet & Heels":
       return [
@@ -96,8 +121,8 @@ function SegmentedSelector({
               onClick={() => onChange(opt)}
               className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
                 active
-                  ? "bg-[#B56576] text-white shadow-xs"
-                  : "border border-[#E6DCE0] bg-[#F8F5F4] text-[#5E5055] hover:bg-[#F6ECEF]"
+                  ? "bg-gradient-to-b from-[#BF6E7F] to-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
+                  : "border border-[#E6D2D6] bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
               }`}
             >
               {opt}
@@ -131,6 +156,13 @@ const AREA_DYNAMIC_PLACEHOLDERS: Record<BodyArea, AreaDynamicPlaceholders> = {
     texture: "e.g. Jild patli aur creased lagti hai, chhote white milia bumps, ya dryness...",
     spreadingPattern: "e.g. Dono aankhon ke neeche symmetric dark hollowness ya outer corner par...",
     triggersAndClimate: "e.g. Neend ki kami, screen fatigue, aankhein malna (rubbing), ya dhoop...",
+  },
+  Lips: {
+    duration: "e.g. 3 months se hont phat rahe hain ya honton ka rang dark ho gaya hai...",
+    sensation: "e.g. Honton par khushki aur jalan, ya corners par dard walay cracks...",
+    texture: "e.g. Chilka utarna (peeling), dark border pigmentation, ya chhotay blisters...",
+    spreadingPattern: "e.g. Sirf nichlay hont par, dono konon (corners) par, ya poori lip border par...",
+    triggersAndClimate: "e.g. Baar baar zubaan pherna (lip licking), chai/coffee, dhoop, ya lipstick...",
   },
   "Neck & Underarms": {
     duration: "e.g. 1 year se gardan ya underarms ka rang dark aur rough hai...",
@@ -201,6 +233,7 @@ interface SevenBoxConfig {
 
 type AreaSchemaGroup =
   | "under-eyes"
+  | "lips"
   | "hands-nails"
   | "feet-heels"
   | "other-body"
@@ -210,6 +243,8 @@ function getAreaSchemaGroup(area: BodyArea): AreaSchemaGroup {
   switch (area) {
     case "Under-Eyes":
       return "under-eyes";
+    case "Lips":
+      return "lips";
     case "Hands & Nails":
       return "hands-nails";
     case "Feet & Heels":
@@ -341,6 +376,122 @@ function getSevenBoxConfig(
           ],
           placeholder:
             "e.g. Family mein genetic dark circles hain, ya sinus allergy / iron deficiency hai...",
+          fullWidth: true,
+        },
+      ],
+    };
+  }
+
+  if (bodyArea === "Lips") {
+    return {
+      headingEn: "7-Point Clinical Lip Care Check (Tap Your Lip Concerns or Type)",
+      headingUr: "Lips Ke Liye 7 Khas Sawalat (Apna Masla Chunein Ya Likhein)",
+      boxes: [
+        {
+          id: "skin-box-duration",
+          label: "Box 1 — Duration (Honton ka masla kab se hai?)",
+          instruction: ur
+            ? "Khushki, dark pigmentation, corner cracks ya blisters kitne time se hain?"
+            : "How long have you noticed dryness, darkening, corner cracks, or blisters?",
+          chips: [
+            "Few Days (Sudden)",
+            "2–6 Weeks",
+            "Months / Years",
+            "Worse in Winter / Sun",
+          ],
+          placeholder: areaPlaceholders.duration,
+        },
+        {
+          id: "skin-box-sensation",
+          label: "Box 2 — Main Lip Concern (Honton ka asal masla aur feeling)",
+          instruction: ur
+            ? "Apne honton ka main masla chunein ya dard/jalan/swelling batayein."
+            : "Select your main lip concern(s) or describe any stinging, burning, or soreness.",
+          chips: [
+            "Dry, Chapped & Peeling Lips",
+            "Dark / Pigmented Lips & Sun Tan",
+            "Cracked Lip Corners (Angular Cheilitis)",
+            "Lipstick / Lip Balm Allergy & Burning",
+            "Bumps, Blisters, or Cold Sores",
+          ],
+          placeholder: areaPlaceholders.sensation,
+        },
+        {
+          id: "skin-box-texture",
+          label: "Box 3 — Lip Look & Texture (Dekhne aur chhoone mein kaisa hai?)",
+          instruction: ur
+            ? "Chilka utarna, dark border, konon par cracks, ya pani walay daane/soojan?"
+            : "Describe peeling flakes, two-tone darkening, painful corner splits, or fluid blisters.",
+          chips: [
+            "Flaking / Peeling Skin",
+            "Two-Tone / Dark Outer Border",
+            "Painful Splits at Corners",
+            "Swollen / Raw & Stingy",
+            "Tiny Fluid Blisters / Crusts",
+          ],
+          placeholder: areaPlaceholders.texture,
+        },
+        {
+          id: "skin-box-spreading",
+          label: "Box 4 — Exact Lip Zone (Honton ke kis hissay par hai?)",
+          instruction: ur
+            ? "Poore hont, sirf nichla hont, honton ke konay (corners) ya outer border?"
+            : "Is it across both lips, lower lip mostly, lip corners only, or around the lip border?",
+          chips: [
+            "Upper & Lower Lips",
+            "Lower Lip Mostly",
+            "Mouth Corners Only",
+            "Outer Lip Border",
+            "One Spot / Single Blister",
+          ],
+          placeholder: areaPlaceholders.spreadingPattern,
+        },
+        {
+          id: "skin-box-triggers",
+          label: "Box 5 — Daily Lip Triggers (Aadat, dhoop aur toothpaste/cosmetics)",
+          instruction: ur
+            ? "Lip licking, dhoop baghair SPF, matte lipstick, mint toothpaste ya chai/smoking?"
+            : "Which daily habits like lip licking, sun without SPF, matte lipstick, or hot tea worsen it?",
+          chips: [
+            "Frequent Lip Licking / Biting",
+            "Sun Exposure (No Lip SPF)",
+            "Matte / Long-Wear Lipstick",
+            "Spicy Food / Mint Toothpaste",
+            "Hot Tea / Coffee / Smoking",
+          ],
+          placeholder: areaPlaceholders.triggersAndClimate,
+        },
+        {
+          id: "skin-box-routine",
+          label: "Box 6 — Past Lip Products & DIY Remedies (Pehle aur abhi kya lagaya?)",
+          instruction: ur
+            ? "Lip balm, Vaseline, lipstick, ya lemon / sugar scrub / toothpaste waghera likhein."
+            : "List every lip balm, gloss, lipstick, or DIY remedy (lemon, sugar scrub, baking soda, toothpaste) used.",
+          chips: [
+            "Used Lemon / Sugar Scrub / Toothpaste",
+            "Using Plain Vaseline Only",
+            "Tried Flavored / Tinted Lip Balms",
+            "Used Whitening / Steroid Cream on Lips",
+            "Nothing Applied Yet",
+          ],
+          placeholder:
+            "e.g. Vaseline ya flavored lip balm use kiya, ya lemon/sugar scrub lagaya tha...",
+        },
+        {
+          id: "skin-box-family",
+          label: "Box 7 — Dehydration, Vitamins & Meds (Paani, khoon ki kami ya dawai)",
+          instruction: ur
+            ? "Kam paani peena, iron/B12 ki kami, mouth breathing, ya Isotretinoin (Accutane) chal rahi ho?"
+            : "Mention low water intake, anemia/iron or Vitamin B12 deficiency, eczema, or oral Isotretinoin/Retinoids.",
+          chips: [
+            "Low Water Intake / Dehydration",
+            "Iron / Vitamin B12 Deficiency",
+            "On Isotretinoin / Acne Meds",
+            "History of Cold Sores / Fever Blisters",
+            "None",
+          ],
+          placeholder:
+            "e.g. Paani kam peena, iron/B12 deficiency, ya acne capsule (Isotretinoin) chal rahi hai...",
           fullWidth: true,
         },
       ],
@@ -842,7 +993,7 @@ function ClinicalInputBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6DCE0] bg-[#F8F5F4]/50 p-4 ${
+      className={`flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4 ${
         fullWidth ? "md:col-span-2" : ""
       }`}
     >
@@ -851,7 +1002,7 @@ function ClinicalInputBox({
           <label htmlFor={id} className="block text-xs font-bold text-[#1E181A]">
             {label}
           </label>
-          <p className="text-[11px] leading-snug text-[#5E5055]">{instruction}</p>
+          <p className="text-[11px] leading-relaxed text-[#5E5055]">{instruction}</p>
         </div>
 
         <div className="flex flex-wrap gap-1.5">
@@ -869,7 +1020,7 @@ function ClinicalInputBox({
                 className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                   isSelected
                     ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                    : "border-[#E6DCE0] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                    : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                 }`}
               >
                 + {chip}
@@ -885,7 +1036,7 @@ function ClinicalInputBox({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-[#E6DCE0] bg-white px-3.5 py-2.5 text-xs text-[#1E181A] placeholder:text-[#5E5055]/60 focus:border-[#B56576] focus:outline-none"
+        className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
       />
     </div>
   );
@@ -1069,15 +1220,15 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
 
       <PhotoGuideBanner language={language} />
 
-      <div className="min-w-0 space-y-5 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
         <div>
           <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
-            <h2 className="font-editorial text-xl font-semibold text-[#1E181A]">
+            <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
               {language === "ur"
                 ? "Step 1: Jism Ka Hissa Chunein"
                 : "Step 1: Pick the Area to Check"}
             </h2>
-            <span className="shrink-0 rounded-full bg-[#F6ECEF] px-3 py-1 text-xs font-semibold text-[#B56576]">
+            <span className="shrink-0 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-xs font-semibold text-[#B56576]">
               {bodyArea}
             </span>
           </div>
@@ -1090,20 +1241,21 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
                   key={area}
                   type="button"
                   onClick={() => handleBodyAreaChange(area)}
-                  className={`min-h-[38px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
+                  className={`inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
                     active
-                      ? "bg-[#B56576] text-white shadow-xs"
-                      : "border border-[#E6DCE0] bg-[#F8F5F4] text-[#5E5055] hover:bg-[#F6ECEF]"
+                      ? "bg-gradient-to-b from-[#BF6E7F] to-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
+                      : "border border-[#E6D2D6] bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
                   }`}
                 >
-                  {area}
+                  {area === "Lips" && <LipIcon className="h-3.5 w-3.5 shrink-0" />}
+                  <span>{area}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="border-t border-[#E6DCE0] pt-5">
+        <div className="border-t border-[#EAD8DC] pt-5">
           <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs font-bold text-[#1E181A]">
               {language === "ur"
@@ -1135,21 +1287,21 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         </div>
       </div>
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
         <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
           <div className="min-w-0">
-            <h2 className="font-editorial text-xl font-semibold text-[#1E181A]">
+            <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
               {language === "ur"
                 ? `Step 2: 1 se ${slots.length} Photos Add Karein`
                 : `Step 2: Add 1 to ${slots.length} Photos`}
             </h2>
-            <p className="text-xs text-[#5E5055]">
+            <p className="text-xs leading-relaxed text-[#5E5055]">
               {language === "ur"
                 ? "Camera ya gallery se saaf close-up photos add karein."
                 : `Take or upload 1–${slots.length} clear photos from different angles.`}
             </p>
           </div>
-          <span className="shrink-0 rounded-full bg-[#F6ECEF] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
+          <span className="shrink-0 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
             {uploadedList.length}/{slots.length}
           </span>
         </div>
@@ -1174,8 +1326,8 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-5 overflow-x-hidden rounded-3xl border border-[#E6DCE0] bg-white p-6 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:p-8">
-        <h2 className="font-editorial text-xl font-semibold text-[#1E181A]">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+        <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
           {language === "ur"
             ? "Step 3: Apni Skin Aur Paani Ki Details"
             : "Step 3: About Your Skin & Water"}
@@ -1218,7 +1370,7 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
           disabled={isScanning}
           aria-busy={isScanning}
           onClick={handleRunScan}
-          className="flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(181,101,118,0.55)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           <ScanFace className="h-4 w-4 shrink-0" />
           <span>
