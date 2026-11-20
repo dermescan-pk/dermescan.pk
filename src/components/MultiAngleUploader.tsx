@@ -133,7 +133,7 @@ export function MultiAngleUploader({
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[#E6DCE0] bg-white">
                   <img
                     src={uploaded.previewUrl}
-                    alt={slot.slotLabel}
+                    alt={`Uploaded ${slot.slotLabel} photo preview for DerméScan analysis`}
                     referrerPolicy="no-referrer"
                     className="h-full w-full object-cover"
                   />
