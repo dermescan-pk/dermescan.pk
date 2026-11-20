@@ -5,10 +5,10 @@ import {
 } from "@google/genai";
 
 export const GEMINI_FALLBACK_MODELS = [
+  "gemini-3.5-flash-lite",
   "gemini-3.8-flash",
   "gemini-3.6-flash",
   "gemini-2.5-flash",
-  "gemini-2.5-flash-lite",
 ] as const;
 
 export const FALLBACK_BACKOFF_MS = 800;
@@ -169,6 +169,8 @@ function extractGeminiErrorDetails(error: unknown): {
     httpStatus = 500;
   } else if (!httpStatus && /\b404\b|NOT_FOUND/i.test(readableMessage)) {
     httpStatus = 404;
+  } else if (!httpStatus && /\b403\b|PERMISSION_DENIED/i.test(readableMessage)) {
+    httpStatus = 403;
   }
 
   return { httpStatus, readableMessage };
@@ -266,14 +268,14 @@ export interface GeminiFallbackParams
 
 /**
  * Multi-model + multi-key automatic fallback chain across peak traffic spikes:
- * Rotates strictly in priority order across:
- *   1) `gemini-3.8-flash`
- *   2) `gemini-3.6-flash`
- *   3) `gemini-2.5-flash`
- *   4) `gemini-2.5-flash-lite`
+ * Rotates strictly in priority order across Google's highest-quota free-tier models:
+ *   1) `gemini-3.5-flash-lite`
+ *   2) `gemini-3.8-flash`
+ *   3) `gemini-3.6-flash`
+ *   4) `gemini-2.5-flash`
  * Using primary key (`x-user-gemini-key` header if provided, else `process.env.GEMINI_API_KEY`),
  * then retries the same 4-model chain with `GEMINI_API_KEY_2` (and `GEMINI_API_KEY_3` if set),
- * automatically falling back on 429, 503, 404, or 500 errors without passing `thinkingConfig`.
+ * automatically falling back on 429, 503, 404, 403, or 500 errors without passing `thinkingConfig`.
  */
 export async function generateContentWithGeminiFallback({
   userApiKey,
@@ -287,6 +289,7 @@ export async function generateContentWithGeminiFallback({
   const startedAt = Date.now();
   const maxTotalBudgetMs = 95_000;
   let lastError: unknown;
+  let lastNonKeyError: unknown;
   let sawNonKeyFailure = false;
 
   const runSingleAttempt = async (
@@ -353,23 +356,35 @@ export async function generateContentWithGeminiFallback({
         return await runSingleAttempt(model, apiKey, timeoutMs);
       } catch (err) {
         lastError = err;
+        const details = extractGeminiErrorDetails(err);
         const keyFailure = isGeminiKeyFailure(err);
         if (!keyFailure) {
           sawNonKeyFailure = true;
+          lastNonKeyError = err;
         }
 
-        const canRotate = keyFailure || isRetryableTransientFailure(err);
+        const isExplicitFallbackStatus =
+          details.httpStatus === 429 ||
+          details.httpStatus === 503 ||
+          details.httpStatus === 404 ||
+          details.httpStatus === 403 ||
+          details.httpStatus === 500;
+
+        const canRotate =
+          isExplicitFallbackStatus ||
+          keyFailure ||
+          isRetryableTransientFailure(err);
         if (!canRotate) {
           throw err;
         }
 
-        const details = extractGeminiErrorDetails(err);
         console.info(
           `[DerméScan] Model "${model}" with key #${keyNumber} failed (${details.httpStatus ?? "err"}); failing over...`
         );
 
-        // If the API key itself is invalid/unauthorized, skip remaining models on this key
-        // and rotate straight to the next configured key.
+        // If the API key itself is invalid/unauthorized (401 or invalid key message),
+        // skip remaining models on this key and rotate straight to the next configured key.
+        // On 403 (which may be a model-level restriction), continue trying remaining models on this key too.
         if (
           keyFailure &&
           (details.httpStatus === 401 ||
@@ -396,6 +411,10 @@ export async function generateContentWithGeminiFallback({
 
   if (isGeminiKeyFailure(lastError) && !sawNonKeyFailure) {
     throw new GeminiKeyError(API_KEY_ALERT_MESSAGE);
+  }
+
+  if (sawNonKeyFailure && isGeminiKeyFailure(lastError) && lastNonKeyError) {
+    throw lastNonKeyError;
   }
 
   throw lastError;
