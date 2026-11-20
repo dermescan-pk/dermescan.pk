@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import { Camera, Upload, X, CheckCircle2 } from "lucide-react";
 import { compressImageFile } from "../utils/imageCompressor.ts";
+import { LiveCameraModal } from "./LiveCameraModal.tsx";
 import type { Language, UploadedImage } from "../types/dermascan.ts";
 
 export interface AngleSlotConfig {
@@ -18,6 +19,25 @@ interface MultiAngleUploaderProps {
   language: Language;
 }
 
+function shouldUseLiveWebcamModal(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const isInAppBrowser =
+    /(Instagram|FBAN|FBAV|FB_IAB|TikTok|BytedanceWebview|musical_ly|Snapchat|Line\/|MicroMessenger)/i.test(
+      ua
+    );
+  if (isInAppBrowser) return true;
+
+  const isMobileDevice =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(
+      ua
+    );
+  const isIpadDesktopMode =
+    /Macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
+
+  return !isMobileDevice && !isIpadDesktopMode;
+}
+
 export function MultiAngleUploader({
   slots,
   imagesBySlot,
@@ -28,6 +48,7 @@ export function MultiAngleUploader({
 }: MultiAngleUploaderProps) {
   const [compressingSlot, setCompressingSlot] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [webcamSlot, setWebcamSlot] = useState<AngleSlotConfig | null>(null);
 
   const cameraInputsRef = useRef<Record<string, HTMLInputElement | null>>({});
   const galleryInputsRef = useRef<Record<string, HTMLInputElement | null>>({});
@@ -58,6 +79,21 @@ export function MultiAngleUploader({
     }
   }
 
+  function handleCameraButtonClick(slot: AngleSlotConfig) {
+    setUploadError(null);
+    const hasGetUserMedia =
+      typeof navigator !== "undefined" &&
+      Boolean(navigator.mediaDevices?.getUserMedia);
+
+    if (shouldUseLiveWebcamModal() && hasGetUserMedia) {
+      setWebcamSlot(slot);
+      return;
+    }
+
+    // Trigger synchronously inside the user tap event for mobile Safari/Chrome security
+    cameraInputsRef.current[slot.slotId]?.click();
+  }
+
   return (
     <div className="min-w-0 space-y-3">
       {uploadError && (
@@ -85,6 +121,7 @@ export function MultiAngleUploader({
                     : "border-[#E6DCE0]"
               }`}
             >
+              {/* Dedicated Mobile Rear Camera Input */}
               <input
                 ref={(el) => {
                   cameraInputsRef.current[slot.slotId] = el;
@@ -92,16 +129,21 @@ export function MultiAngleUploader({
                 type="file"
                 accept="image/*"
                 capture="environment"
-                className="hidden"
+                tabIndex={-1}
+                aria-hidden="true"
+                className="sr-only"
                 onChange={(e) => handleFileSelect(slot, e)}
               />
+              {/* Standard Gallery / File Upload Input */}
               <input
                 ref={(el) => {
                   galleryInputsRef.current[slot.slotId] = el;
                 }}
                 type="file"
                 accept="image/*"
-                className="hidden"
+                tabIndex={-1}
+                aria-hidden="true"
+                className="sr-only"
                 onChange={(e) => handleFileSelect(slot, e)}
               />
 
@@ -154,9 +196,7 @@ export function MultiAngleUploader({
                     <div className="flex w-full gap-2">
                       <button
                         type="button"
-                        onClick={() =>
-                          cameraInputsRef.current[slot.slotId]?.click()
-                        }
+                        onClick={() => handleCameraButtonClick(slot)}
                         className="flex min-h-[42px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#B56576] px-3 py-2 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#9E5263] active:scale-95"
                       >
                         <Camera className="h-3.5 w-3.5 shrink-0" />
@@ -188,6 +228,21 @@ export function MultiAngleUploader({
           );
         })}
       </div>
+
+      {webcamSlot && (
+        <LiveCameraModal
+          isOpen={Boolean(webcamSlot)}
+          slotId={webcamSlot.slotId}
+          slotLabel={webcamSlot.slotLabel}
+          language={language}
+          onCapture={(img) => onImageAdded(img)}
+          onFallbackToFilePicker={() => {
+            const slotId = webcamSlot.slotId;
+            galleryInputsRef.current[slotId]?.click();
+          }}
+          onClose={() => setWebcamSlot(null)}
+        />
+      )}
     </div>
   );
 }

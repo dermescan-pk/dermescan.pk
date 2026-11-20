@@ -84,6 +84,25 @@ function handleRouteError(
   });
 }
 
+const SKIN_CLINICAL_INDICATION_RULES = `CLINICAL INDICATION MAPPING RULES (STRICT — RECOMMEND ONLY WHEN GENUINELY INDICATED):
+- Prioritize authentic, dermatologist-trusted Pakistani pharmacy products (including CeraVe, Physiogel, Skinoren, AccuFix, Conatural, and the exact verified Jenpharm formulations below) ONLY when clinically appropriate for the user's exact photos, body area, symptoms, skin type, and Health Profile.
+- NEVER force any product for an unrelated issue, and NEVER break Pregnancy/Breastfeeding or Urgent Red-Flag safety overrides.
+- When a Jenpharm formulation genuinely fits the user's skin condition, use the exact full product name below in "brand", "productName", "title", and "recommendedProducts":
+  * Oily / Clogged Pores / Active Acne: "Jenpharm Clarevo Salicylic Acid Facewash" (cleanser; avoid in pregnancy or damaged barrier), "Jenpharm Dermive Oil-Free Moisturizer" (or "Jenpharm Dermive Oil-Free Moisturizer SPF 20" for lightweight daytime hydration + mild SPF), "Jenpharm Spectramatt SPF 50 Sebum Control Gel Sunscreen" (matte sunscreen).
+  * Mild Texture / Whiteheads / Gentle Exfoliation: "Jenpharm MandelAC Face Wash", "Jenpharm MandelAC Serum", or "Jenpharm MandelAC Cream" (2–3x/week only; NEVER combine with Retinol/Retinoids).
+  * Dry / Sensitive / Post-Steroid Damaged Barrier: "Jenpharm Dermive Moisturizing Face Wash" + "Jenpharm Dermive Sensitive Moisturizer" (or "Jenpharm Dermive Oily Moisturizer" for very dry skin without fungal acne; alongside gentle barrier options like Physiogel / CeraVe).
+  * Melasma / Post-Acne Dark Marks / Sun Tan: "Jenpharm Spectra Block Tinted Sunscreen SPF 100" (blocks visible light for melasma) or "Jenpharm Spectra Block Aqua Fluid Sunscreen SPF 60" + "Jenpharm Maxdif Serum" / "Jenpharm Maxdif Skin Brightening Cream" / "Jenpharm Maxdif Brightening Moisturizer" / "Jenpharm Cerulic Glow Boosting Serum" (only on intact, non-irritated skin).
+  * Adult Anti-Aging / Fine Lines: "Jenpharm Eternyx Advanced Retinol Serum" (PM only, 1–2x/week; STRICTLY NEVER with exfoliating acids like MandelAC/Clarevo, NEVER under 18, and STRICTLY FORBIDDEN during pregnancy or breastfeeding).`;
+
+const HAIR_CLINICAL_INDICATION_RULES = `CLINICAL INDICATION MAPPING RULES (STRICT — RECOMMEND ONLY WHEN GENUINELY INDICATED):
+- Prioritize authentic, dermatologist-trusted Pakistani pharmacy products (including Conatural, AccuFix, CeraVe, Bioderma, L'Oréal Elvive, and the exact verified Jenpharm formulations below) ONLY when clinically appropriate for the user's exact scalp condition, hair porosity, and shedding pattern.
+- NEVER force any product for an unrelated scalp/hair issue, and NEVER claim topical shampoos, serums, or oils regrow circular alopecia areata bald patches.
+- When a Jenpharm formulation genuinely fits the user's hair or scalp condition, use the exact full product name below in "brand", "productName", "title", and "recommendedProducts":
+  * Hair Shedding / Thinning: "Jenpharm Anagrow Anti Hair Loss Shampoo" + "Jenpharm Anagrow Foamy Hair Growth Serum".
+  * Dandruff / Flaky Scalp: "Jenpharm Anti-Dandruff Drops Serum" (paired with dual-shampoo rotation, and STRICTLY avoid raw hair oils on dandruff or seborrheic/fungal scalp).
+  * Dry Scalp Pre-Wash Care (STRICTLY NO dandruff, NO oily flakes, NO fungal/pimply scalp): "Jenpharm Rosemary Oil" (diluted pre-wash care only).
+  * High-Porosity / Frizzy Hair Ends: "Jenpharm Anagrow Anti-Frizz Serum" (apply strictly on mid-lengths & ends only — never on scalp roots).`;
+
 export async function handleAnalyzeSkin(
   req: ApiRequestLike,
   res: ApiResponseLike
@@ -104,7 +123,7 @@ export async function handleAnalyzeSkin(
       });
     }
 
-    const systemPrompt = buildSkinAnalysisPrompt(body);
+    const systemPrompt = `${buildSkinAnalysisPrompt(body)}\n\n${SKIN_CLINICAL_INDICATION_RULES}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }
@@ -166,7 +185,7 @@ export async function handleAnalyzeHair(
       });
     }
 
-    const systemPrompt = buildHairAnalysisPrompt(body);
+    const systemPrompt = `${buildHairAnalysisPrompt(body)}\n\n${HAIR_CLINICAL_INDICATION_RULES}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }

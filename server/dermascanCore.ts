@@ -6,6 +6,7 @@ import {
   VERIFIED_PK_STORES,
   findCatalogMatch,
 } from "../src/data/products.ts";
+import { findJenpharmAffiliate } from "../src/data/jenpharmAffiliates.ts";
 import type {
   HairStructuredInputs,
   HealthProfile,
@@ -800,7 +801,41 @@ export function hydrateProductPicks(
       return true;
     })
     .map((pick) => {
+      const affiliateHit = findJenpharmAffiliate({
+        brand: pick.brand,
+        name: pick.name,
+        productId: pick.productId,
+      });
       const match = findCatalogMatch(pick.productId, pick.brand, pick.name);
+
+      if (affiliateHit) {
+        const matchAffiliate = match
+          ? findJenpharmAffiliate({
+              brand: match.brand,
+              name: match.name,
+              productId: match.id,
+            })
+          : null;
+        const isSameCatalogProduct =
+          Boolean(match) && matchAffiliate?.id === affiliateHit.id;
+
+        return {
+          ...pick,
+          brand: "Jenpharm",
+          productId: isSameCatalogProduct
+            ? match!.id
+            : pick.productId || affiliateHit.id,
+          name: pick.name?.trim() || affiliateHit.productName,
+          subCategory:
+            pick.subCategory ||
+            (isSameCatalogProduct ? match!.subCategory : "Dermatologist Formulation"),
+          approxPricePkr:
+            pick.approxPricePkr ||
+            (isSameCatalogProduct ? match!.approxPricePkr : "Check Pharmacy"),
+          whereToBuy: "Official Brand Store • Dvago • Naheed • Daraz Mall",
+        };
+      }
+
       if (!match) {
         return {
           ...pick,

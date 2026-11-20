@@ -13,6 +13,7 @@ import {
   findCatalogMatch,
   getAuthenticBuyUrl,
 } from "../data/products.ts";
+import { getJenpharmAffiliateUrl } from "../data/jenpharmAffiliates.ts";
 import { WhatsAppShareButton } from "./WhatsAppShareButton.tsx";
 import type {
   BentoPrescriptionResponse,
@@ -46,6 +47,11 @@ export function BentoPrescriptionResult({
     const match = findCatalogMatch(pick.productId, pick.brand, pick.name);
     const brand = pick.brand || match?.brand || "Trusted Brand";
     const name = pick.name || match?.name || "Recommended Product";
+    const jenpharmAffiliateUrl = getJenpharmAffiliateUrl({
+      brand,
+      name,
+      productId: pick.productId,
+    });
     return {
       key: `${pick.productId || ""}-${brand}-${name}`,
       brand,
@@ -56,6 +62,7 @@ export function BentoPrescriptionResult({
         pick.whereToBuy ||
         match?.whereToBuy ||
         "Official Brand Store • Dvago • Naheed • Daraz Mall",
+      jenpharmAffiliateUrl,
       buyUrl: getAuthenticBuyUrl(brand, name, pick.productId),
       bullets: pick.bullets,
     };
@@ -107,6 +114,12 @@ export function BentoPrescriptionResult({
         : "Based on your photos and clinical answers, this is safe to manage with a targeted home and pharmacy routine.");
 
   function renderRoutineStepCard(step: RoutineStep) {
+    const jenpharmAffiliateUrl = getJenpharmAffiliateUrl({
+      brand: step.brand,
+      name: step.productName,
+      title: step.title.en,
+      productId: step.productId,
+    });
     const buyUrl = resolveStepBuyUrl(step);
     const hasProduct = Boolean(step.brand || step.productName || step.productId);
     const usageCautionText = step.usageCaution?.[language]?.trim();
@@ -127,6 +140,19 @@ export function BentoPrescriptionResult({
               </span>
             )}
           </div>
+
+          {jenpharmAffiliateUrl && (
+            <div className="flex min-w-0 items-start">
+              <a
+                href={jenpharmAffiliateUrl}
+                target="_blank"
+                rel="sponsored noopener noreferrer"
+                className="inline-flex min-h-[36px] max-w-full items-center justify-center rounded-full bg-[#B56576] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#9E5263] active:scale-95"
+              >
+                Buy at the best price here →
+              </a>
+            </div>
+          )}
 
           {/* Row 2: Bold, clear Product / Step Name */}
           <h4 className="min-w-0 break-words font-heading text-sm font-bold leading-snug text-[#1E181A]">
@@ -163,25 +189,26 @@ export function BentoPrescriptionResult({
         </div>
 
         {/* Row 4: Real affiliate button if configured, else safe non-clickable stockist pill */}
-        {buyUrl ? (
-          <a
-            href={buyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-xl border border-[#E6DCE0] bg-white px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576] hover:bg-[#F6ECEF]/70 hover:text-[#B56576] active:scale-95"
-          >
-            <span>
-              {language === "ur"
-                ? "Asli Online Khareedein"
-                : "Buy Original Online"}
+        {!jenpharmAffiliateUrl &&
+          (buyUrl ? (
+            <a
+              href={buyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-xl border border-[#E6DCE0] bg-white px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576] hover:bg-[#F6ECEF]/70 hover:text-[#B56576] active:scale-95"
+            >
+              <span>
+                {language === "ur"
+                  ? "Asli Online Khareedein"
+                  : "Buy Original Online"}
+              </span>
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
+            </a>
+          ) : hasProduct ? (
+            <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#F6ECEF] px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
+              Available at: Official Brand Store • Dvago • Naheed • Daraz Mall
             </span>
-            <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
-          </a>
-        ) : hasProduct ? (
-          <span className="inline-block max-w-full whitespace-normal break-words rounded-full border border-[#E8C5CA] bg-[#F6ECEF] px-3 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
-            Available at: Official Brand Store • Dvago • Naheed • Daraz Mall
-          </span>
-        ) : null}
+          ) : null)}
       </div>
     );
   }
@@ -465,7 +492,24 @@ export function BentoPrescriptionResult({
               </div>
 
               <div className="border-t border-[#E6DCE0] pt-3">
-                {item.buyUrl ? (
+                {item.jenpharmAffiliateUrl ? (
+                  <div className="flex min-w-0 flex-col items-start gap-2">
+                    <p className="break-words text-[11px] text-[#5E5055]">
+                      {language === "ur" ? "Kahan milega: " : "Where to buy: "}
+                      <strong className="text-[#1E181A]">
+                        {item.whereToBuy}
+                      </strong>
+                    </p>
+                    <a
+                      href={item.jenpharmAffiliateUrl}
+                      target="_blank"
+                      rel="sponsored noopener noreferrer"
+                      className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#9E5263] active:scale-95"
+                    >
+                      Buy at the best price here →
+                    </a>
+                  </div>
+                ) : item.buyUrl ? (
                   <div className="space-y-2.5 text-[11px]">
                     <p className="break-words text-[#5E5055]">
                       {language === "ur" ? "Kahan milega: " : "Where to buy: "}

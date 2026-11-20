@@ -1,11 +1,59 @@
 import type { UploadedImage } from "../types/dermascan.ts";
 
-const MAX_WIDTH = 768;
-const JPEG_QUALITY = 0.72;
+const MAX_DIMENSION_PX = 1200;
+const JPEG_QUALITY = 0.85;
+
+function scaleDimensions(
+  width: number,
+  height: number,
+  maxDimension: number
+): { targetWidth: number; targetHeight: number } {
+  let targetWidth = Math.max(1, width);
+  let targetHeight = Math.max(1, height);
+
+  if (targetWidth > maxDimension || targetHeight > maxDimension) {
+    if (targetWidth >= targetHeight) {
+      const ratio = maxDimension / targetWidth;
+      targetWidth = maxDimension;
+      targetHeight = Math.max(1, Math.round(targetHeight * ratio));
+    } else {
+      const ratio = maxDimension / targetHeight;
+      targetHeight = maxDimension;
+      targetWidth = Math.max(1, Math.round(targetWidth * ratio));
+    }
+  }
+
+  return { targetWidth, targetHeight };
+}
+
+function encodeCanvasToUploadedImage(
+  canvas: HTMLCanvasElement,
+  slotId: string,
+  slotLabel: string,
+  originalSizeKb: number
+): UploadedImage {
+  const compressedDataUrl = canvas.toDataURL("image/jpeg", JPEG_QUALITY);
+  const base64 = compressedDataUrl.replace(/^data:image\/jpeg;base64,/, "");
+  const compressedSizeKb = Math.max(
+    1,
+    Math.round((base64.length * 3) / 4 / 1024)
+  );
+
+  return {
+    slotId,
+    slotLabel,
+    base64,
+    mimeType: "image/jpeg",
+    previewUrl: compressedDataUrl,
+    originalSizeKb: Math.max(originalSizeKb, compressedSizeKb),
+    compressedSizeKb,
+  };
+}
 
 /**
- * Compresses an uploaded image client-side via HTML5 Canvas to max 768px width
- * and 0.72 JPEG quality so multi-angle uploads send almost instantly on mobile data.
+ * Resizes and compresses an uploaded or camera-captured image client-side via
+ * HTML5 Canvas to max 1200px (longest edge) and 0.85 JPEG quality so scans
+ * stay crisp while uploading fast even on 4G mobile data.
  */
 export async function compressImageFile(
   file: File,
@@ -35,14 +83,11 @@ export async function compressImageFile(
     image.src = dataUrl;
   });
 
-  let targetWidth = img.naturalWidth || img.width;
-  let targetHeight = img.naturalHeight || img.height;
-
-  if (targetWidth > MAX_WIDTH) {
-    const ratio = MAX_WIDTH / targetWidth;
-    targetWidth = MAX_WIDTH;
-    targetHeight = Math.round(targetHeight * ratio);
-  }
+  const { targetWidth, targetHeight } = scaleDimensions(
+    img.naturalWidth || img.width,
+    img.naturalHeight || img.height,
+    MAX_DIMENSION_PX
+  );
 
   const canvas = document.createElement("canvas");
   canvas.width = targetWidth;
@@ -57,20 +102,40 @@ export async function compressImageFile(
   ctx.fillRect(0, 0, targetWidth, targetHeight);
   ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
-  const compressedDataUrl = canvas.toDataURL("image/jpeg", JPEG_QUALITY);
-  const base64 = compressedDataUrl.replace(/^data:image\/jpeg;base64,/, "");
-  const compressedSizeKb = Math.max(
-    1,
-    Math.round((base64.length * 3) / 4 / 1024)
+  return encodeCanvasToUploadedImage(canvas, slotId, slotLabel, originalSizeKb);
+}
+
+/**
+ * Captures the current live video frame, resizing to max 1200px (longest edge)
+ * and compressing to 0.85 JPEG quality.
+ */
+export function compressVideoFrame(
+  video: HTMLVideoElement,
+  slotId: string,
+  slotLabel: string
+): UploadedImage {
+  const rawWidth = video.videoWidth || 1280;
+  const rawHeight = video.videoHeight || 720;
+
+  const { targetWidth, targetHeight } = scaleDimensions(
+    rawWidth,
+    rawHeight,
+    MAX_DIMENSION_PX
   );
 
-  return {
-    slotId,
-    slotLabel,
-    base64,
-    mimeType: "image/jpeg",
-    previewUrl: compressedDataUrl,
-    originalSizeKb,
-    compressedSizeKb,
-  };
+  const canvas = document.createElement("canvas");
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Canvas 2D context unavailable.");
+  }
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, targetWidth, targetHeight);
+  ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
+
+  const approxRawKb = Math.max(1, Math.round((rawWidth * rawHeight * 3) / 1024));
+  return encodeCanvasToUploadedImage(canvas, slotId, slotLabel, approxRawKb);
 }

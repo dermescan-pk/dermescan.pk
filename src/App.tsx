@@ -1,4 +1,4 @@
-import { useState, type ComponentType } from "react";
+import { useRef, useState, type ComponentType, type TouchEvent } from "react";
 import { ScanFace, Scissors, FlaskConical, ShieldCheck } from "lucide-react";
 import { Header } from "./components/Header.tsx";
 import { SkinBodyTab } from "./components/SkinBodyTab.tsx";
@@ -26,6 +26,9 @@ const NAV_TABS: {
   { id: "verify", label: "Fake vs. Real", icon: ShieldCheck },
 ];
 
+const SWIPE_MIN_DISTANCE_PX = 40;
+const SWIPE_MAX_DURATION_MS = 600;
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("skin");
   const [language, setLanguage] = useState<Language>("en");
@@ -35,6 +38,60 @@ export default function App() {
   const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(
     () => !hasSeenWelcomeIntake()
   );
+
+  const navTouchStartRef = useRef<{
+    x: number;
+    y: number;
+    time: number;
+  } | null>(null);
+
+  function handleNavTouchStart(e: TouchEvent<HTMLElement>) {
+    if (e.touches.length !== 1) {
+      navTouchStartRef.current = null;
+      return;
+    }
+    const touch = e.touches[0];
+    navTouchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
+    };
+  }
+
+  function handleNavTouchEnd(e: TouchEvent<HTMLElement>) {
+    const start = navTouchStartRef.current;
+    navTouchStartRef.current = null;
+    if (!start || e.changedTouches.length !== 1) return;
+
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    const elapsed = Date.now() - start.time;
+
+    if (
+      elapsed > SWIPE_MAX_DURATION_MS ||
+      Math.abs(deltaX) < SWIPE_MIN_DISTANCE_PX ||
+      Math.abs(deltaX) <= Math.abs(deltaY) * 1.3
+    ) {
+      return;
+    }
+
+    const currentIndex = NAV_TABS.findIndex((tab) => tab.id === activeTab);
+    if (currentIndex === -1) return;
+
+    const nextIndex =
+      deltaX < 0
+        ? Math.min(NAV_TABS.length - 1, currentIndex + 1)
+        : Math.max(0, currentIndex - 1);
+
+    if (nextIndex !== currentIndex) {
+      setActiveTab(NAV_TABS[nextIndex].id);
+    }
+  }
+
+  function handleNavTouchCancel() {
+    navTouchStartRef.current = null;
+  }
 
   function handleSaveHealthProfile(profile: HealthProfile) {
     saveHealthProfile(profile);
@@ -59,7 +116,10 @@ export default function App() {
       <main className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
         <nav
           aria-label="DerméScan Sections"
-          className="mb-6 grid grid-cols-2 gap-1.5 rounded-2xl border border-[#EAE0E2] bg-white p-1.5 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:flex sm:justify-center"
+          onTouchStart={handleNavTouchStart}
+          onTouchEnd={handleNavTouchEnd}
+          onTouchCancel={handleNavTouchCancel}
+          className="mb-6 grid touch-pan-y grid-cols-2 gap-1.5 rounded-2xl border border-[#EAE0E2] bg-white p-1.5 shadow-[0_12px_40px_rgba(35,24,28,0.05)] sm:flex sm:justify-center"
         >
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
