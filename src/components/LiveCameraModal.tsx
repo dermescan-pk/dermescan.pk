@@ -27,8 +27,8 @@ export async function requestCameraMediaStream(
     return await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode,
-        width: { ideal: 1280 },
-        height: { ideal: 960 },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
       },
       audio: false,
     });
@@ -281,7 +281,7 @@ export function LiveCameraModal({
                 autoPlay
                 playsInline
                 muted
-                className="h-full w-full object-cover"
+                className="h-full w-full bg-black object-contain"
               />
             )}
 

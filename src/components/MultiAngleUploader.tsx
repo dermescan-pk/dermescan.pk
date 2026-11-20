@@ -42,7 +42,8 @@ export function MultiAngleUploader({
 
   async function handleFileSelect(
     slot: AngleSlotConfig,
-    e: ChangeEvent<HTMLInputElement>
+    e: ChangeEvent<HTMLInputElement>,
+    preserveOriginalQuality = false
   ) {
     const file = e.target.files?.[0];
     e.target.value = "";
@@ -54,7 +55,8 @@ export function MultiAngleUploader({
       const compressed = await compressImageFile(
         file,
         slot.slotId,
-        slot.slotLabel
+        slot.slotLabel,
+        { preserveOriginalQuality }
       );
       onImageAdded(compressed);
     } catch (err) {
@@ -122,7 +124,7 @@ export function MultiAngleUploader({
                 tabIndex={-1}
                 aria-hidden="true"
                 className="sr-only"
-                onChange={(e) => handleFileSelect(slot, e)}
+                onChange={(e) => handleFileSelect(slot, e, true)}
               />
               {/* Standard Gallery / File Upload Input */}
               <input

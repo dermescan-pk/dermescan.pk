@@ -13,6 +13,10 @@ import { SteroidCheckTab } from "./components/SteroidCheckTab.tsx";
 import { FakeVsRealTab } from "./components/FakeVsRealTab.tsx";
 import { HealthProfileModal } from "./components/HealthProfileModal.tsx";
 import { CameraPermissionModal } from "./components/CameraPermissionModal.tsx";
+import {
+  InstagramBrowserRedirectModal,
+  detectInstagramBrowser,
+} from "./components/InstagramBrowserRedirectModal.tsx";
 import { requestCameraMediaStream } from "./components/LiveCameraModal.tsx";
 import {
   hasCustomHealthProfile,
@@ -59,6 +63,10 @@ export default function App() {
   const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(
     () => !hasSeenWelcomeIntake()
   );
+  const [instagramEnv] = useState(() => detectInstagramBrowser());
+  const [isInstagramModalOpen, setIsInstagramModalOpen] = useState<boolean>(
+    () => detectInstagramBrowser().isInstagram
+  );
   const [cameraPromptState, setCameraPromptState] = useState<
     "checking" | "needed" | "denied" | "dismissed" | "granted"
   >(() => {
@@ -76,6 +84,7 @@ export default function App() {
   });
 
   useEffect(() => {
+    if (isInstagramModalOpen) return;
     if (cameraPromptState !== "checking") return;
 
     if (
@@ -137,7 +146,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [cameraPromptState]);
+  }, [cameraPromptState, isInstagramModalOpen]);
 
   function handleDismissCameraPrompt() {
     try {
@@ -306,7 +315,7 @@ export default function App() {
       </main>
 
       <HealthProfileModal
-        isOpen={isHealthModalOpen}
+        isOpen={!isInstagramModalOpen && isHealthModalOpen}
         language={language}
         initialProfile={healthProfile}
         onSave={handleSaveHealthProfile}
@@ -315,6 +324,7 @@ export default function App() {
 
       <CameraPermissionModal
         isOpen={
+          !isInstagramModalOpen &&
           !isHealthModalOpen &&
           (cameraPromptState === "needed" || cameraPromptState === "denied")
         }
@@ -323,6 +333,13 @@ export default function App() {
         onGranted={() => setCameraPromptState("granted")}
         onDenied={() => setCameraPromptState("denied")}
         onDismiss={handleDismissCameraPrompt}
+      />
+
+      <InstagramBrowserRedirectModal
+        env={instagramEnv}
+        isOpen={isInstagramModalOpen}
+        language={language}
+        onContinueInsideInstagram={() => setIsInstagramModalOpen(false)}
       />
     </div>
   );
