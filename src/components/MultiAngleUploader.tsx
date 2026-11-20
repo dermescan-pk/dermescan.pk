@@ -42,8 +42,7 @@ export function MultiAngleUploader({
 
   async function handleFileSelect(
     slot: AngleSlotConfig,
-    e: ChangeEvent<HTMLInputElement>,
-    preserveOriginalQuality = false
+    e: ChangeEvent<HTMLInputElement>
   ) {
     const file = e.target.files?.[0];
     e.target.value = "";
@@ -55,13 +54,14 @@ export function MultiAngleUploader({
       const compressed = await compressImageFile(
         file,
         slot.slotId,
-        slot.slotLabel,
-        { preserveOriginalQuality }
+        slot.slotLabel
       );
       onImageAdded(compressed);
     } catch (err) {
       setUploadError(
-        err instanceof Error ? err.message : "Could not process image."
+        err instanceof Error
+          ? err.message
+          : "Could not compress this photo. Please try retaking or selecting another image."
       );
     } finally {
       setCompressingSlot(null);
@@ -124,7 +124,7 @@ export function MultiAngleUploader({
                 tabIndex={-1}
                 aria-hidden="true"
                 className="sr-only"
-                onChange={(e) => handleFileSelect(slot, e, true)}
+                onChange={(e) => handleFileSelect(slot, e)}
               />
               {/* Standard Gallery / File Upload Input */}
               <input

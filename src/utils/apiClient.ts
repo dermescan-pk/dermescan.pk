@@ -76,6 +76,12 @@ export async function postApi<TResponse>(
     externalSignal?.removeEventListener("abort", onExternalAbort);
   }
 
+  if (response.status === 413) {
+    throw new Error(
+      "The uploaded photos are too large to send together. Please remove and re-add them or upload 1–2 photos at a time."
+    );
+  }
+
   const rawText = await response.text();
   let parsed: unknown;
   try {

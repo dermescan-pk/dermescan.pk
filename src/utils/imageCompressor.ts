@@ -1,9 +1,7 @@
 import type { UploadedImage } from "../types/dermascan.ts";
 
-const DEFAULT_MAX_DIMENSION_PX = 1200;
-const DEFAULT_JPEG_QUALITY = 0.85;
-const CAMERA_RAW_PASS_THROUGH_MAX_BYTES = 5 * 1024 * 1024;
-const CAMERA_JPEG_QUALITY = 1.0;
+export const MAX_IMAGE_DIMENSION_PX = 1024;
+export const JPEG_COMPRESSION_QUALITY = 0.75;
 
 function scaleDimensions(
   width: number,
@@ -28,15 +26,42 @@ function scaleDimensions(
   return { targetWidth, targetHeight };
 }
 
-function encodeCanvasToUploadedImage(
-  canvas: HTMLCanvasElement,
+function drawAndCompressToJpegCanvas(
+  source: CanvasImageSource,
+  sourceWidth: number,
+  sourceHeight: number,
   slotId: string,
   slotLabel: string,
-  originalSizeKb: number,
-  quality: number
+  originalSizeKb: number
 ): UploadedImage {
-  const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+  const { targetWidth, targetHeight } = scaleDimensions(
+    sourceWidth,
+    sourceHeight,
+    MAX_IMAGE_DIMENSION_PX
+  );
+
+  const canvas = document.createElement("canvas");
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Could not prepare image processor on this browser.");
+  }
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, targetWidth, targetHeight);
+  ctx.drawImage(source, 0, 0, targetWidth, targetHeight);
+
+  const compressedDataUrl = canvas.toDataURL(
+    "image/jpeg",
+    JPEG_COMPRESSION_QUALITY
+  );
   const base64 = compressedDataUrl.replace(/^data:image\/jpeg;base64,/, "");
+  if (!base64) {
+    throw new Error("Could not compress this photo. Please try another image.");
+  }
+
   const compressedSizeKb = Math.max(
     1,
     Math.round((base64.length * 3) / 4 / 1024)
@@ -53,138 +78,114 @@ function encodeCanvasToUploadedImage(
   };
 }
 
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
+function loadImageFromFile(file: File): Promise<HTMLImageElement> {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const useObjectUrl = typeof URL !== "undefined" && typeof URL.createObjectURL === "function";
+
+    if (useObjectUrl) {
+      const objectUrl = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(image);
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        // Fallback to FileReader if object URL decoding fails on this device
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result !== "string") {
+            reject(
+              new Error(
+                "Could not read this photo. Please retake or pick a standard JPEG/PNG photo."
+              )
+            );
+            return;
+          }
+          const fallbackImg = new Image();
+          fallbackImg.onload = () => resolve(fallbackImg);
+          fallbackImg.onerror = () =>
+            reject(
+              new Error(
+                "Unsupported photo format. Please use a standard camera or gallery photo."
+              )
+            );
+          fallbackImg.src = reader.result;
+        };
+        reader.onerror = () =>
+          reject(new Error("Failed to read the selected photo."));
+        reader.readAsDataURL(file);
+      };
+      image.src = objectUrl;
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === "string") {
-        resolve(reader.result);
-      } else {
+      if (typeof reader.result !== "string") {
         reject(new Error("Could not read image file."));
+        return;
       }
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () =>
+        reject(
+          new Error(
+            "Unsupported photo format. Please use a standard camera or gallery photo."
+          )
+        );
+      image.src = reader.result;
     };
     reader.onerror = () => reject(new Error("Failed to read selected image."));
     reader.readAsDataURL(file);
   });
 }
 
-export interface CompressImageOptions {
-  preserveOriginalQuality?: boolean;
-}
-
 /**
- * Processes an uploaded or camera-captured image.
- * Camera captures preserve full resolution & original quality (never downscaled or flipped);
- * gallery uploads larger than 1200px are resized cleanly for fast mobile uploads.
+ * Compresses and resizes every image uploaded via Camera or Gallery via HTML5 Canvas
+ * so the longest dimension is max 1024px (preserving aspect ratio) at 0.75 JPEG quality,
+ * keeping total 4-photo payloads safely under 1MB to prevent HTTP 413 errors.
  */
 export async function compressImageFile(
   file: File,
   slotId: string,
-  slotLabel: string,
-  options: CompressImageOptions = {}
+  slotLabel: string
 ): Promise<UploadedImage> {
   const originalSizeKb = Math.max(1, Math.round(file.size / 1024));
-  const dataUrl = await readFileAsDataUrl(file);
-
-  const isWebNativeMime =
-    file.type === "image/jpeg" ||
-    file.type === "image/png" ||
-    file.type === "image/webp";
-
-  if (
-    options.preserveOriginalQuality &&
-    isWebNativeMime &&
-    file.size <= CAMERA_RAW_PASS_THROUGH_MAX_BYTES
-  ) {
-    const base64Match = dataUrl.match(/^data:([^;]+);base64,(.*)$/);
-    if (base64Match) {
-      const mimeType = base64Match[1] || file.type || "image/jpeg";
-      const base64 = base64Match[2] || "";
-      return {
-        slotId,
-        slotLabel,
-        base64,
-        mimeType,
-        previewUrl: dataUrl,
-        originalSizeKb,
-        compressedSizeKb: originalSizeKb,
-      };
-    }
-  }
-
-  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () =>
-      reject(new Error("Unsupported or corrupted image format."));
-    image.src = dataUrl;
-  });
+  const img = await loadImageFromFile(file);
 
   const naturalWidth = img.naturalWidth || img.width;
   const naturalHeight = img.naturalHeight || img.height;
 
-  const { targetWidth, targetHeight } = options.preserveOriginalQuality
-    ? { targetWidth: naturalWidth, targetHeight: naturalHeight }
-    : scaleDimensions(naturalWidth, naturalHeight, DEFAULT_MAX_DIMENSION_PX);
-
-  const quality = options.preserveOriginalQuality
-    ? CAMERA_JPEG_QUALITY
-    : DEFAULT_JPEG_QUALITY;
-
-  const canvas = document.createElement("canvas");
-  canvas.width = targetWidth;
-  canvas.height = targetHeight;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error("Canvas 2D context unavailable.");
-  }
-
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(0, 0, targetWidth, targetHeight);
-  ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-  return encodeCanvasToUploadedImage(
-    canvas,
+  return drawAndCompressToJpegCanvas(
+    img,
+    naturalWidth,
+    naturalHeight,
     slotId,
     slotLabel,
-    originalSizeKb,
-    quality
+    originalSizeKb
   );
 }
 
 /**
- * Captures the live camera frame at its full native camera resolution and
- * maximum JPEG quality without downscaling, cropping, or horizontal flipping.
+ * Compresses and resizes a live camera video frame via HTML5 Canvas to max 1024px
+ * on the longest edge at 0.75 JPEG quality without horizontal/vertical flipping.
  */
 export function compressVideoFrame(
   video: HTMLVideoElement,
   slotId: string,
   slotLabel: string
 ): UploadedImage {
-  const rawWidth = Math.max(1, video.videoWidth || 1920);
-  const rawHeight = Math.max(1, video.videoHeight || 1080);
-
-  const canvas = document.createElement("canvas");
-  canvas.width = rawWidth;
-  canvas.height = rawHeight;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error("Canvas 2D context unavailable.");
-  }
-
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(0, 0, rawWidth, rawHeight);
-  // Draw directly without any horizontal/vertical flip transform
-  ctx.drawImage(video, 0, 0, rawWidth, rawHeight);
-
+  const rawWidth = Math.max(1, video.videoWidth || 1024);
+  const rawHeight = Math.max(1, video.videoHeight || 768);
   const approxRawKb = Math.max(1, Math.round((rawWidth * rawHeight * 3) / 1024));
-  return encodeCanvasToUploadedImage(
-    canvas,
+
+  return drawAndCompressToJpegCanvas(
+    video,
+    rawWidth,
+    rawHeight,
     slotId,
     slotLabel,
-    approxRawKb,
-    CAMERA_JPEG_QUALITY
+    approxRawKb
   );
 }
