@@ -164,12 +164,12 @@ export function MultiAngleUploader({
               </div>
 
               {uploaded ? (
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[#E6DCE0] bg-white">
+                <div className="relative flex max-h-72 w-full items-center justify-center overflow-hidden rounded-xl border border-[#E6DCE0] bg-[#FAF6F7]">
                   <img
                     src={uploaded.previewUrl}
                     alt={`Uploaded ${slot.slotLabel} photo preview for DerméScan analysis`}
                     referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover"
+                    className="max-h-72 w-full object-contain"
                   />
                   <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-[#EFF7F2]/95 px-2.5 py-0.5 text-[10px] font-semibold tabular-nums text-[#2D6A4F] shadow-xs">
                     <CheckCircle2 className="h-3 w-3" />

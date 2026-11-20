@@ -1,7 +1,7 @@
 import type { UploadedImage } from "../types/dermascan.ts";
 
 export const MAX_IMAGE_DIMENSION_PX = 1024;
-export const JPEG_COMPRESSION_QUALITY = 0.75;
+export const JPEG_COMPRESSION_QUALITY = 0.85;
 
 function scaleDimensions(
   width: number,
@@ -143,8 +143,8 @@ function loadImageFromFile(file: File): Promise<HTMLImageElement> {
 
 /**
  * Compresses and resizes every image uploaded via Camera or Gallery via HTML5 Canvas
- * so the longest dimension is max 1024px (preserving aspect ratio) at 0.75 JPEG quality,
- * keeping total 4-photo payloads safely under 1MB to prevent HTTP 413 errors.
+ * so the longest dimension is max 1024px (preserving aspect ratio) at 0.85 JPEG quality,
+ * keeping fine visual details crisp while uploading rapidly on mobile connections.
  */
 export async function compressImageFile(
   file: File,
@@ -169,7 +169,7 @@ export async function compressImageFile(
 
 /**
  * Compresses and resizes a live camera video frame via HTML5 Canvas to max 1024px
- * on the longest edge at 0.75 JPEG quality without horizontal/vertical flipping.
+ * on the longest edge at 0.85 JPEG quality without horizontal/vertical flipping.
  */
 export function compressVideoFrame(
   video: HTMLVideoElement,
