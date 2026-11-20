@@ -1,7 +1,10 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import { Camera, Upload, X, CheckCircle2 } from "lucide-react";
 import { compressImageFile } from "../utils/imageCompressor.ts";
-import { LiveCameraModal } from "./LiveCameraModal.tsx";
+import {
+  LiveCameraModal,
+  requestCameraMediaStream,
+} from "./LiveCameraModal.tsx";
 import type { Language, UploadedImage } from "../types/dermascan.ts";
 
 export interface AngleSlotConfig {
@@ -19,25 +22,6 @@ interface MultiAngleUploaderProps {
   language: Language;
 }
 
-function shouldUseLiveWebcamModal(): boolean {
-  if (typeof navigator === "undefined") return false;
-  const ua = navigator.userAgent || "";
-  const isInAppBrowser =
-    /(Instagram|FBAN|FBAV|FB_IAB|TikTok|BytedanceWebview|musical_ly|Snapchat|Line\/|MicroMessenger)/i.test(
-      ua
-    );
-  if (isInAppBrowser) return true;
-
-  const isMobileDevice =
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(
-      ua
-    );
-  const isIpadDesktopMode =
-    /Macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
-
-  return !isMobileDevice && !isIpadDesktopMode;
-}
-
 export function MultiAngleUploader({
   slots,
   imagesBySlot,
@@ -48,7 +32,10 @@ export function MultiAngleUploader({
 }: MultiAngleUploaderProps) {
   const [compressingSlot, setCompressingSlot] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [webcamSlot, setWebcamSlot] = useState<AngleSlotConfig | null>(null);
+  const [activeCameraSession, setActiveCameraSession] = useState<{
+    slot: AngleSlotConfig;
+    streamPromise: Promise<MediaStream>;
+  } | null>(null);
 
   const cameraInputsRef = useRef<Record<string, HTMLInputElement | null>>({});
   const galleryInputsRef = useRef<Record<string, HTMLInputElement | null>>({});
@@ -81,16 +68,19 @@ export function MultiAngleUploader({
 
   function handleCameraButtonClick(slot: AngleSlotConfig) {
     setUploadError(null);
-    const hasGetUserMedia =
-      typeof navigator !== "undefined" &&
-      Boolean(navigator.mediaDevices?.getUserMedia);
 
-    if (shouldUseLiveWebcamModal() && hasGetUserMedia) {
-      setWebcamSlot(slot);
+    if (
+      typeof navigator !== "undefined" &&
+      Boolean(navigator.mediaDevices?.getUserMedia)
+    ) {
+      // Request camera permission synchronously inside the tap/click event so
+      // both mobile browsers (iOS Safari / Android Chrome) and laptops prompt cleanly.
+      const streamPromise = requestCameraMediaStream("environment");
+      setActiveCameraSession({ slot, streamPromise });
       return;
     }
 
-    // Trigger synchronously inside the user tap event for mobile Safari/Chrome security
+    // Fallback when MediaDevices API is unavailable
     cameraInputsRef.current[slot.slotId]?.click();
   }
 
@@ -229,18 +219,19 @@ export function MultiAngleUploader({
         })}
       </div>
 
-      {webcamSlot && (
+      {activeCameraSession && (
         <LiveCameraModal
-          isOpen={Boolean(webcamSlot)}
-          slotId={webcamSlot.slotId}
-          slotLabel={webcamSlot.slotLabel}
+          isOpen={Boolean(activeCameraSession)}
+          slotId={activeCameraSession.slot.slotId}
+          slotLabel={activeCameraSession.slot.slotLabel}
           language={language}
+          initialStreamPromise={activeCameraSession.streamPromise}
           onCapture={(img) => onImageAdded(img)}
-          onFallbackToFilePicker={() => {
-            const slotId = webcamSlot.slotId;
-            galleryInputsRef.current[slotId]?.click();
+          onFallbackToDeviceCamera={() => {
+            const slotId = activeCameraSession.slot.slotId;
+            cameraInputsRef.current[slotId]?.click();
           }}
-          onClose={() => setWebcamSlot(null)}
+          onClose={() => setActiveCameraSession(null)}
         />
       )}
     </div>

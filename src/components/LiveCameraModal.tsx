@@ -3,17 +3,61 @@ import { Camera, RefreshCw, X, AlertTriangle, Upload } from "lucide-react";
 import { compressVideoFrame } from "../utils/imageCompressor.ts";
 import type { Language, UploadedImage } from "../types/dermascan.ts";
 
+export type CameraFacingMode = "environment" | "user";
+
+/**
+ * Requests camera permission & a live MediaStream directly on a user tap/click.
+ * Falls back to default `{ video: true }` on single-webcam laptops if a
+ * specific `facingMode` constraint fails (unless permission was denied).
+ */
+export async function requestCameraMediaStream(
+  facingMode: CameraFacingMode = "environment"
+): Promise<MediaStream> {
+  if (
+    typeof navigator === "undefined" ||
+    !navigator.mediaDevices?.getUserMedia
+  ) {
+    throw new DOMException(
+      "Live camera access is not supported in this browser.",
+      "NotSupportedError"
+    );
+  }
+
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode,
+        width: { ideal: 1280 },
+        height: { ideal: 960 },
+      },
+      audio: false,
+    });
+  } catch (constraintErr) {
+    if (
+      constraintErr instanceof DOMException &&
+      (constraintErr.name === "NotAllowedError" ||
+        constraintErr.name === "PermissionDeniedError")
+    ) {
+      throw constraintErr;
+    }
+
+    return navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false,
+    });
+  }
+}
+
 interface LiveCameraModalProps {
   isOpen: boolean;
   slotId: string;
   slotLabel: string;
   language: Language;
+  initialStreamPromise: Promise<MediaStream> | null;
   onCapture: (img: UploadedImage) => void;
-  onFallbackToFilePicker: () => void;
+  onFallbackToDeviceCamera: () => void;
   onClose: () => void;
 }
-
-type CameraFacingMode = "environment" | "user";
 
 function getFriendlyCameraError(err: unknown, language: Language): string {
   const name = err instanceof DOMException ? err.name : "";
@@ -21,25 +65,25 @@ function getFriendlyCameraError(err: unknown, language: Language): string {
 
   if (name === "NotAllowedError" || name === "PermissionDeniedError") {
     return isUr
-      ? "Camera ki ijazat (permission) block hai. Browser settings mein Camera allow karein ya neeche se device file picker use karein."
-      : "Camera permission was denied. Please allow camera access in your browser address bar, or choose a photo using your device picker below.";
+      ? "Camera ki ijazat (permission) block hai. Browser bar mein Camera allow karke 'Ask Permission Again' dabayein, ya neeche se device camera/gallery use karein."
+      : "Camera permission was denied. Allow camera access in your browser settings and tap 'Ask Permission Again', or use your device photo picker below.";
   }
 
   if (name === "NotFoundError" || name === "DevicesNotFoundError") {
     return isUr
       ? "Is device par koi camera nahi mila. Neeche se photo upload karein."
-      : "No camera was found on this device. You can choose a photo using your device picker below.";
+      : "No camera was found on this device. You can take or choose a photo using your device picker below.";
   }
 
   if (name === "NotReadableError" || name === "TrackStartError") {
     return isUr
-      ? "Camera kisi doosri app mein use ho raha hai. Doosri apps band karein ya file picker se photo chunein."
+      ? "Camera kisi doosri app mein use ho raha hai. Doosri apps band karein ya neeche se photo chunein."
       : "Your camera is busy in another app. Close the other app and try again, or choose a photo below.";
   }
 
   return isUr
-    ? "Live camera start nahi ho saka. Aap dobara koshish karein ya device se photo chunein."
-    : "Could not start the live camera preview. Please try again or pick a photo from your device.";
+    ? "Live camera start nahi ho saka. Dobara permission dein ya device se photo chunein."
+    : "Could not start the live camera preview. Ask for permission again or use your device photo picker below.";
 }
 
 export function LiveCameraModal({
@@ -47,18 +91,19 @@ export function LiveCameraModal({
   slotId,
   slotLabel,
   language,
+  initialStreamPromise,
   onCapture,
-  onFallbackToFilePicker,
+  onFallbackToDeviceCamera,
   onClose,
 }: LiveCameraModalProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const isMountedOpenRef = useRef(false);
 
   const [facingMode, setFacingMode] = useState<CameraFacingMode>("environment");
   const [isStarting, setIsStarting] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [retryCounter, setRetryCounter] = useState(0);
 
   function stopActiveStream() {
     if (streamRef.current) {
@@ -72,90 +117,64 @@ export function LiveCameraModal({
     }
   }
 
+  function attachAndPlayStream(stream: MediaStream) {
+    if (!isMountedOpenRef.current) {
+      for (const track of stream.getTracks()) {
+        track.stop();
+      }
+      return;
+    }
+
+    stopActiveStream();
+    streamRef.current = stream;
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+      void videoRef.current.play().catch(() => {});
+    }
+    setCameraError(null);
+    setIsReady(true);
+    setIsStarting(false);
+  }
+
   useEffect(() => {
+    isMountedOpenRef.current = isOpen;
     if (!isOpen) {
       stopActiveStream();
       return;
     }
 
     let cancelled = false;
+    setIsStarting(true);
+    setIsReady(false);
+    setCameraError(null);
 
-    async function startCamera() {
-      setIsStarting(true);
-      setIsReady(false);
-      setCameraError(null);
-      stopActiveStream();
+    const promise =
+      initialStreamPromise ?? requestCameraMediaStream(facingMode);
 
-      if (
-        typeof navigator === "undefined" ||
-        !navigator.mediaDevices?.getUserMedia
-      ) {
-        setIsStarting(false);
-        setCameraError(
-          language === "ur"
-            ? "Yeh browser live camera support nahi karta. Neeche se photo chunein."
-            : "Live camera access is unavailable in this browser. Use the photo picker below instead."
-        );
-        return;
-      }
-
-      try {
-        let stream: MediaStream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              facingMode,
-              width: { ideal: 1280 },
-              height: { ideal: 960 },
-            },
-            audio: false,
-          });
-        } catch (constraintErr) {
-          // Single-webcam laptops sometimes reject facingMode constraints; fall back to default camera unless permission was denied.
-          if (
-            constraintErr instanceof DOMException &&
-            (constraintErr.name === "NotAllowedError" ||
-              constraintErr.name === "PermissionDeniedError")
-          ) {
-            throw constraintErr;
-          }
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
-        }
-
+    promise
+      .then((stream) => {
         if (cancelled) {
           for (const track of stream.getTracks()) {
             track.stop();
           }
           return;
         }
-
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play().catch(() => {});
-        }
-        setIsReady(true);
-      } catch (err) {
-        if (!cancelled) {
-          setCameraError(getFriendlyCameraError(err, language));
-        }
-      } finally {
+        attachAndPlayStream(stream);
+      })
+      .catch((err) => {
         if (!cancelled) {
           setIsStarting(false);
+          setIsReady(false);
+          setCameraError(getFriendlyCameraError(err, language));
         }
-      }
-    }
-
-    startCamera();
+      });
 
     return () => {
       cancelled = true;
+      isMountedOpenRef.current = false;
       stopActiveStream();
     };
-  }, [isOpen, facingMode, retryCounter, language]);
+  }, [isOpen, initialStreamPromise]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -170,6 +189,25 @@ export function LiveCameraModal({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
+
+  function triggerStreamRequest(targetFacing: CameraFacingMode) {
+    stopActiveStream();
+    setIsStarting(true);
+    setIsReady(false);
+    setCameraError(null);
+
+    requestCameraMediaStream(targetFacing)
+      .then((stream) => {
+        attachAndPlayStream(stream);
+      })
+      .catch((err) => {
+        if (isMountedOpenRef.current) {
+          setIsStarting(false);
+          setIsReady(false);
+          setCameraError(getFriendlyCameraError(err, language));
+        }
+      });
+  }
 
   function handleCaptureClick() {
     const video = videoRef.current;
@@ -190,7 +228,10 @@ export function LiveCameraModal({
   }
 
   function handleFlipCamera() {
-    setFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
+    const nextFacing: CameraFacingMode =
+      facingMode === "environment" ? "user" : "environment";
+    setFacingMode(nextFacing);
+    triggerStreamRequest(nextFacing);
   }
 
   function handleClose() {
@@ -210,7 +251,6 @@ export function LiveCameraModal({
         className="w-full max-w-lg overflow-hidden rounded-3xl border border-[#E6DCE0] bg-[#FAF6F7] shadow-[0_24px_60px_rgba(35,24,28,0.28)]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between gap-3 border-b border-[#E6DCE0] bg-white px-5 py-4">
           <div className="min-w-0">
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#B56576]">
@@ -233,7 +273,6 @@ export function LiveCameraModal({
           </button>
         </div>
 
-        {/* Viewport */}
         <div className="space-y-4 p-5">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[#E6DCE0] bg-[#1E181A]">
             {!cameraError && (
@@ -247,12 +286,12 @@ export function LiveCameraModal({
             )}
 
             {isStarting && !cameraError && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#1E181A]/85 px-4 text-center text-white">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#1E181A]/85 px-5 text-center text-white">
                 <Camera className="h-6 w-6 animate-pulse text-[#E8C5CA]" />
-                <p className="text-xs font-medium">
+                <p className="text-xs font-semibold">
                   {language === "ur"
-                    ? "Camera shuru ho raha hai..."
-                    : "Starting camera preview..."}
+                    ? "Camera ki ijazat (Allow) dene ke liye prompt check karein..."
+                    : "Please allow camera permission when prompted..."}
                 </p>
               </div>
             )}
@@ -268,26 +307,30 @@ export function LiveCameraModal({
                 <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                   <button
                     type="button"
-                    onClick={() => setRetryCounter((n) => n + 1)}
+                    onClick={() => triggerStreamRequest(facingMode)}
                     className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[#E8C5CA] bg-white px-4 py-1.5 text-xs font-semibold text-[#8C3B4A] transition-colors hover:bg-[#F6ECEF]"
                   >
                     <RefreshCw className="h-3.5 w-3.5" />
-                    <span>{language === "ur" ? "Dubara Koshish" : "Try Again"}</span>
+                    <span>
+                      {language === "ur"
+                        ? "Dobara Permission Maangein"
+                        : "Ask Permission Again"}
+                    </span>
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       stopActiveStream();
                       onClose();
-                      onFallbackToFilePicker();
+                      onFallbackToDeviceCamera();
                     }}
                     className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full bg-[#B56576] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#9E5263]"
                   >
                     <Upload className="h-3.5 w-3.5" />
                     <span>
                       {language === "ur"
-                        ? "Device Se Photo Chunein"
-                        : "Use Photo Picker"}
+                        ? "Device Camera / File Picker"
+                        : "Use Device Picker"}
                     </span>
                   </button>
                 </div>
@@ -295,7 +338,6 @@ export function LiveCameraModal({
             )}
           </div>
 
-          {/* Controls */}
           <div className="flex flex-wrap items-center justify-between gap-2.5">
             <button
               type="button"
