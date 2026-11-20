@@ -64,6 +64,7 @@ function handleRouteError(
   }
   const friendly = getFriendlyGeminiErrorMessage(error, fallbackMsg);
   const isTransientOverload =
+    friendly.status === 404 ||
     friendly.status === 429 ||
     friendly.status === 500 ||
     friendly.status === 502 ||

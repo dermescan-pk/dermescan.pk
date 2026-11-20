@@ -5,12 +5,11 @@ import {
 } from "@google/genai";
 
 export const GEMINI_FALLBACK_MODELS = [
+  "gemini-3.8-flash",
+  "gemini-3.6-flash",
   "gemini-2.5-flash",
   "gemini-2.5-flash-lite",
-  "gemini-2.0-flash",
 ] as const;
-
-export const GEMINI_35_MODELS = GEMINI_FALLBACK_MODELS;
 
 export const FALLBACK_BACKOFF_MS = 800;
 
@@ -225,13 +224,6 @@ function isRetryableTransientFailure(error: unknown): boolean {
   );
 }
 
-function isThinkingConfigRejection(error: unknown): boolean {
-  const { httpStatus, readableMessage } = extractGeminiErrorDetails(error);
-  if (httpStatus !== 400) return false;
-  const lower = readableMessage.toLowerCase();
-  return lower.includes("thinking");
-}
-
 export function getFriendlyGeminiErrorMessage(
   error: unknown,
   fallbackMsg: string
@@ -274,12 +266,14 @@ export interface GeminiFallbackParams
 
 /**
  * Multi-model + multi-key automatic fallback chain across peak traffic spikes:
- * For primary key (`x-user-gemini-key` header if provided, else `process.env.GEMINI_API_KEY`):
- *   1) `gemini-2.5-flash` (with `thinkingConfig: { thinkingBudget: 0 }`)
- *   2) `gemini-2.5-flash-lite`
- *   3) `gemini-2.0-flash`
- * Then retries the exact same 3-model chain with `GEMINI_API_KEY_2` (and `GEMINI_API_KEY_3` if set),
- * applying a fast 800ms backoff on 429, 503, or 500 errors.
+ * Rotates strictly in priority order across:
+ *   1) `gemini-3.8-flash`
+ *   2) `gemini-3.6-flash`
+ *   3) `gemini-2.5-flash`
+ *   4) `gemini-2.5-flash-lite`
+ * Using primary key (`x-user-gemini-key` header if provided, else `process.env.GEMINI_API_KEY`),
+ * then retries the same 4-model chain with `GEMINI_API_KEY_2` (and `GEMINI_API_KEY_3` if set),
+ * automatically falling back on 429, 503, 404, or 500 errors without passing `thinkingConfig`.
  */
 export async function generateContentWithGeminiFallback({
   userApiKey,
@@ -313,42 +307,17 @@ export async function generateContentWithGeminiFallback({
       },
     });
 
-    const baseConfig = params.config || {};
-    const shouldSetZeroThinking =
-      model === "gemini-2.5-flash" && !baseConfig.thinkingConfig;
+    const { thinkingConfig: _ignoredThinkingConfig, ...safeConfig } =
+      params.config || {};
 
-    const requestConfig = shouldSetZeroThinking
-      ? {
-          ...baseConfig,
-          thinkingConfig: {
-            thinkingBudget: 0,
-          },
-          abortSignal: AbortSignal.timeout(timeoutMs),
-        }
-      : {
-          ...baseConfig,
-          abortSignal: AbortSignal.timeout(timeoutMs),
-        };
-
-    try {
-      return await ai.models.generateContent({
-        ...params,
-        model,
-        config: requestConfig,
-      });
-    } catch (err) {
-      if (shouldSetZeroThinking && isThinkingConfigRejection(err)) {
-        return await ai.models.generateContent({
-          ...params,
-          model,
-          config: {
-            ...baseConfig,
-            abortSignal: AbortSignal.timeout(timeoutMs),
-          },
-        });
-      }
-      throw err;
-    }
+    return await ai.models.generateContent({
+      ...params,
+      model,
+      config: {
+        ...safeConfig,
+        abortSignal: AbortSignal.timeout(timeoutMs),
+      },
+    });
   };
 
   for (let keyIndex = 0; keyIndex < keys.length; keyIndex++) {
@@ -373,11 +342,7 @@ export async function generateContentWithGeminiFallback({
         keyIndex === keys.length - 1 &&
         modelIndex === GEMINI_FALLBACK_MODELS.length - 1;
 
-      const preferredTimeout = isFinalAttemptOverall
-        ? 38_000
-        : model === "gemini-2.5-flash"
-          ? 28_000
-          : 24_000;
+      const preferredTimeout = isFinalAttemptOverall ? 35_000 : 22_000;
 
       const timeoutMs = Math.min(
         preferredTimeout,
@@ -435,6 +400,3 @@ export async function generateContentWithGeminiFallback({
 
   throw lastError;
 }
-
-export const generateContentWithGemini35Fallback =
-  generateContentWithGeminiFallback;

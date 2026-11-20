@@ -167,12 +167,13 @@ body {
 }
 
 /* ==========================================================================
-   LuxuryIntro3D — Hardware-Accelerated 3-Act Choreography (~2.8s)
+   LuxuryIntro3D — 10-Second 4-Act Cinema-Grade 3D Choreography
    ========================================================================== */
 
 .intro-3d-stage {
-  perspective: 1400px;
+  perspective: 1600px;
   transform-style: preserve-3d;
+  --intro-orbit-r: min(35vw, 220px);
 }
 
 .intro-preserve-3d {
@@ -183,366 +184,395 @@ body {
   0%,
   100% {
     transform: translate3d(0, 0, 0) scale(0.92);
-    opacity: 0.28;
+    opacity: 0.25;
   }
   50% {
-    transform: translate3d(8px, -18px, 12px) scale(1.15);
+    transform: translate3d(10px, -22px, 14px) scale(1.18);
     opacity: 0.72;
   }
 }
 
-/* Act I (0.0s - 1.1s, holds to 2.1s then morphs out) */
-@keyframes intro-lens-card {
+/* Act I (0.0s - 2.8s): 3D Skin Topography Emergence, holds through Act II, yields at 7.6s-8.2s */
+@keyframes intro-lens-card-10s {
   0% {
     opacity: 0;
-    transform: rotateX(18deg) rotateY(-16deg) translateZ(-70px) scale(0.9);
-  }
-  14% {
-    opacity: 1;
-    transform: rotateX(10deg) rotateY(-8deg) translateZ(0px) scale(1);
-  }
-  42% {
-    opacity: 1;
-    transform: rotateX(9deg) rotateY(-6deg) translateZ(14px) scale(1.015);
-  }
-  72% {
-    opacity: 0.92;
-    transform: rotateX(6deg) rotateY(-3deg) translateZ(6px) scale(0.98);
-  }
-  80% {
-    opacity: 0;
-    transform: rotateX(0deg) rotateY(0deg) translateZ(-30px) scale(0.74);
-  }
-  100% {
-    opacity: 0;
-    transform: rotateX(0deg) rotateY(0deg) translateZ(-30px) scale(0.74);
-  }
-}
-
-@keyframes intro-laser-sweep {
-  0%,
-  4% {
-    opacity: 0;
-    transform: translate3d(0, -148px, 8px);
+    transform: rotateX(20deg) rotateY(-18deg) translateZ(-90px) scale(0.86);
   }
   10% {
     opacity: 1;
-    transform: translate3d(0, -135px, 8px);
+    transform: rotateX(12deg) rotateY(-10deg) translateZ(0px) scale(0.98);
   }
-  38% {
+  28% {
     opacity: 1;
-    transform: translate3d(0, 138px, 8px);
+    transform: rotateX(4deg) rotateY(6deg) translateZ(18px) scale(1);
+  }
+  44% {
+    opacity: 1;
+    transform: rotateX(7deg) rotateY(-4deg) translateZ(22px) scale(1.015);
+  }
+  58% {
+    opacity: 1;
+    transform: rotateX(4deg) rotateY(3deg) translateZ(14px) scale(1);
+  }
+  74% {
+    opacity: 0.88;
+    transform: rotateX(2deg) rotateY(0deg) translateZ(-12px) scale(0.92);
+  }
+  82%,
+  100% {
+    opacity: 0;
+    transform: rotateX(0deg) rotateY(0deg) translateZ(-50px) scale(0.68);
+  }
+}
+
+/* Act II Pass 1 (2.8s - 4.3s = 28% - 43%): Vertical optical laser sweep top -> bottom */
+@keyframes intro-laser-vertical-10s {
+  0%,
+  27% {
+    opacity: 0;
+    transform: translate3d(0, -158px, 10px);
+  }
+  29% {
+    opacity: 1;
+    transform: translate3d(0, -148px, 10px);
+  }
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 148px, 10px);
+  }
+  44%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 160px, 10px);
+  }
+}
+
+/* Act II Pass 2 (4.3s - 5.8s = 43% - 58%): Precision diagnostic cross-scan left -> right */
+@keyframes intro-laser-cross-10s {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translate3d(-138px, 0, 12px);
+  }
+  44% {
+    opacity: 1;
+    transform: translate3d(-126px, 0, 12px);
+  }
+  57% {
+    opacity: 1;
+    transform: translate3d(126px, 0, 12px);
+  }
+  59%,
+  100% {
+    opacity: 0;
+    transform: translate3d(138px, 0, 12px);
+  }
+}
+
+/* Act II Telemetry Nodes & Micro-Tags (3.1s - 5.8s, fade cleanly by 8.0s) */
+@keyframes intro-callout-1 {
+  0%,
+  30% {
+    opacity: 0;
+    transform: scale(0.68) translateZ(0px);
+  }
+  33% {
+    opacity: 1;
+    transform: scale(1.06) translateZ(18px);
+  }
+  37%,
+  73% {
+    opacity: 1;
+    transform: scale(1) translateZ(14px);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(0.82) translateZ(0px);
+  }
+}
+
+@keyframes intro-callout-2 {
+  0%,
+  36% {
+    opacity: 0;
+    transform: scale(0.68) translateZ(0px);
+  }
+  39% {
+    opacity: 1;
+    transform: scale(1.06) translateZ(18px);
   }
   43%,
-  100% {
-    opacity: 0;
-    transform: translate3d(0, 152px, 8px);
-  }
-}
-
-@keyframes intro-node-ignite-1 {
-  0%,
-  12% {
-    opacity: 0;
-    transform: scale(0.6) translateZ(4px);
-  }
-  18% {
-    opacity: 1;
-    transform: scale(1.08) translateZ(14px);
-  }
-  24%,
-  68% {
-    opacity: 1;
-    transform: scale(1) translateZ(10px);
-  }
-  77%,
-  100% {
-    opacity: 0;
-    transform: scale(0.85) translateZ(0px);
-  }
-}
-
-@keyframes intro-node-ignite-2 {
-  0%,
-  20% {
-    opacity: 0;
-    transform: scale(0.6) translateZ(4px);
-  }
-  26% {
-    opacity: 1;
-    transform: scale(1.08) translateZ(14px);
-  }
-  32%,
-  68% {
-    opacity: 1;
-    transform: scale(1) translateZ(10px);
-  }
-  77%,
-  100% {
-    opacity: 0;
-    transform: scale(0.85) translateZ(0px);
-  }
-}
-
-@keyframes intro-node-ignite-3 {
-  0%,
-  28% {
-    opacity: 0;
-    transform: scale(0.6) translateZ(4px);
-  }
-  34% {
-    opacity: 1;
-    transform: scale(1.08) translateZ(14px);
-  }
-  40%,
-  68% {
-    opacity: 1;
-    transform: scale(1) translateZ(10px);
-  }
-  77%,
-  100% {
-    opacity: 0;
-    transform: scale(0.85) translateZ(0px);
-  }
-}
-
-/* Act II (1.1s - 2.15s = 40% to 77% of 2.8s timeline): 4-corner curved convergence */
-@keyframes intro-vessel-tl {
-  0%,
-  39% {
-    opacity: 0;
-    transform: translate3d(-40vw, -36vh, 120px) rotate3d(1, 1, -0.4, 42deg) scale(0.75);
-  }
-  46% {
-    opacity: 1;
-    transform: translate3d(-30vw, -22vh, 95px) rotate3d(0.7, 1, -0.2, 26deg) scale(1.04);
-  }
-  62% {
-    opacity: 1;
-    transform: translate3d(-11vw, -18vh, 52px) rotate3d(0.3, 0.8, 0.2, 12deg) scale(1.02);
-  }
-  75% {
-    opacity: 1;
-    transform: translate3d(0px, 0px, 16px) rotate3d(0, 0, 1, 0deg) scale(0.72);
-  }
-  79%,
-  100% {
-    opacity: 0;
-    transform: translate3d(0px, 0px, -20px) scale(0.35);
-  }
-}
-
-@keyframes intro-vessel-tr {
-  0%,
-  39% {
-    opacity: 0;
-    transform: translate3d(40vw, -36vh, 120px) rotate3d(1, -1, 0.4, 42deg) scale(0.75);
-  }
-  46% {
-    opacity: 1;
-    transform: translate3d(28vw, -25vh, 95px) rotate3d(0.8, -0.9, 0.2, 26deg) scale(1.04);
-  }
-  62% {
-    opacity: 1;
-    transform: translate3d(15vw, -8vh, 52px) rotate3d(0.3, -0.7, -0.2, 12deg) scale(1.02);
-  }
-  75% {
-    opacity: 1;
-    transform: translate3d(0px, 0px, 16px) rotate3d(0, 0, 1, 0deg) scale(0.72);
-  }
-  79%,
-  100% {
-    opacity: 0;
-    transform: translate3d(0px, 0px, -20px) scale(0.35);
-  }
-}
-
-@keyframes intro-vessel-bl {
-  0%,
-  39% {
-    opacity: 0;
-    transform: translate3d(-40vw, 36vh, 120px) rotate3d(-1, 1, 0.4, 42deg) scale(0.75);
-  }
-  46% {
-    opacity: 1;
-    transform: translate3d(-26vw, 24vh, 95px) rotate3d(-0.7, 0.9, 0.2, 26deg) scale(1.04);
-  }
-  62% {
-    opacity: 1;
-    transform: translate3d(-14vw, 9vh, 52px) rotate3d(-0.3, 0.7, -0.2, 12deg) scale(1.02);
-  }
-  75% {
-    opacity: 1;
-    transform: translate3d(0px, 0px, 16px) rotate3d(0, 0, 1, 0deg) scale(0.72);
-  }
-  79%,
-  100% {
-    opacity: 0;
-    transform: translate3d(0px, 0px, -20px) scale(0.35);
-  }
-}
-
-@keyframes intro-vessel-br {
-  0%,
-  39% {
-    opacity: 0;
-    transform: translate3d(40vw, 36vh, 120px) rotate3d(-1, -1, -0.4, 42deg) scale(0.75);
-  }
-  46% {
-    opacity: 1;
-    transform: translate3d(29vw, 21vh, 95px) rotate3d(-0.7, -1, -0.2, 26deg) scale(1.04);
-  }
-  62% {
-    opacity: 1;
-    transform: translate3d(11vw, 17vh, 52px) rotate3d(-0.3, -0.8, 0.2, 12deg) scale(1.02);
-  }
-  75% {
-    opacity: 1;
-    transform: translate3d(0px, 0px, 16px) rotate3d(0, 0, 1, 0deg) scale(0.72);
-  }
-  79%,
-  100% {
-    opacity: 0;
-    transform: translate3d(0px, 0px, -20px) scale(0.35);
-  }
-}
-
-/* Shockwave pulse ring at 2.1s (~75%) */
-@keyframes intro-shockwave {
-  0%,
   73% {
-    opacity: 0;
-    transform: scale(0.6) translateZ(8px);
+    opacity: 1;
+    transform: scale(1) translateZ(14px);
   }
-  77% {
-    opacity: 0.85;
-    transform: scale(0.78) translateZ(16px);
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(0.82) translateZ(0px);
+  }
+}
+
+@keyframes intro-callout-3 {
+  0%,
+  43% {
+    opacity: 0;
+    transform: scale(0.68) translateZ(0px);
+  }
+  46% {
+    opacity: 1;
+    transform: scale(1.06) translateZ(18px);
+  }
+  50%,
+  73% {
+    opacity: 1;
+    transform: scale(1) translateZ(14px);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(0.82) translateZ(0px);
+  }
+}
+
+@keyframes intro-callout-4 {
+  0%,
+  50% {
+    opacity: 0;
+    transform: scale(0.68) translateZ(0px);
+  }
+  53% {
+    opacity: 1;
+    transform: scale(1.06) translateZ(18px);
+  }
+  57%,
+  73% {
+    opacity: 1;
+    transform: scale(1) translateZ(14px);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(0.82) translateZ(0px);
+  }
+}
+
+/* Act III (5.8s - 8.4s = 58% - 84%): 6-Icon 3D Apothecary Orbit & Magnetic Spiral Convergence */
+@keyframes intro-orbit-rig-10s {
+  0%,
+  57% {
+    opacity: 0;
+    transform: rotateX(22deg) rotateY(-12deg) rotateZ(-25deg) scale(1.16);
+  }
+  62% {
+    opacity: 1;
+    transform: rotateX(18deg) rotateY(-8deg) rotateZ(15deg) scale(1);
+  }
+  72% {
+    opacity: 1;
+    transform: rotateX(12deg) rotateY(8deg) rotateZ(110deg) scale(0.92);
+  }
+  82% {
+    opacity: 1;
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(245deg) scale(0.28);
+  }
+  84%,
+  100% {
+    opacity: 0;
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(265deg) scale(0.12);
+  }
+}
+
+@keyframes intro-orbit-counter-spin-10s {
+  0%,
+  57% {
+    transform: rotateZ(25deg) rotateY(14deg) scale(0.85);
+  }
+  62% {
+    transform: rotateZ(-15deg) rotateY(8deg) scale(1);
+  }
+  72% {
+    transform: rotateZ(-110deg) rotateY(-10deg) scale(1.05);
+  }
+  82% {
+    transform: rotateZ(-245deg) rotateY(0deg) scale(0.85);
+  }
+  84%,
+  100% {
+    transform: rotateZ(-265deg) scale(0.5);
+  }
+}
+
+@keyframes intro-orbit-spoke-radius-10s {
+  0%,
+  58% {
+    transform: translate3d(var(--intro-orbit-r), 0, 40px);
+  }
+  70% {
+    transform: translate3d(var(--intro-orbit-r), 0, 64px);
+  }
+  82%,
+  100% {
+    transform: translate3d(0px, 0, 12px);
+  }
+}
+
+/* Shockwave pulse ring at 8.2s (82%) */
+@keyframes intro-shockwave-10s {
+  0%,
+  80% {
+    opacity: 0;
+    transform: scale(0.55) translateZ(10px);
+  }
+  83% {
+    opacity: 0.9;
+    transform: scale(0.75) translateZ(20px);
   }
   96%,
   100% {
     opacity: 0;
-    transform: scale(1.8) translateZ(24px);
+    transform: scale(1.95) translateZ(28px);
   }
 }
 
-@keyframes intro-shockwave-halo {
+@keyframes intro-shockwave-halo-10s {
   0%,
-  74% {
+  81% {
     opacity: 0;
-    transform: scale(0.55) translateZ(4px);
+    transform: scale(0.5) translateZ(4px);
   }
-  79% {
-    opacity: 0.45;
-    transform: scale(0.95) translateZ(10px);
+  85% {
+    opacity: 0.5;
+    transform: scale(0.95) translateZ(12px);
   }
   98%,
   100% {
     opacity: 0;
-    transform: scale(2.05) translateZ(16px);
+    transform: scale(2.2) translateZ(20px);
   }
 }
 
-/* Act III (2.2s - 2.8s = ~78% to 100%): Emblem 3D Bloom + Satin Shimmer */
-@keyframes intro-emblem-bloom {
+/* Act IV (8.4s - 10.0s = 84% - 100%): Emblem 3D Bloom (translateZ 50px) + Satin Shimmer */
+@keyframes intro-emblem-bloom-10s {
   0%,
-  76% {
+  82% {
     opacity: 0;
-    transform: translate3d(0, 8px, -36px) scale(0.84);
+    transform: translate3d(0, 10px, -36px) scale(0.84);
   }
-  88% {
+  91% {
     opacity: 1;
-    transform: translate3d(0, 0, 40px) scale(1);
+    transform: translate3d(0, 0, 50px) scale(1);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 40px) scale(1.015);
+    transform: translate3d(0, 0, 50px) scale(1.02);
   }
 }
 
-@keyframes intro-satin-shimmer {
+@keyframes intro-satin-shimmer-10s {
   0%,
-  78% {
+  84% {
     transform: translate3d(-120%, 0, 0) skewX(-18deg);
     opacity: 0;
   }
-  84% {
-    opacity: 0.85;
+  89% {
+    opacity: 0.9;
   }
-  96%,
+  97%,
   100% {
-    transform: translate3d(160%, 0, 0) skewX(-18deg);
+    transform: translate3d(170%, 0, 0) skewX(-18deg);
     opacity: 0;
+  }
+}
+
+@keyframes intro-progress-10s {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
   }
 }
 
 .intro-mote {
-  animation: intro-mote-float 3.4s ease-in-out infinite;
+  animation: intro-mote-float 3.6s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
-.intro-lens-card {
-  animation: intro-lens-card 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-lens-card-10s {
+  animation: intro-lens-card-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-laser-beam {
-  animation: intro-laser-sweep 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-laser-vertical-10s {
+  animation: intro-laser-vertical-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-node-1 {
-  animation: intro-node-ignite-1 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-laser-cross-10s {
+  animation: intro-laser-cross-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-node-2 {
-  animation: intro-node-ignite-2 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-callout-1 {
+  animation: intro-callout-1 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-node-3 {
-  animation: intro-node-ignite-3 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-callout-2 {
+  animation: intro-callout-2 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-vessel-tl {
-  animation: intro-vessel-tl 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-callout-3 {
+  animation: intro-callout-3 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-vessel-tr {
-  animation: intro-vessel-tr 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-callout-4 {
+  animation: intro-callout-4 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-vessel-bl {
-  animation: intro-vessel-bl 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-orbit-rig-10s {
+  animation: intro-orbit-rig-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-vessel-br {
-  animation: intro-vessel-br 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-orbit-radius-10s {
+  animation: intro-orbit-spoke-radius-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform;
+}
+
+.intro-orbit-counter-10s {
+  animation: intro-orbit-counter-spin-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform;
+}
+
+.intro-shockwave-ring-10s {
+  animation: intro-shockwave-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-shockwave-ring {
-  animation: intro-shockwave 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-shockwave-halo-10s {
+  animation: intro-shockwave-halo-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-shockwave-halo {
-  animation: intro-shockwave-halo 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-emblem-bloom-10s {
+  animation: intro-emblem-bloom-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-emblem-bloom {
-  animation: intro-emblem-bloom 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.intro-satin-shimmer-10s {
+  animation: intro-satin-shimmer-10s 10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-.intro-satin-shimmer {
-  animation: intro-satin-shimmer 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change: transform, opacity;
+.intro-progress-10s {
+  animation: intro-progress-10s 10s linear forwards;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -555,19 +585,21 @@ body {
   .animate-radar-sweep,
   .animate-laser-scan,
   .intro-mote,
-  .intro-lens-card,
-  .intro-laser-beam,
-  .intro-node-1,
-  .intro-node-2,
-  .intro-node-3,
-  .intro-vessel-tl,
-  .intro-vessel-tr,
-  .intro-vessel-bl,
-  .intro-vessel-br,
-  .intro-shockwave-ring,
-  .intro-shockwave-halo,
-  .intro-emblem-bloom,
-  .intro-satin-shimmer {
+  .intro-lens-card-10s,
+  .intro-laser-vertical-10s,
+  .intro-laser-cross-10s,
+  .intro-callout-1,
+  .intro-callout-2,
+  .intro-callout-3,
+  .intro-callout-4,
+  .intro-orbit-rig-10s,
+  .intro-orbit-radius-10s,
+  .intro-orbit-counter-10s,
+  .intro-shockwave-ring-10s,
+  .intro-shockwave-halo-10s,
+  .intro-emblem-bloom-10s,
+  .intro-satin-shimmer-10s,
+  .intro-progress-10s {
     animation: none !important;
     animation-play-state: paused !important;
   }
