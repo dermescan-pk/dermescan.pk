@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Cormorant Garamond", Georgia, serif;
+}
+
+body {
+  background-color: #F8F5F4;
+  background-image:
+    radial-gradient(at 15% 10%, rgba(181, 101, 118, 0.045) 0px, transparent 50%),
+    radial-gradient(at 85% 90%, rgba(212, 175, 185, 0.06) 0px, transparent 50%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(30, 24, 26, 0.012) 0px,
+      rgba(30, 24, 26, 0.012) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(30, 24, 26, 0.009) 0px,
+      rgba(30, 24, 26, 0.009) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  color: #1E181A;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+  text-wrap: balance;
+}
+
+.font-heading {
+  font-family: var(--font-sans);
+  text-wrap: balance;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes dermal-scan-y {
+  0%,
+  100% {
+    transform: translateY(-14px);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translateY(26px);
+    opacity: 1;
+  }
+}
+
+@keyframes dermal-sparkle {
+  0%,
+  100% {
+    transform: translateY(0px) scale(0.88);
+    opacity: 0.32;
+  }
+  50% {
+    transform: translateY(-3px) scale(1.12);
+    opacity: 0.95;
+  }
+}
+
+@keyframes hair-sway {
+  0%,
+  100% {
+    transform: translateX(-2px) skewX(-1.2deg);
+  }
+  50% {
+    transform: translateX(2.5px) skewX(1.4deg);
+  }
+}
+
+@keyframes hair-sway-alt {
+  0%,
+  100% {
+    transform: translateX(2px) skewX(1deg);
+  }
+  50% {
+    transform: translateX(-2.5px) skewX(-1.4deg);
+  }
+}
+
+@keyframes shield-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.65;
+  }
+  70% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+
+@keyframes radar-sweep {
+  0%,
+  100% {
+    transform: translate(-5px, -2px) rotate(-7deg);
+  }
+  50% {
+    transform: translate(5px, 3px) rotate(8deg);
+  }
+}
+
+@keyframes laser-scan {
+  0%,
+  100% {
+    transform: translateY(-10px);
+    opacity: 0.78;
+  }
+  50% {
+    transform: translateY(13px);
+    opacity: 1;
+  }
+}
+
+.animate-dermal-scan-y {
+  animation: dermal-scan-y 4.2s ease-in-out infinite;
+}
+
+.animate-dermal-sparkle {
+  animation: dermal-sparkle 3.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.animate-dermal-sparkle-delayed {
+  animation: dermal-sparkle 4.1s ease-in-out 1.1s infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.animate-hair-sway {
+  animation: hair-sway 4.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+.animate-hair-sway-alt {
+  animation: hair-sway-alt 5.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+.animate-shield-pulse {
+  animation: shield-pulse 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.animate-laser-scan {
+  animation: laser-scan 3.6s ease-in-out infinite;
+}
+
+.tab-anim-stage[data-anim-paused="true"] * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-dermal-scan-y,
+  .animate-dermal-sparkle,
+  .animate-dermal-sparkle-delayed,
+  .animate-hair-sway,
+  .animate-hair-sway-alt,
+  .animate-shield-pulse,
+  .animate-radar-sweep,
+  .animate-laser-scan {
+    animation: none !important;
+    animation-play-state: paused !important;
+  }
+}

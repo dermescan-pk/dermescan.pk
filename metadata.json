@@ -1,0 +1,6 @@
+{
+  "name": "DermaScan PK",
+  "description": "AI-powered Pakistani dermatology, haircare, steroid-cream safety, and authentic product verification assistant.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
