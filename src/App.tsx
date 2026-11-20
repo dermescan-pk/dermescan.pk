@@ -1,4 +1,10 @@
-import { useRef, useState, type ComponentType, type TouchEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type TouchEvent,
+} from "react";
 import { ScanFace, Scissors, FlaskConical, ShieldCheck } from "lucide-react";
 import { Header } from "./components/Header.tsx";
 import { SkinBodyTab } from "./components/SkinBodyTab.tsx";
@@ -6,6 +12,8 @@ import { HairStudioTab } from "./components/HairStudioTab.tsx";
 import { SteroidCheckTab } from "./components/SteroidCheckTab.tsx";
 import { FakeVsRealTab } from "./components/FakeVsRealTab.tsx";
 import { HealthProfileModal } from "./components/HealthProfileModal.tsx";
+import { CameraPermissionModal } from "./components/CameraPermissionModal.tsx";
+import { requestCameraMediaStream } from "./components/LiveCameraModal.tsx";
 import {
   hasCustomHealthProfile,
   hasSeenWelcomeIntake,
@@ -28,6 +36,19 @@ const NAV_TABS: {
 
 const SWIPE_MIN_DISTANCE_PX = 40;
 const SWIPE_MAX_DURATION_MS = 600;
+const CAMERA_PROMPT_DISMISSED_KEY = "dermescan_camera_prompt_dismissed";
+
+function isLikelyMobileDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const mobileUa =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(
+      ua
+    );
+  const ipadDesktopMode =
+    /Macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
+  return mobileUa || ipadDesktopMode;
+}
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("skin");
@@ -38,6 +59,94 @@ export default function App() {
   const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(
     () => !hasSeenWelcomeIntake()
   );
+  const [cameraPromptState, setCameraPromptState] = useState<
+    "checking" | "needed" | "denied" | "dismissed" | "granted"
+  >(() => {
+    try {
+      if (
+        typeof sessionStorage !== "undefined" &&
+        sessionStorage.getItem(CAMERA_PROMPT_DISMISSED_KEY) === "1"
+      ) {
+        return "dismissed";
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+    return "checking";
+  });
+
+  useEffect(() => {
+    if (cameraPromptState !== "checking") return;
+
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia
+    ) {
+      setCameraPromptState("dismissed");
+      return;
+    }
+
+    let cancelled = false;
+
+    async function checkAndPromptDefaultCameraPermission() {
+      try {
+        if (navigator.permissions?.query) {
+          const perm = await navigator.permissions.query({
+            name: "camera" as PermissionName,
+          });
+          if (cancelled) return;
+          if (perm.state === "granted") {
+            setCameraPromptState("granted");
+            return;
+          }
+          if (perm.state === "denied") {
+            setCameraPromptState("denied");
+            return;
+          }
+        }
+      } catch {
+        // Safari and some WebViews do not support permissions.query for camera
+      }
+
+      if (cancelled) return;
+
+      // Mobile browsers (iOS Safari, Android Chrome, WebViews) require a real user tap
+      // before displaying the native OS camera permission dialog, so show the sleek UI popup.
+      if (isLikelyMobileDevice()) {
+        setCameraPromptState("needed");
+        return;
+      }
+
+      try {
+        const stream = await requestCameraMediaStream("environment");
+        for (const track of stream.getTracks()) {
+          track.stop();
+        }
+        if (!cancelled) {
+          setCameraPromptState("granted");
+        }
+      } catch {
+        if (!cancelled) {
+          setCameraPromptState("needed");
+        }
+      }
+    }
+
+    void checkAndPromptDefaultCameraPermission();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cameraPromptState]);
+
+  function handleDismissCameraPrompt() {
+    try {
+      sessionStorage.setItem(CAMERA_PROMPT_DISMISSED_KEY, "1");
+    } catch {
+      // Ignore storage errors
+    }
+    setCameraPromptState("dismissed");
+  }
 
   const navTouchStartRef = useRef<{
     x: number;
@@ -202,6 +311,18 @@ export default function App() {
         initialProfile={healthProfile}
         onSave={handleSaveHealthProfile}
         onSkip={handleSkipHealthProfile}
+      />
+
+      <CameraPermissionModal
+        isOpen={
+          !isHealthModalOpen &&
+          (cameraPromptState === "needed" || cameraPromptState === "denied")
+        }
+        isDeniedState={cameraPromptState === "denied"}
+        language={language}
+        onGranted={() => setCameraPromptState("granted")}
+        onDenied={() => setCameraPromptState("denied")}
+        onDismiss={handleDismissCameraPrompt}
       />
     </div>
   );
