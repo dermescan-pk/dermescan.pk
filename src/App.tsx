@@ -258,7 +258,7 @@ export default function App() {
           onTouchStart={handleNavTouchStart}
           onTouchEnd={handleNavTouchEnd}
           onTouchCancel={handleNavTouchCancel}
-          className="mb-7 grid touch-pan-y grid-cols-2 gap-1.5 rounded-3xl border border-[#EAD8DC] bg-[#F3E7EA]/80 p-1.5 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:flex sm:justify-center sm:rounded-full"
+          className="mb-7 grid touch-pan-y grid-cols-2 gap-1.5 rounded-3xl border border-[#EAD8DC] bg-[#F3E7EA] p-1.5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:flex sm:justify-center sm:rounded-full"
         >
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -294,7 +294,7 @@ export default function App() {
 
         <section
           aria-labelledby="popular-pk-checks-heading"
-          className="mt-10 rounded-3xl border border-[#EAD8DC] bg-white/85 px-6 py-4 text-xs text-[#5E5055] shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md"
+          className="mt-10 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-4 text-xs text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)]"
         >
           <details className="group">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-left font-medium text-[#5E5055] transition-colors hover:text-[#1E181A]">
@@ -328,7 +328,7 @@ export default function App() {
           </details>
         </section>
 
-        <footer className="mt-5 rounded-3xl border border-[#EAD8DC] bg-white/85 px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_14px_40px_-15px_rgba(181,101,118,0.1)] backdrop-blur-md">
+        <footer className="mt-5 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.08)]">
           <p>
             {language === "ur"
               ? "DerméScan sirf aam skin, hair aur cream ki rehnumai deta hai, yeh doctor ka checkup nahi hai. Agar shadeed dard, khoon ya tez rash ho toh fauran skin doctor ko dikhayein."

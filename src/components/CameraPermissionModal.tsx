@@ -80,7 +80,7 @@ export function CameraPermissionModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="camera-permission-modal-title"
-      className="fixed inset-0 z-50 flex items-end justify-center bg-[#1E181A]/55 p-4 backdrop-blur-xs sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-[#1E181A]/55 p-4 sm:items-center"
       onClick={onDismiss}
     >
       <div

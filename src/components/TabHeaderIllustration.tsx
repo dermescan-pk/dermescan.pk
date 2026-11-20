@@ -534,7 +534,7 @@ export function TabHeaderIllustration({
   return (
     <div
       ref={containerRef}
-      className="min-w-0 overflow-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 px-6 py-5 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:px-8"
+      className="min-w-0 overflow-hidden rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:px-8"
     >
       <div className="flex min-w-0 items-center justify-between gap-4">
         <div className="min-w-0 space-y-1">

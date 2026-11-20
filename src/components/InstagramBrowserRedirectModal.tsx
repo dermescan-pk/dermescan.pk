@@ -136,7 +136,7 @@ export function InstagramBrowserRedirectModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="insta-chrome-redirect-title"
-      className="fixed inset-0 z-50 flex items-end justify-center bg-[#1E181A]/65 p-4 backdrop-blur-xs sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-[#1E181A]/65 p-4 sm:items-center"
     >
       <div className="w-full max-w-md overflow-hidden rounded-3xl border border-[#E6DCE0] bg-[#FAF6F7] shadow-[0_24px_60px_rgba(35,24,28,0.32)]">
         <div className="flex items-start justify-between gap-3 border-b border-[#E6DCE0] bg-white px-6 py-4">

@@ -79,7 +79,7 @@ export function HealthProfileModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="health-profile-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E181A]/40 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E181A]/50 p-4"
     >
       <div className="relative w-full max-w-lg rounded-2xl border border-[#EAE0E2] bg-white p-6 shadow-2xl">
         <button

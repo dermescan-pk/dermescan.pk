@@ -223,7 +223,7 @@ export function BentoPrescriptionResult({
   return (
     <div className="min-w-0 space-y-6">
       {/* Top Editorial Summary Header */}
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 px-6 py-5 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md">
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)]">
         <div className="flex min-w-0 items-center gap-2.5">
           <FileText className="h-4.5 w-4.5 shrink-0 text-[#B56576]" />
           <span className="min-w-0 break-words font-editorial text-xl font-semibold text-[#1E181A]">
@@ -237,10 +237,10 @@ export function BentoPrescriptionResult({
 
       {/* Clear Triage Decision Banner */}
       <div
-        className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md sm:px-7 ${
+        className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] sm:px-7 ${
           isUrgentDoctorTriage
-            ? "border-[#E8C5CA] bg-[#FDF4F5]/90"
-            : "border-[#C3DFCE] bg-[#EFF7F2]/90"
+            ? "border-[#E8C5CA] bg-[#FDF4F5]"
+            : "border-[#C3DFCE] bg-[#EFF7F2]"
         }`}
       >
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -262,7 +262,7 @@ export function BentoPrescriptionResult({
       </div>
 
       {/* Card 1: Visual Assessment & Ranked Possibilities */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
         <div className="mb-5 flex min-w-0 items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <Eye className="h-4.5 w-4.5" />
@@ -372,7 +372,7 @@ export function BentoPrescriptionResult({
       </section>
 
       {/* Card 2: Daily Morning & Night Routine (Clinical Dossier) */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
         <div className="mb-6 flex min-w-0 items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <Sun className="h-4.5 w-4.5" />
@@ -449,7 +449,7 @@ export function BentoPrescriptionResult({
       </section>
 
       {/* Card 3: Safe Pakistani Pharmacy Picks */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
         <div className="mb-6 flex min-w-0 items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <ShoppingBag className="h-4.5 w-4.5" />
@@ -557,7 +557,7 @@ export function BentoPrescriptionResult({
       {/* Card 4 & Card 5 Split on Tablet/Laptop */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Card 4: Water & Daily Habits */}
-        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
           <div className="mb-4 flex min-w-0 items-center gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
               <Droplets className="h-4.5 w-4.5" />
@@ -603,7 +603,7 @@ export function BentoPrescriptionResult({
         </section>
 
         {/* Card 5: Doctor Alert */}
-        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5]/90 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md sm:p-8">
+        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5] p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] sm:p-8">
           <div className="mb-4 flex min-w-0 items-center gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#E8C5CA] bg-white/90 text-[#8C3B4A]">
               <AlertTriangle className="h-4.5 w-4.5" />

@@ -67,7 +67,7 @@ export function Header({
   onOpenHealthProfile,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#EAD8DC] bg-[#FDFBFC]/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[#EAD8DC] bg-[#FDFBFC]">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         {/* Row 1 (Mobile) / Left Side (Desktop) */}
         <div className="min-w-0">
@@ -87,7 +87,7 @@ export function Header({
           <button
             type="button"
             onClick={onOpenHealthProfile}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[#EAD8DC] bg-white/90 px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap text-[#1E181A] shadow-xs transition-all hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576] active:scale-95"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[#EAD8DC] bg-white px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap text-[#1E181A] shadow-xs transition-colors hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576] active:scale-95"
           >
             <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#B56576]" />
             <span>My Health Profile</span>
@@ -102,7 +102,7 @@ export function Header({
           <div
             role="group"
             aria-label="Language toggle"
-            className="flex shrink-0 items-center rounded-full border border-[#EAD8DC] bg-white/90 p-1 shadow-xs"
+            className="flex shrink-0 items-center rounded-full border border-[#EAD8DC] bg-white p-1 shadow-xs"
           >
             <button
               type="button"

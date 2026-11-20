@@ -190,7 +190,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
         </div>
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
         <div>
           <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
             {language === "ur"
@@ -438,7 +438,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           </div>
 
           {result.detectedRiskyIngredients.length > 0 && (
-            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
               <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Cream Mein Kya Shamil Hai"
@@ -472,7 +472,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
           )}
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
             <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
               {language === "ur"
                 ? "Mumkina Nuqsanat Aur Safe Tarika"
@@ -531,7 +531,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           </div>
 
           {hydratedReplacements.length > 0 && (
-            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
               <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Safe, Steroid-Free Pharmacy Badal"
@@ -587,7 +587,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
           )}
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5]/90 p-6 text-xs leading-relaxed text-[#8C3B4A] shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5] p-6 text-xs leading-relaxed text-[#8C3B4A] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)]">
             <strong className="mb-2 block font-editorial text-xl font-semibold">
               {language === "ur"
                 ? "Doctor Alert"

@@ -153,7 +153,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     <div className="min-w-0 space-y-6">
       <TabHeaderIllustration variant="verify" language={language} />
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="min-w-0 space-y-1.5">
             <label
@@ -309,13 +309,13 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
       {result && (
         <div className="min-w-0 space-y-6">
           <div
-            className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.12)] backdrop-blur-md sm:p-8 ${
+            className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] sm:p-8 ${
               result.storeCheck.status === "verified"
-                ? "border-[#C3DFCE] bg-[#EFF7F2]/90"
+                ? "border-[#C3DFCE] bg-[#EFF7F2]"
                 : result.storeCheck.status === "unverified" ||
                     result.storeCheck.status === "potential_copycat"
-                  ? "border-[#E8C5CA] bg-[#FDF4F5]/90"
-                  : "border-[#EAD8DC] bg-white/85"
+                  ? "border-[#E8C5CA] bg-[#FDF4F5]"
+                  : "border-[#EAD8DC] bg-white"
             }`}
           >
             <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -369,7 +369,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
             )}
           </div>
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.14)] backdrop-blur-md sm:p-8">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
             <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
                 <PackageCheck className="h-5 w-5 shrink-0 text-[#B56576]" />

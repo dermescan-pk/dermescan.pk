@@ -104,7 +104,7 @@ export function ScanningLoader({
     <div
       role="status"
       aria-live="polite"
-      className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white/85 p-6 shadow-[0_14px_40px_-15px_rgba(181,101,118,0.16)] backdrop-blur-md sm:p-8"
+      className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.14)] sm:p-8"
     >
       <div className="mx-auto max-w-xl space-y-6">
         <div className="flex min-w-0 items-center gap-4">

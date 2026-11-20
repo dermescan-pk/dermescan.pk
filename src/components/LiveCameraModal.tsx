@@ -244,7 +244,7 @@ export function LiveCameraModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="live-camera-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E181A]/60 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E181A]/60 p-4"
       onClick={handleClose}
     >
       <div
