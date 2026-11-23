@@ -80,15 +80,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "wash",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      "Oily, combination, and acne-prone facial skin types dealing with midday shine and congested pores.",
+      "Oily T-zone, combination, and acne-prone facial skin dealing with daytime shine and humid pore congestion.",
     bestFor:
-      "Blackheads, whiteheads, T-zone congestion, and recurring inflammatory pimples in humid weather.",
+      "Active inflammatory pimples, blackheads, whiteheads, and humid-weather pore congestion.",
     keyPerks:
-      "Formulated with oil-soluble Salicylic Acid (BHA) in a gentle sulfate-free wash base to dissolve trapped sebum inside pores without leaving skin feeling tight.",
+      "Oil-soluble 2% Salicylic Acid (BHA) penetrates deep into sebum-filled pores to dissolve oil plugs, reduce blackheads, and calm acne breakouts.",
     whoShouldAvoid:
-      "Dry, flaking, eczema-prone, or post-steroid thinned skin barriers, or anyone currently peeling from prescription retinoids.",
+      "Dry, flaking, rosacea-prone, or post-steroid damaged skin barriers, or skin currently peeling from prescription retinoids.",
     couldCause:
-      "Mild dryness around the nose and mouth corners or initial purging if used twice daily alongside strong leave-on exfoliating acids.",
+      "Mild dryness around the nose and mouth corners if used twice daily alongside strong leave-on exfoliating acids.",
   },
   {
     order: 24,
@@ -106,15 +106,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "wash",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      "Dry, dehydrated, sensitive, rosacea-prone, and combination skin needing a calm everyday cleanser.",
+      "Red, peeling, tight/dry, eczema-prone, rosacea-prone, and post-steroid recovering skin types.",
     bestFor:
-      "Post-steroid barrier recovery, winter tightness, retinoid/isotretinoin dryness, and morning cleansing for all skin types.",
+      "Barrier recovery after whitening/formula creams, morning gentle cleansing, and soothing alongside prescription acne treatments.",
     keyPerks:
-      "Fragrance-free, non-foaming soothing gel-lotion wash that removes sweat and daily dirt while protecting natural skin lipids.",
+      "Soap-free, pH-balanced non-stripping wash that cleanses gently while protecting and rebuilding a damaged lipid barrier.",
     whoShouldAvoid:
-      "Very oily skin expecting a deep squeaky-clean lather or heavy waterproof makeup removal without a first-step micellar cleanser.",
+      "Very oily skin wanting a heavy foaming wash or waterproof makeup removal without a first-step micellar cleanser.",
     couldCause:
-      "Minimal risk of irritation; may leave a lightly cushioned feel that ultra-oily skin users prefer to reserve for morning washes.",
+      "Minimal risk of irritation; safe as the default morning and barrier-recovery cleanser for sensitive skin.",
   },
   {
     order: 25,
@@ -132,15 +132,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "toner",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      "Normal, oily, combination, and sun-tanned skin ready for a night resurfacing AHA toner.",
+      "Intact normal, oily, and sun-tanned facial or body skin ready for 2-3 nights per week AHA resurfacing.",
     bestFor:
-      "Dullness, rough bumpy texture, lingering post-acne marks, and non-sensitive neck or underarm darkening (2-3 nights a week).",
+      "Dull skin tone, stubborn sun tan, rough bumpy texture, dark underarms/elbows/knees, and body keratosis pilaris (strawberry skin).",
     keyPerks:
-      "Glycolic Acid loosens dead surface skin buildup smoothly to brighten tone and refine texture without abrasive physical scrubs.",
+      "Water-soluble AHA surface exfoliation used strictly 2-3 nights per week to fade surface pigmentation and smooth rough texture.",
     whoShouldAvoid:
-      "Sensitive, rosacea-prone, actively peeling, or barrier-damaged skin, and never apply immediately after shaving or waxing underarms.",
+      "Active cystic acne, broken/eczema skin, post-steroid damaged barriers, freshly shaved underarms, or the same night as Retinol or Salicylic Acid.",
     couldCause:
-      "Redness, stinging, or sun sensitivity if overused nightly, layered with Retinol, or paired with skipped daytime sunscreen.",
+      "Burning, redness, or rebound tanning if overused nightly, mixed with Retinol/BHA, or paired without mandatory daily SPF 50+ sunscreen.",
   },
   {
     order: 26,
@@ -158,15 +158,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "serum",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      "Oily, congested, and acne-prone skin types that need targeted leave-on pore decongestion.",
+      "Oily, congested, and acne-prone skin types needing targeted leave-on BHA pore clearing.",
     bestFor:
-      "Stubborn nose blackheads, closed comedones along the forehead and chin, and swollen clogged pores.",
+      "Persistent blackheads, enlarged clogged pores, recurring oily-skin acne, and closed comedones (2-3 nights/week PM on clean dry skin).",
     keyPerks:
-      "Penetrates oil-filled pores deeply to clear hardened plugs and calm redness faster than rinse-off washes alone.",
+      "Leave-on BHA exfoliant applied 2-3 nights per week on clean dry skin to decongest deep pores and prevent recurring breakouts.",
     whoShouldAvoid:
-      "Dry or eczema-prone skin, compromised barriers, pregnancy/breastfeeding if avoiding leave-on BHA, and nights when Retinol or AHA is applied.",
+      "Dry or eczema-prone skin, damaged barriers, pregnancy/breastfeeding if avoiding leave-on BHA, and the same night as Glycolic Acid Toner or Eternyx Retinol.",
     couldCause:
-      "Flaking, barrier irritation, or temporary purging if applied every night or combined with multiple acne acids.",
+      "Flaking, irritation, or barrier dryness if applied every night or layered alongside AHA toners or retinoids.",
   },
   {
     order: 27,
@@ -184,15 +184,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "patch",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      "All skin types (safe for sensitive and acne-prone skin alike) needing spot protection on surfaced pimples.",
+      "All skin types dealing with isolated surface whiteheads, pustules, or a habit of picking/squeezing pimples.",
     bestFor:
-      "Whitehead pimples with visible fluid and stopping fingers from picking or squeezing spots (which prevents dark marks).",
+      "Surfaced whiteheads needing overnight fluid absorption and preventing dark post-acne picking marks.",
     keyPerks:
-      "Medical-grade hydrocolloid seals the blemish, gently absorbs excess fluid overnight, and shields bacteria and dust from the healing pore.",
+      "Hydrocolloid overnight spot patches absorb pus and fluid cleanly, flatten surfaced pimples faster, and physically prevent picking scars.",
     whoShouldAvoid:
-      "Deep under-the-skin blind cysts with no head, or open bleeding skin coated in thick creams (apply strictly on clean dry skin).",
+      "Deep under-the-skin blind nodules without a surface head, or oily cream-coated skin (always apply onto clean, dry skin before creams).",
     couldCause:
-      "Very rare mild adhesive redness if peeled off aggressively instead of lifting gently after showering.",
+      "Rare mild adhesive redness if pulled off roughly instead of lifting gently after washing.",
   },
   {
     order: 28,
@@ -210,15 +210,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "lip",
     suitsWhomLabel: "Suits Whom & Lip Type",
     suitsWhom:
-      "Pigmented, dry, dull, or sun-exposed lips looking for lip-safe tone brightening without harsh facial acids.",
+      "Pigmented, two-toned dark-bordered, sun/tea/smoking darkened, and chronically dry chapped lips.",
     bestFor:
-      "Uneven lip darkening from sun exposure, tea/coffee/smoking staining, or post-chapping lip hyperpigmentation.",
+      "Lip hyperpigmentation, two-toned dark borders, and restoring soft hydrated lip skin safely without facial acids.",
     keyPerks:
-      "Combines soothing barrier emollients with lip-safe gentle brighteners to soften dry lines while gradually evening lip tone.",
+      "Targeted pigment-fading and barrier-sealing daily & overnight lip treatment formulated specifically for delicate lip skin.",
     whoShouldAvoid:
-      "Cracked bleeding lip corners (angular cheilitis), active cold sores/blisters, or known sensitivity to balm actives; always layer SPF lip balm outdoors.",
+      "Active cold sores or bleeding cracked lip corners; never scrub lips with lemon or toothpaste, and always pair with daytime UV lip protection.",
     couldCause:
-      "Minimal irritation on intact lips; brightening stalls if worn outdoors in Pakistani sunlight without daytime UV protection.",
+      "Minimal risk on intact lips; lip tone improvement stalls in direct sun without daytime SPF lip protection.",
   },
   {
     order: 29,
@@ -236,16 +236,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "lip",
     suitsWhomLabel: "Suits Whom & Lip Type",
     suitsWhom:
-      "Flaky, textured, or lipstick-drying lips that need gentle surface smoothing without jagged sugar tears.",
+      "Flaky, peeling, or rough lip skin needing gentle buildup removal before applying balm.",
     bestFor:
-      "Peeling winter lip skin and stubborn dry flakes before applying overnight healing balm or lip treatment.",
+      "Lifting dead flaky lip skin safely 1-2 times per week before sealing with a healing lip balm.",
     keyPerks:
-      "Designed as a gentle, non-abrasive " +
-      '"unscrub" polish that lifts loose dead flakes smoothly while cushioning thin lip mucosa in nourishing oils.',
+      "Gentle non-abrasive chemical and enzymatic lip smoothing used 1-2 times per week without causing micro-tears like harsh sugar scrubs.",
     whoShouldAvoid:
-      "Raw, cracked, bleeding lips, angular cheilitis, or cold sores; limit gently to 1-2 times a week so lip pigment does not rebound.",
+      "Bleeding, raw, cracked, or cold-sore flared lips.",
     couldCause:
-      "Soreness or rebound lip darkening if rubbed forcefully every day instead of light weekly smoothing.",
+      "Soreness or rebound lip darkening if rubbed forcefully daily instead of light 1-2x weekly smoothing.",
   },
   {
     order: 30,
@@ -263,15 +262,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "wash",
     suitsWhomLabel: "Suits Whom & Body Skin Type",
     suitsWhom:
-      "Acne-prone, sweaty, rough, or bumpy body skin on the back, chest, shoulders, upper arms, and legs.",
+      "Back, chest, arm, and leg skin prone to bacne, clogged sweat pores, or keratosis pilaris bumps.",
     bestFor:
-      "Back and chest acne (bacne), keratosis pilaris (strawberry skin), ingrown hair bumps, and rough body texture.",
+      "Back acne (bacne), chest pimples, bumpy strawberry skin (KP), and humid-climate body sweat congestion.",
     keyPerks:
-      "Pairs surface-smoothing AHAs with pore-clearing BHA (Salicylic Acid) to unclog body hair follicles when left on skin for 1-2 minutes before rinsing.",
+      "Dual-acid exfoliating body wash left on skin for 2 minutes in the shower to clear body pores, smooth rough bumps, and fade body acne marks.",
     whoShouldAvoid:
-      "Eczema flares, very dry/cracked winter body skin, broken skin right after shaving/waxing, or delicate facial skin.",
+      "Dry winter eczema patches, freshly shaved irritated skin, sensitive intimate areas, or delicate facial skin.",
     couldCause:
-      "Dryness or mild stinging if used on freshly shaved skin or sensitive creases; follow with a light non-comedogenic lotion on dry areas.",
+      "Stinging or dryness if applied onto freshly shaved skin or raw eczema patches.",
   },
   {
     order: 31,
@@ -289,15 +288,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "wash",
     suitsWhomLabel: "Suits Whom & Body Skin Type",
     suitsWhom:
-      "Dry, itchy, eczema-prone, and sensitive body skin exposed to harsh borehole/hard water or winter dryness.",
+      "Dry, itchy, flaky, eczema-prone, and winter-ashy body skin on arms, legs, hands, or torso.",
     bestFor:
-      "Hard-water body tightness, soothing rough dry arms and legs, and post-shower itchiness from fragranced soaps.",
+      "Calming hard-water body itchiness, dry winter skin tightness, and gentle soap-free daily body cleansing.",
     keyPerks:
-      "Colloidal oat extracts and skin-identical lipids cleanse sweat and dust gently while leaving a calm, cushioned moisture barrier.",
+      "Colloidal oat and lipid-rich body cleanser that calms itching and restores moisture without harsh soap dryness.",
     whoShouldAvoid:
-      "Active cystic back acne needing targeted BHA exfoliation (use AHA BHA Body Wash on breakouts instead).",
+      "Active oily back and chest acne needing acid exfoliation (pair AHA BHA Body Wash on acne areas instead).",
     couldCause:
-      "Very low irritation profile; rinse cleanly off bath floors as hydrating lipid washes can feel slightly slick.",
+      "Minimal irritation; rinse shower floor cleanly as lipid washes can feel slightly smooth underfoot.",
   },
   {
     order: 32,
@@ -315,15 +314,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "shampoo",
     suitsWhomLabel: "Suits Whom & Scalp/Hair Type",
     suitsWhom:
-      "Flaky, dandruff-prone, congested, or low-porosity scalps needing 1-2x weekly buildup removal.",
+      "Scalps dealing with flaky white or yellow dandruff, itchy seborrheic buildup, or oily scalp flakes.",
     bestFor:
-      "Stuck scalp flakes, mild seborrheic buildup, itchy clogged roots, and scalp bumps/folliculitis.",
+      "Lifting stubborn dandruff scales and soothing clogged oily scalp follicles (1-2 times/week rotated with gentle wash).",
     keyPerks:
-      "Salicylic Acid gently exfoliates packed dead skin and oil plugs off the scalp surface in 3-5 minutes without harsh coal-tar odor.",
+      "Medicated BHA scalp shampoo massaged onto the scalp for 2-3 minutes to lift stubborn dandruff scales without heavy buildup.",
     whoShouldAvoid:
-      "Raw scratched scalp sores, pregnancy/breastfeeding if avoiding high-dose BHA scalp products, or daily use (rotate with a gentle hydrating shampoo).",
+      "Raw scratched scalp sores or everyday single-wash use without conditioning dry mid-lengths and ends.",
     couldCause:
-      "Dry, rough hair lengths if applied every wash without rotating a hydrating shampoo and conditioning mid-lengths and ends.",
+      "Strand dryness if applied every day down to hair ends instead of scalp-only 1-2x weekly washes.",
   },
   {
     order: 33,
@@ -341,15 +340,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "shampoo",
     suitsWhomLabel: "Suits Whom & Scalp/Hair Type",
     suitsWhom:
-      "Oily scalps, limp low-porosity roots, and hair exposed to Pakistani hard or bore water.",
+      "Hair washed in Pakistani hard water (Sindh/Punjab), greasy roots, or hair coated in heavy oil and product buildup.",
     bestFor:
-      "Removing mineral calcium film from hard water, heavy hair oil residue, and greasy second-day roots (1-2x/week).",
+      "Stripping hard-water mineral residue, heavy oil buildup, and excess root sebum 1-2 times per week.",
     keyPerks:
-      "Resets scalp oil balance and lifts dulling hard-water residue cleanly so hydrating conditioners and serums absorb properly.",
+      "Deep-cleansing chelating and clarifying reset wash used 1-2 times per week to clear mineral hard-water residue and excess sebum from follicles.",
     whoShouldAvoid:
-      "Very dry, bleached, or brittle high-porosity strands washed daily without conditioner/mask rotation.",
+      "Daily washes on dry, bleached, or high-porosity strands without conditioning afterward; always follow with conditioner on mid-lengths and ends.",
     couldCause:
-      "Slight strand dryness if overused every day instead of 1-2 clarifying washes rotated with a moisturizing shampoo.",
+      "Slight strand stiffness if used daily or without a conditioner on mid-lengths and ends.",
   },
   {
     order: 34,
@@ -367,15 +366,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "tube",
     suitsWhomLabel: "Suits Whom & Scalp/Hair Type",
     suitsWhom:
-      "Medium and high porosity, wavy, curly, and tangle-prone hair lengths (use sparingly on fine low-porosity hair).",
+      "Medium and high porosity hair strands dealing with tangles, rough hard-water dryness, or heat and sun exposure.",
     bestFor:
-      "Post-wash detangling, reducing comb breakage, and keeping damp lengths soft between washes.",
+      "Lightweight post-wash detangling, softening rough strands after hard-water washes, and protecting mid-lengths to ends.",
     keyPerks:
-      "Lightweight slip-rich conditioning blend coats hair cuticles cleanly to prevent split ends and hard-water stiffness without sticky waxiness.",
+      "Lightweight leave-in hydration and cuticle protection applied strictly from mid-lengths to ends on damp hair.",
     whoShouldAvoid:
-      "Do NOT apply directly onto oily or dandruff-prone scalp roots; keep strictly from ears down to ends.",
+      "Oily or dandruff-prone scalp roots (keep away from roots); use only a tiny pea-sized amount on low-porosity hair.",
     couldCause:
-      "Weighed-down roots or flatness on fine low-porosity hair if too much product is applied near the crown.",
+      "Limp or heavy roots if over-applied near the scalp or used generously on fine low-porosity strands.",
   },
   {
     order: 35,
@@ -390,15 +389,15 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "mask",
     suitsWhomLabel: "Suits Whom & Scalp/Hair Type",
     suitsWhom:
-      "High-porosity, dry, heat-styled, bleached, or coarse hair mid-lengths and ends.",
+      "High-porosity, dry, brittle, heat-styled, or color-damaged hair needing weekly deep repair.",
     bestFor:
-      "Straw-like dryness, split-end roughness, dye damage, and weekly deep moisture replenishment.",
+      "Restoring elasticity, split-end softness, and deep moisture to brittle high-porosity lengths once a week.",
     keyPerks:
-      "Rich conditioning lipids and strand-softening actives restore elasticity and slip in 5-10 minutes during wash day.",
+      "Weekly intensive nourishing mask applied to lengths and ends for 10-15 minutes to restore elasticity and softness.",
     whoShouldAvoid:
-      "Low-porosity hair roots or dandruff scalps (apply strictly to mid-lengths and ends, never on scalp skin).",
+      "Oily or dandruff-prone scalps (apply strictly to mid-lengths and ends, never on scalp skin).",
     couldCause:
-      "Heavy buildup or limp hair if left un-rinsed or applied generously on fine low-porosity hair.",
+      "Heavy buildup or flat roots if applied on the scalp or overused on fine low-porosity hair.",
   },
   {
     order: 36,
@@ -416,14 +415,14 @@ export const ACCUFIX_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
     bottleKind: "serum",
     suitsWhomLabel: "Suits Whom & Scalp/Hair Type",
     suitsWhom:
-      "High and medium porosity, frizzy, heat-styled, and humidity-prone hair lengths and ends.",
+      "High-porosity hair lengths facing Pakistani monsoon humidity frizz, flyaways, and dull dry ends.",
     bestFor:
-      "Monsoon humidity frizz, flyaways, heat-tool dryness, and sealing split-prone hair ends.",
+      "Taming humidity frizz, smoothing flyaways, and protecting dry ends from split-end breakage.",
     keyPerks:
-      "Smooths raised cuticles with 1-2 drops on damp or dry ends to lock moisture inside the shaft and boost glossy shine.",
+      "Cuticle-sealing smoothing serum applied (1-2 drops) strictly onto hair ends to lock out humidity and prevent split-end breakage.",
     whoShouldAvoid:
-      "Strictly avoid applying onto the scalp/roots, especially with dandruff, oily scalp, or fine low-porosity hair.",
+      "Never apply near the scalp or roots, especially with oily scalp, dandruff, or fine low-porosity hair.",
     couldCause:
-      "Greasy strings or clumped curls if more than 1-3 drops are used on thin hair.",
+      "Greasy or clumped strands if more than 1-2 drops are used or applied near the scalp.",
   },
 ];

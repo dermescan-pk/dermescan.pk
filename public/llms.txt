@@ -1,0 +1,26 @@
+# DerméScan (Derme Scan)
+
+> Free AI-powered skincare, lip care, hair porosity, steroid cream red-flag checker, and product ingredient decoder built for Pakistani weather, hard/bore water, and verified local pharmacy brands.
+
+## Overview
+- **Brand Name:** DerméScan (also searched as Derme Scan / DermeScan)
+- **Live URL:** https://dermescan.vercel.app/
+- **Languages:** English & Roman Urdu (Pakistan)
+- **Focus:** Evidence-aligned skincare, body care, lip care, and scalp/hair routines matched to Pakistani climate, UV index, hard water, and dermatologist-trusted pharmacy brands including Jenpharm and AccuFix Cosmetics.
+
+## Key Tools
+1. **Skin & Body Check** (`https://dermescan.vercel.app/`): Multi-angle photo & symptom analysis for Face, Under-Eyes, Lips, Neck & Underarms, Back & Chest, Arms & Legs, Hands & Nails, and Feet & Heels, generating safe AM/PM routines and red-flag dermatologist triage.
+2. **Hair Studio** (`https://dermescan.vercel.app/`): Low, Medium, and High hair porosity evaluation paired with hard/bore-water chelating advice, dual-shampoo rotation, leave-in/mask selection, and oil safety verdicts.
+3. **Steroid Check** (`https://dermescan.vercel.app/`): Screens Pakistani fairness, bridal, and formula creams for hidden potent corticosteroids, mercury, and harsh bleaching agents, with gradual tapering guidance and steroid-free replacements.
+4. **Product Decoder** (`https://dermescan.vercel.app/`): Checks seller/store reliability, authentic packaging cues, key active ingredients, routine clashes, and skin/hair type compatibility.
+5. **Pakistani Skincare & Haircare Encyclopedia**:
+   - Sunblocks Guide: https://dermescan.vercel.app/?category=sunblocks
+   - Cleansers Guide: https://dermescan.vercel.app/?category=cleansers
+   - Moisturizers & Toners Guide: https://dermescan.vercel.app/?category=moisturizers-toners
+   - Serums, Creams & Patches Guide: https://dermescan.vercel.app/?category=serums-creams-patches
+   - Lip Care Guide: https://dermescan.vercel.app/?category=lip-care
+   - Body Washes Guide: https://dermescan.vercel.app/?category=body-washes
+   - Hair & Scalp Treatments Guide: https://dermescan.vercel.app/?category=hair-scalp
+
+## Disclaimer
+DerméScan provides everyday skincare, haircare, and product safety guidance and is not a substitute for an in-person consultation with a qualified PMDC dermatologist.

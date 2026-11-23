@@ -358,6 +358,9 @@ export default function App() {
               Replay Intro
             </button>
           </div>
+          <p className="mt-3 text-[11px] tracking-wide text-[#8E7A80] dark:text-[#A9959C]">
+            © 2026 DerméScan · Derme Scan Pakistan
+          </p>
         </footer>
       </main>
 

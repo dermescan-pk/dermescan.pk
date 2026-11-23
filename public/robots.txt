@@ -1,4 +1,16 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dermescan-pk.vercel.app/sitemap.xml
+User-agent: Googlebot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://dermescan.vercel.app/sitemap.xml

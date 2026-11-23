@@ -174,6 +174,77 @@ function getPorosityClinicalFocusDirective(hairPorosity: string): string {
   return `ACTIVE POROSITY MANDATE — MEDIUM / NORMAL POROSITY (${hairPorosity || "Balanced"}): Prescribe balanced moisture-protein rotation ("Conatural Intense Repair / Daily Shampoo", "AccuFix Strength & Shine Leave-In Conditioner", "AccuFix Clarify and Rebalance Shampoo" 1x/week for hard water, "Trego" / "BNB" balanced conditioners, "Jenpharm Anagrow Anti Hair Loss Shampoo", light leave-in mist) plus hard-water defense without overly heavy butters or overly stripping clarifying every wash.`;
 }
 
+const ACCUFIX_CLINICAL_DECISION_MATRIX = `ACCUFIX COSMETICS CLINICAL DECISION MATRIX (STRICT INDICATION, USAGE & CONTRAINDICATION RULES FOR ALL 14 PRODUCTS):
+Use these exact rules whenever evaluating skin, body, lip, scalp, hair, post-steroid, or product-decoder scans (ALWAYS pair each match with its exact full product name below):
+
+1. **AccuFix Salicylic Acid Cleanser**
+   - When to Recommend: Scan shows oily T-zone/face, active inflammatory pimples, blackheads, whiteheads, or humid-weather pore congestion.
+   - Clinical Use & Best For: Oil-soluble 2% Salicylic Acid (BHA) penetrates deep into sebum-filled pores to dissolve oil plugs, reduce blackheads, and calm acne breakouts.
+   - Strict Rule: Do NOT recommend for dry, flaky, rosacea-prone, or post-steroid damaged skin barriers.
+
+2. **AccuFix Hydrating Gentle Cleanser**
+   - When to Recommend: Scan shows redness, peeling, tight/dry skin, eczema, sensitivity, or **Steroid Check** recovery after whitening/formula creams.
+   - Clinical Use & Best For: Soap-free, pH-balanced non-stripping wash that cleanses gently while protecting and rebuilding a damaged lipid barrier.
+   - Strict Rule: Safe as the default morning/recovery cleanser even alongside prescription acne treatments.
+
+3. **AccuFix Glycolic Acid Toner**
+   - When to Recommend: Scan shows dull skin tone, stubborn sun tan, rough bumpy skin texture, dark underarms/elbows/knees, or body keratosis pilaris ("strawberry skin").
+   - Clinical Use & Best For: Water-soluble AHA surface exfoliation used strictly **2-3 nights per week** to fade surface pigmentation and smooth rough texture.
+   - Strict Rule: Strictly forbid on active cystic acne, broken/eczema skin, post-steroid damaged barriers, or on the same night as Retinol or Salicylic Acid; mandate daily SPF 50+.
+
+4. **AccuFix Salicylic Acid Serum**
+   - When to Recommend: Scan shows persistent blackheads, enlarged clogged pores, recurring oily-skin acne, or closed comedones needing targeted leave-on treatment.
+   - Clinical Use & Best For: Leave-on BHA exfoliant applied **2-3 nights per week** on clean dry skin to decongest deep pores and prevent recurring breakouts.
+   - Strict Rule: Do NOT pair on the same night as Glycolic Acid Toner or Eternyx Retinol.
+
+5. **AccuFix Pimple Patches**
+   - When to Recommend: Scan shows isolated surface whiteheads, pustules, or someone who picks/squeezes pimples (causing dark post-acne marks).
+   - Clinical Use & Best For: Hydrocolloid overnight spot patches that absorb pus/fluid cleanly, flatten surface pimples faster, and prevent picking scars.
+   - Strict Rule: Explain they work on surface whiteheads (not deep under-the-skin blind nodules) and must be applied onto clean, dry skin before creams.
+
+6. **AccuFix Dark Lip Treatment Balm**
+   - When to Recommend: **Lips** area scan showing lip hyperpigmentation, two-toned dark borders, sun/tea/smoking darkening, or chronic dry chapped lips.
+   - Clinical Use & Best For: Targeted pigment-fading + barrier-sealing daily & overnight lip treatment formulated specifically for delicate lip skin.
+   - Strict Rule: Recommend alongside daytime UV protection and warn against scrubbing lips with lemon or toothpaste.
+
+7. **AccuFix Unscrub Lip Scrub**
+   - When to Recommend: **Lips** area scan showing flaky, peeling, rough dead skin buildup on lips before applying lip balm.
+   - Clinical Use & Best For: Gentle non-abrasive chemical/enzymatic lip smoothing used **1-2 times per week** without causing micro-tears like harsh sugar scrubs.
+   - Strict Rule: Do NOT recommend on bleeding, cracked, or cold-sore flared lips.
+
+8. **AccuFix AHA BHA Body Wash**
+   - When to Recommend: **Back & Chest** or **Arms & Legs** scan showing back acne ("bacne"), chest pimples, bumpy "strawberry skin" (keratosis pilaris), or humid-climate body sweat congestion.
+   - Clinical Use & Best For: Dual-acid exfoliating body wash left on skin for 2 minutes in the shower to clear body pores, smooth rough bumps, and fade body acne marks.
+   - Strict Rule: Avoid on dry winter eczema patches, freshly shaved irritated skin, or sensitive intimate areas.
+
+9. **AccuFix Oats and Lipid Hydrating Body Wash**
+   - When to Recommend: **Arms & Legs**, **Hands**, or **Other Body Area** scan showing dry, itchy, flaky, eczema-prone, or winter-ashy body skin.
+   - Clinical Use & Best For: Colloidal oat and lipid-rich body cleanser that calms itching and restores moisture without harsh soap dryness.
+
+10. **AccuFix Salicylic Acid Shampoo**
+    - When to Recommend: **Hair Studio** scan showing flaky white/yellow dandruff, itchy seborrheic scalp buildup, or oily scalp flakes.
+    - Clinical Use & Best For: Medicated BHA scalp shampoo massaged onto the scalp for 2-3 minutes to lift stubborn dandruff scales without heavy buildup.
+
+11. **AccuFix Clarify and Rebalance Shampoo**
+    - When to Recommend: **Hair Studio** scan where the user selects **Hard Water** (common across Sindh/Punjab), greasy roots, or heavy hair-oil/product buildup.
+    - Clinical Use & Best For: Deep-cleansing chelating/clarifying reset wash used **1-2 times per week** to strip mineral hard-water residue and excess sebum from follicles.
+    - Strict Rule: Instruct users to follow with conditioner on mid-lengths and ends.
+
+12. **AccuFix Strength & Shine Leave-In Conditioner**
+    - When to Recommend: **Hair Studio** scan showing **Medium or High Porosity**, tangles, rough dry strands after hard-water washes, or heat/sun exposure.
+    - Clinical Use & Best For: Lightweight leave-in hydration and cuticle protection applied strictly from **mid-lengths to ends** on damp hair.
+    - Strict Rule: Keep away from oily scalp roots; use a tiny pea-sized amount on low-porosity hair.
+
+13. **AccuFix Hair Mask**
+    - When to Recommend: **Hair Studio** scan showing **High Porosity**, dry brittle strands, split ends, or heat/color damage needing weekly deep repair.
+    - Clinical Use & Best For: Weekly intensive nourishing mask applied to lengths/ends for 10-15 minutes to restore elasticity and softness.
+    - Strict Rule: Do NOT apply on oily or dandruff-prone scalps.
+
+14. **AccuFix Frizz Control Serum**
+    - When to Recommend: **Hair Studio** scan showing **High Porosity**, humidity frizz, flyaways, or dull dry ends in humid Pakistani weather.
+    - Clinical Use & Best For: Cuticle-sealing smoothing serum applied (1-2 drops) strictly onto **hair ends** to lock out humidity and prevent split-end breakage.
+    - Strict Rule: Never apply near the scalp or roots.`;
+
 export async function handleAnalyzeSkin(
   req: ApiRequestLike,
   res: ApiResponseLike
@@ -201,7 +272,7 @@ export async function handleAnalyzeSkin(
             body.bodyArea,
             body.context?.skinType
           )}`;
-    const systemPrompt = `${buildSkinAnalysisPrompt(body)}\n\n${indicationRules}`;
+    const systemPrompt = `${buildSkinAnalysisPrompt(body)}\n\n${indicationRules}\n\n${ACCUFIX_CLINICAL_DECISION_MATRIX}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }
@@ -268,7 +339,7 @@ export async function handleAnalyzeHair(
     const porosityDirective = getPorosityClinicalFocusDirective(
       body.context?.hairPorosity || "Not Sure"
     );
-    const systemPrompt = `${buildHairAnalysisPrompt(body)}\n\n${HAIR_CLINICAL_INDICATION_RULES}\n\n${porosityDirective}`;
+    const systemPrompt = `${buildHairAnalysisPrompt(body)}\n\n${HAIR_CLINICAL_INDICATION_RULES}\n\n${porosityDirective}\n\n${ACCUFIX_CLINICAL_DECISION_MATRIX}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }
@@ -330,7 +401,7 @@ export async function handleCheckCream(
       });
     }
 
-    const prompt = buildCheckCreamPrompt(body);
+    const prompt = `${buildCheckCreamPrompt(body)}\n\n${ACCUFIX_CLINICAL_DECISION_MATRIX}`;
 
     const parts: Array<
       { text: string } | { inlineData: { mimeType: string; data: string } }
@@ -433,7 +504,7 @@ export async function handleVerifyProduct(
 
     // 1) Primary call: Live Google Search Grounding (no responseMimeType allowed alongside tools)
     try {
-      const groundedPrompt = buildVerifyProductPrompt(body, storeCheck, true);
+      const groundedPrompt = `${buildVerifyProductPrompt(body, storeCheck, true)}\n\n${ACCUFIX_CLINICAL_DECISION_MATRIX}`;
       const groundedResponse = await generateContentWithGeminiFallback({
         userApiKey,
         contents: { parts: buildImageParts(groundedPrompt) },
@@ -481,7 +552,7 @@ export async function handleVerifyProduct(
       );
 
       // 2) Graceful fallback if Google Search temporarily hits rate limits or returns non-JSON
-      const fallbackPrompt = buildVerifyProductPrompt(body, storeCheck, false);
+      const fallbackPrompt = `${buildVerifyProductPrompt(body, storeCheck, false)}\n\n${ACCUFIX_CLINICAL_DECISION_MATRIX}`;
       const fallbackResponse = await generateContentWithGeminiFallback({
         userApiKey,
         contents: { parts: buildImageParts(fallbackPrompt) },

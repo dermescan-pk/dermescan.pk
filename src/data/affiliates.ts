@@ -305,6 +305,18 @@ function normalizeText(value: string): string {
     .trim();
 }
 
+const UNIQUE_ACCUFIX_TITLE_PHRASES = [
+  "accufix",
+  "unscrub",
+  "dark lip treatment balm",
+  "oats and lipid hydrating body wash",
+  "oats and lipid body wash",
+  "aha bha body wash",
+  "clarify and rebalance shampoo",
+  "strength and shine leave in conditioner",
+  "hydrating gentle cleanser",
+] as const;
+
 function isEligibleAccufixProduct(
   brand: string,
   normCombined: string
@@ -330,7 +342,9 @@ function isEligibleAccufixProduct(
     return false;
   }
 
-  return normCombined.includes("accufix") || normCombined.includes("unscrub");
+  return UNIQUE_ACCUFIX_TITLE_PHRASES.some((phrase) =>
+    normCombined.includes(phrase)
+  );
 }
 
 function matchesAccufixItem(
