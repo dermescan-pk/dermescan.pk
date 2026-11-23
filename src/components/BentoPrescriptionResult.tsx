@@ -154,9 +154,11 @@ export function BentoPrescriptionResult({
                 href={verifiedAffiliateUrl}
                 target="_blank"
                 rel="sponsored noopener noreferrer"
-                className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-4.5 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+                className="inline-flex min-h-[40px] max-w-full items-center justify-center gap-2 rounded-full border border-[#732839]/40 bg-gradient-to-b from-[#9E4358] to-[#7D2E40] px-4.5 py-2 text-xs font-semibold text-white shadow-[0_10px_24px_-6px_rgba(125,46,64,0.48)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#8C374B] hover:to-[#692233] hover:shadow-[0_14px_28px_-6px_rgba(125,46,64,0.58)] active:scale-[0.98] dark:border-[#C76379]/40 dark:from-[#B5546A] dark:to-[#913B4F] dark:text-white dark:hover:from-[#C76379] dark:hover:to-[#A0455B]"
               >
-                Buy at the best price here →
+                <ShoppingBag className="h-3.5 w-3.5 shrink-0" />
+                <span>Buy at the best price here</span>
+                <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
               </a>
             </div>
           )}
@@ -223,7 +225,7 @@ export function BentoPrescriptionResult({
   return (
     <div className="min-w-0 space-y-6">
       {/* Top Editorial Summary Header */}
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)]">
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white px-6 py-5 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)]">
         <div className="flex min-w-0 items-center gap-2.5">
           <FileText className="h-4.5 w-4.5 shrink-0 text-[#B56576]" />
           <span className="min-w-0 break-words font-editorial text-xl font-semibold text-[#1E181A]">
@@ -262,7 +264,7 @@ export function BentoPrescriptionResult({
       </div>
 
       {/* Card 1: Visual Assessment & Ranked Possibilities */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
         <div className="mb-5 flex min-w-0 items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <Eye className="h-4.5 w-4.5" />
@@ -372,7 +374,7 @@ export function BentoPrescriptionResult({
       </section>
 
       {/* Card 2: Daily Morning & Night Routine (Clinical Dossier) */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
         <div className="mb-6 flex min-w-0 items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <Sun className="h-4.5 w-4.5" />
@@ -449,7 +451,7 @@ export function BentoPrescriptionResult({
       </section>
 
       {/* Card 3: Safe Pakistani Pharmacy Picks */}
-      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
         <div className="mb-6 flex min-w-0 items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
             <ShoppingBag className="h-4.5 w-4.5" />
@@ -516,9 +518,11 @@ export function BentoPrescriptionResult({
                       href={item.verifiedAffiliateUrl}
                       target="_blank"
                       rel="sponsored noopener noreferrer"
-                      className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+                      className="inline-flex min-h-[40px] max-w-full items-center justify-center gap-2 rounded-full border border-[#732839]/40 bg-gradient-to-b from-[#9E4358] to-[#7D2E40] px-5 py-2 text-xs font-semibold text-white shadow-[0_10px_24px_-6px_rgba(125,46,64,0.48)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#8C374B] hover:to-[#692233] hover:shadow-[0_14px_28px_-6px_rgba(125,46,64,0.58)] active:scale-[0.98] dark:border-[#C76379]/40 dark:from-[#B5546A] dark:to-[#913B4F] dark:text-white dark:hover:from-[#C76379] dark:hover:to-[#A0455B]"
                     >
-                      Buy at the best price here →
+                      <ShoppingBag className="h-3.5 w-3.5 shrink-0" />
+                      <span>Buy at the best price here</span>
+                      <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
                     </a>
                   </div>
                 ) : item.buyUrl ? (
@@ -557,7 +561,7 @@ export function BentoPrescriptionResult({
       {/* Card 4 & Card 5 Split on Tablet/Laptop */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Card 4: Water & Daily Habits */}
-        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+        <section className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
           <div className="mb-4 flex min-w-0 items-center gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576]">
               <Droplets className="h-4.5 w-4.5" />

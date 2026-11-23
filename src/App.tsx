@@ -56,7 +56,7 @@ const NAV_TABS: {
   { id: "skin", label: "Skin & Body", icon: ScanFace },
   { id: "hair", label: "Hair Studio", icon: Scissors },
   { id: "steroid", label: "Steroid Check", icon: FlaskConical },
-  { id: "verify", label: "Product Decoder", icon: ShieldCheck },
+  { id: "verify", label: "Fake & Store Check", icon: ShieldCheck },
 ];
 
 const SWIPE_MIN_DISTANCE_PX = 40;

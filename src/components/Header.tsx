@@ -14,51 +14,77 @@ interface HeaderProps {
 function HorizontalBotanicalAccent() {
   return (
     <svg
-      viewBox="0 0 92 22"
+      viewBox="0 0 84 28"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      className="h-4 w-14 shrink-0 text-[#B56576] transition-colors duration-300 dark:text-[#D48395] sm:h-5 sm:w-[84px]"
+      className="h-auto w-[92px] shrink-0 text-[#B56576]/85 transition-colors duration-300 dark:text-[#D48395]/85"
     >
-      {/* Delicate horizontal stem */}
+      {/* Delicate horizontal curving stem */}
       <path
-        d="M2 13.5C18 13.5 34 10.5 54 10.8C67 11 76 9.8 83 9.2"
+        d="M2 16.5C18 19.5 34 11.5 52 14.5C60 15.8 66.5 14.8 71 12.6"
         stroke="currentColor"
-        strokeWidth="1.15"
+        strokeWidth="1.05"
         strokeLinecap="round"
       />
-      {/* Upper minimalist leaf */}
+      {/* Upper fine-line leaf */}
       <path
-        d="M26 12C29 6.8 36 4.5 41.5 6.8C37.5 10.2 31.5 11.8 26 12Z"
+        d="M26 15.2C28.5 9.2 35.5 7.4 40 9.6C36.8 13.8 31.2 15.6 26 15.2Z"
         stroke="currentColor"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Lower minimalist leaf */}
-      <path
-        d="M46 11C49.5 16.2 57 17.8 62.5 15C58 12.2 52 11 46 11Z"
-        stroke="currentColor"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Minimalist 3-petal blossom at tip */}
-      <path
-        d="M78 9.6C80.5 5.4 85 4.2 87.5 6.2C85.5 8.8 82 9.8 78 9.6Z"
-        stroke="currentColor"
-        strokeWidth="1.1"
+        strokeWidth="1"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M79 9.8C83.2 8.8 87.5 9.8 89.2 12.2C85.5 13.4 81.8 12.2 79 9.8Z"
+        d="M27.2 14.8C31.2 13 34.8 11.5 37.8 10.2"
         stroke="currentColor"
-        strokeWidth="1.1"
+        strokeWidth="0.75"
+        strokeLinecap="round"
+        strokeOpacity="0.65"
+      />
+      {/* Lower fine-line leaf */}
+      <path
+        d="M45 14.1C47.8 19.8 54.5 21.8 59 19.4C55.6 15.4 50.2 13.6 45 14.1Z"
+        stroke="currentColor"
+        strokeWidth="1"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="83.5" cy="9.5" r="1.1" fill="currentColor" opacity="0.75" />
+      <path
+        d="M46.2 14.6C50.2 16.2 53.6 17.6 56.6 18.8"
+        stroke="currentColor"
+        strokeWidth="0.75"
+        strokeLinecap="round"
+        strokeOpacity="0.65"
+      />
+      {/* Calyx sepals */}
+      <path
+        d="M68.5 13.5C69.8 10.6 72 9.4 74.2 9.8"
+        stroke="currentColor"
+        strokeWidth="0.95"
+        strokeLinecap="round"
+      />
+      <path
+        d="M69 14C71.5 15.8 74.2 15.8 76.2 14.2"
+        stroke="currentColor"
+        strokeWidth="0.95"
+        strokeLinecap="round"
+      />
+      {/* Fine-line rosebud bloom */}
+      <path
+        d="M70.8 12.6C71.6 8.2 75.5 5.4 79.8 6.8C81.8 7.5 82.4 10.2 80.5 12.6C78.4 15.2 74.2 15.4 70.8 12.6Z"
+        stroke="currentColor"
+        strokeWidth="1.05"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Inner rosebud petal swirl */}
+      <path
+        d="M73.5 11.8C74.2 9.2 76.8 8 78.8 9C79.8 9.6 79.4 11.4 77.4 12.1"
+        stroke="currentColor"
+        strokeWidth="0.95"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -73,10 +99,10 @@ export function Header({
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-[#ECE0E3] bg-white/95 backdrop-blur-sm transition-colors duration-300 dark:border-[#34262B] dark:bg-[#191215]/95">
-      <div className="mx-auto flex max-w-3xl flex-col gap-3.5 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
-        {/* Row 1 (Mobile) / Left Side (Desktop) */}
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 sm:gap-2.5">
+      <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between md:gap-6">
+        {/* Row 1 (Mobile/Tablet) / Left Side (Desktop) */}
+        <div className="min-w-0 md:pr-2">
+          <div className="flex items-center gap-2">
             <h1 className="font-['Alex_Brush',_'Great_Vibes',_cursive] whitespace-nowrap py-0.5 text-4xl leading-none tracking-normal text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF] sm:text-5xl">
               DerméScan
             </h1>
@@ -88,7 +114,7 @@ export function Header({
         </div>
 
         {/* Row 2 (Mobile) / Right Side (Desktop) */}
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-end sm:gap-2.5">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-2.5 sm:flex-nowrap sm:justify-end sm:gap-2.5">
           <button
             type="button"
             onClick={onOpenHealthProfile}

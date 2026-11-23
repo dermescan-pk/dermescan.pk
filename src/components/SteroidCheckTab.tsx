@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   ArrowUpRight,
+  ShoppingBag,
 } from "lucide-react";
 import {
   MultiAngleUploader,
@@ -13,6 +14,7 @@ import {
 } from "./MultiAngleUploader.tsx";
 import { ScanningLoader } from "./ScanningLoader.tsx";
 import { TabHeaderIllustration } from "./TabHeaderIllustration.tsx";
+import { PhotoGuideBanner } from "./PhotoGuideBanner.tsx";
 import { ApiKeyAlertCard } from "./ApiKeyAlertCard.tsx";
 import { RateLimitNoticeCard } from "./RateLimitNoticeCard.tsx";
 import { WhatsAppShareButton } from "./WhatsAppShareButton.tsx";
@@ -232,15 +234,18 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
         </div>
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] transition-colors duration-300 dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
         <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
           <div className="pb-6">
-            <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-              {language === "ur"
-                ? "Cream Ka Naam Aur Photos"
-                : "Cream Name & Photos"}
-            </h3>
-            <p className="mb-4 mt-1 text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                {language === "ur"
+                  ? "Cream Ka Naam Aur Photos"
+                  : "Cream Name & Photos"}
+              </h3>
+              <PhotoGuideBanner language={language} />
+            </div>
+            <p className="mb-4 mt-1.5 text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
               {language === "ur"
                 ? "Saaf roshni mein front aur peechay likhay ingredients ki photo lein."
                 : "Upload clear photos of the front tube and back ingredients."}
@@ -470,7 +475,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           </div>
 
           {result.detectedRiskyIngredients.length > 0 && (
-            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
               <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Cream Mein Kya Shamil Hai"
@@ -504,7 +509,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
           )}
 
-          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
             <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
               {language === "ur"
                 ? "Mumkina Nuqsanat Aur Safe Tarika"
@@ -563,7 +568,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           </div>
 
           {hydratedReplacements.length > 0 && (
-            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
               <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A]">
                 {language === "ur"
                   ? "Safe, Steroid-Free Pharmacy Badal"
@@ -598,9 +603,11 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                           href={item.verifiedAffiliateUrl}
                           target="_blank"
                           rel="sponsored noopener noreferrer"
-                          className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+                          className="inline-flex min-h-[40px] max-w-full items-center justify-center gap-2 rounded-full border border-[#732839]/40 bg-gradient-to-b from-[#9E4358] to-[#7D2E40] px-5 py-2 text-xs font-semibold text-white shadow-[0_10px_24px_-6px_rgba(125,46,64,0.48)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#8C374B] hover:to-[#692233] hover:shadow-[0_14px_28px_-6px_rgba(125,46,64,0.58)] active:scale-[0.98] dark:border-[#C76379]/40 dark:from-[#B5546A] dark:to-[#913B4F] dark:text-white dark:hover:from-[#C76379] dark:hover:to-[#A0455B]"
                         >
-                          Buy at the best price here →
+                          <ShoppingBag className="h-3.5 w-3.5 shrink-0" />
+                          <span>Buy at the best price here</span>
+                          <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
                         </a>
                       ) : item.buyUrl ? (
                         <a

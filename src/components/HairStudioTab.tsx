@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Scissors, AlertTriangle, RefreshCw } from "lucide-react";
 import { TabHeaderIllustration } from "./TabHeaderIllustration.tsx";
+import { PhotoGuideBanner } from "./PhotoGuideBanner.tsx";
 import {
   MultiAngleUploader,
   type AngleSlotConfig,
@@ -327,16 +328,19 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
     <div className="min-w-0 space-y-8">
       <TabHeaderIllustration variant="hair" language={language} />
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
-        <div className="mb-5 flex min-w-0 items-baseline justify-between gap-2">
-          <div className="min-w-0 space-y-1">
-            <div className="flex items-baseline gap-2.5">
-              <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
-                01
-              </span>
-              <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                {language === "ur" ? "Photos Add Karein" : "Add Photos"}
-              </h3>
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] transition-colors duration-300 dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
+        <div className="mb-5 flex min-w-0 items-start justify-between gap-3">
+          <div className="min-w-0 space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex items-baseline gap-2.5">
+                <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
+                  01
+                </span>
+                <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                  {language === "ur" ? "Photos Add Karein" : "Add Photos"}
+                </h3>
+              </div>
+              <PhotoGuideBanner language={language} />
             </div>
             <p className="text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
               {language === "ur"
@@ -344,7 +348,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
                 : "Upload 1 to 4 clear photos of your scalp, hairline, and ends."}
             </p>
           </div>
-          <span className="shrink-0 text-xs font-semibold tabular-nums text-[#B56576] dark:text-[#D48395]">
+          <span className="shrink-0 pt-1 text-xs font-semibold tabular-nums text-[#B56576] dark:text-[#D48395]">
             {uploadedList.length} / 4
           </span>
         </div>
@@ -369,7 +373,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#DFC6CE] bg-white p-6 shadow-[0_14px_34px_-12px_rgba(140,74,92,0.20)] transition-colors duration-300 dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.52)] sm:p-8">
         <div className="flex items-baseline gap-2.5">
           <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
             02

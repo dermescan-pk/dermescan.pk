@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
+  ArrowUpRight,
   BookOpen,
   CheckCircle2,
   Clock,
   Info,
   Search,
   ShieldAlert,
+  ShoppingBag,
   Sparkles,
   UserCheck,
   X,
@@ -369,7 +371,7 @@ function ProductPhotoFrame({
 
   return (
     <div
-      className={`flex h-[120px] w-[120px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#EAD8DC] p-2 transition-colors duration-300 dark:border-[#38282D] ${
+      className={`flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#EAD8DC] p-1.5 transition-colors duration-300 dark:border-[#38282D] ${
         imgFailed ? "bg-white dark:bg-[#21181B]" : "bg-white"
       }`}
     >
@@ -394,33 +396,35 @@ function ProductMonographCard({
   product: UnifiedProductMonograph;
 }) {
   return (
-    <article className="rounded-2xl border border-[#ECE0E3] bg-white p-5 transition-colors duration-300 sm:p-6 dark:border-[#34262B] dark:bg-[#1E1619]">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
-        <ProductPhotoFrame
-          imagePath={product.imagePath}
-          productName={product.name}
-          bottleKind={product.bottleKind}
-        />
+    <article className="flex h-full flex-col justify-between rounded-2xl border border-[#DFC6CE] bg-white p-4 shadow-[0_12px_30px_-12px_rgba(140,74,92,0.20)] transition-colors duration-300 dark:border-[#49323A] dark:bg-[#1E1619] dark:shadow-[0_14px_34px_-14px_rgba(0,0,0,0.52)]">
+      <div className="space-y-3">
+        <div className="flex items-start gap-3.5">
+          <ProductPhotoFrame
+            imagePath={product.imagePath}
+            productName={product.name}
+            bottleKind={product.bottleKind}
+          />
 
-        <div className="min-w-0 flex-1 space-y-4">
-          <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-block rounded-full border border-[#ECE0E3] bg-[#FAF6F7] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#B56576] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113] dark:text-[#D48395]">
+          <div className="min-w-0 flex-1 space-y-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="inline-block rounded-full border border-[#ECE0E3] bg-[#FAF6F7] px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-[#B56576] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113] dark:text-[#D48395]">
                 #{product.order} · {product.monographSection}
               </span>
-              <span className="inline-block rounded-full border border-[#EAD8DC] bg-[#B56576]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#8F4556] dark:border-[#49323A] dark:bg-[#D48395]/15 dark:text-[#F0B2C0]">
+              <span className="inline-block rounded-full border border-[#EAD8DC] bg-[#B56576]/10 px-2 py-0.5 text-[10px] font-semibold text-[#8F4556] dark:border-[#49323A] dark:bg-[#D48395]/15 dark:text-[#F0B2C0]">
                 {product.brand}
               </span>
             </div>
-            <h4 className="font-editorial break-words text-lg font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-xl dark:text-[#F7EFEF]">
+            <h4 className="font-editorial break-words text-base font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-lg dark:text-[#F7EFEF]">
               {product.name}
             </h4>
           </div>
+        </div>
 
-          <dl className="space-y-3 text-[15px] leading-relaxed sm:text-base">
-            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-4 py-3 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
-              <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8C3B4A] dark:text-[#F0B2C0]">
-                <UserCheck className="h-3.5 w-3.5 shrink-0" />
+        <dl className="space-y-2 text-[13px] leading-snug">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-3 py-2 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
+              <dt className="mb-0.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#8C3B4A] dark:text-[#F0B2C0]">
+                <UserCheck className="h-3 w-3 shrink-0" />
                 <span>{product.suitsWhomLabel}</span>
               </dt>
               <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
@@ -428,63 +432,65 @@ function ProductMonographCard({
               </dd>
             </div>
 
-            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-4 py-3 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
-              <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8C3B4A] dark:text-[#F0B2C0]">
-                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-3 py-2 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
+              <dt className="mb-0.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#8C3B4A] dark:text-[#F0B2C0]">
+                <CheckCircle2 className="h-3 w-3 shrink-0" />
                 <span>Best For Which Condition</span>
               </dt>
               <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
                 {product.bestFor}
               </dd>
             </div>
+          </div>
 
-            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-4 py-3 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
-              <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#B56576] dark:text-[#D48395]">
-                <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                <span>Key Perks &amp; How It Works</span>
+          <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-3 py-2 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
+            <dt className="mb-0.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#B56576] dark:text-[#D48395]">
+              <Sparkles className="h-3 w-3 shrink-0" />
+              <span>Key Perks &amp; How It Works</span>
+            </dt>
+            <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
+              {product.keyPerks}
+            </dd>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="rounded-xl border border-[#E5C9CE] bg-[#FDF4F6] px-3 py-2 transition-colors duration-300 dark:border-[#4D3038] dark:bg-[#26181D]">
+              <dt className="mb-0.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#9E4558] dark:text-[#F0A8B8]">
+                <ShieldAlert className="h-3 w-3 shrink-0" />
+                <span>Who Should Avoid</span>
               </dt>
-              <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
-                {product.keyPerks}
+              <dd className="break-words text-[#4D363C] dark:text-[#DFC9CF]">
+                {product.whoShouldAvoid}
               </dd>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <div className="rounded-xl border border-[#E5C9CE] bg-[#FDF4F6] px-4 py-3 transition-colors duration-300 dark:border-[#4D3038] dark:bg-[#26181D]">
-                <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#9E4558] dark:text-[#F0A8B8]">
-                  <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
-                  <span>Who Should Avoid</span>
-                </dt>
-                <dd className="break-words text-[#4D363C] dark:text-[#DFC9CF]">
-                  {product.whoShouldAvoid}
-                </dd>
-              </div>
-
-              <div className="rounded-xl border border-[#E5D3C4] bg-[#FCF7F2] px-4 py-3 transition-colors duration-300 dark:border-[#4A3B30] dark:bg-[#241C17]">
-                <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8E5B32] dark:text-[#E5BD99]">
-                  <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-                  <span>Could Potentially Cause</span>
-                </dt>
-                <dd className="break-words text-[#4F4036] dark:text-[#DCCDC1]">
-                  {product.couldCause}
-                </dd>
-              </div>
+            <div className="rounded-xl border border-[#E5D3C4] bg-[#FCF7F2] px-3 py-2 transition-colors duration-300 dark:border-[#4A3B30] dark:bg-[#241C17]">
+              <dt className="mb-0.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#8E5B32] dark:text-[#E5BD99]">
+                <AlertTriangle className="h-3 w-3 shrink-0" />
+                <span>Could Potentially Cause</span>
+              </dt>
+              <dd className="break-words text-[#4F4036] dark:text-[#DCCDC1]">
+                {product.couldCause}
+              </dd>
             </div>
-          </dl>
-
-          {product.affiliateUrl && (
-            <div className="pt-1">
-              <a
-                href={product.affiliateUrl}
-                target="_blank"
-                rel="sponsored noopener noreferrer"
-                className="inline-flex min-h-[42px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 sm:text-sm dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
-              >
-                Buy at the best price here →
-              </a>
-            </div>
-          )}
-        </div>
+          </div>
+        </dl>
       </div>
+
+      {product.affiliateUrl && (
+        <div className="mt-3 pt-1">
+          <a
+            href={product.affiliateUrl}
+            target="_blank"
+            rel="sponsored noopener noreferrer"
+            className="inline-flex min-h-[40px] max-w-full items-center justify-center gap-2 rounded-full border border-[#732839]/40 bg-gradient-to-b from-[#9E4358] to-[#7D2E40] px-4.5 py-2 text-xs font-semibold text-white shadow-[0_10px_24px_-6px_rgba(125,46,64,0.48)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#8C374B] hover:to-[#692233] hover:shadow-[0_14px_28px_-6px_rgba(125,46,64,0.58)] active:scale-[0.98] dark:border-[#C76379]/40 dark:from-[#B5546A] dark:to-[#913B4F] dark:text-white dark:hover:from-[#C76379] dark:hover:to-[#A0455B]"
+          >
+            <ShoppingBag className="h-3.5 w-3.5 shrink-0" />
+            <span>Buy at the best price here</span>
+            <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
+          </a>
+        </div>
+      )}
     </article>
   );
 }
@@ -588,7 +594,7 @@ export function SkincareGuidesDrawer({
     >
       {/* Sticky Top Navigation Bar */}
       <header className="sticky top-0 z-10 border-b border-[#ECE0E3] bg-[#FAF6F7]/95 backdrop-blur-md transition-colors duration-300 dark:border-[#34262B] dark:bg-[#140F11]/95">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-5 py-3.5 sm:px-8">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-3.5 sm:px-8">
           <button
             type="button"
             onClick={onClose}
@@ -602,29 +608,18 @@ export function SkincareGuidesDrawer({
             <BookOpen className="h-3.5 w-3.5 shrink-0" />
             <span>DerméScan Product Guides</span>
           </span>
-
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close Skincare Guides"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ECE0E3] bg-white text-[#5E5055] transition-colors duration-200 hover:border-[#B56576] hover:text-[#B56576] active:scale-95 dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
-          >
-            <X className="h-4 w-4" />
-          </button>
         </div>
       </header>
 
       {/* Full-Screen Centered Editorial Column */}
-      <main className="mx-auto max-w-4xl space-y-8 px-5 py-6 pb-24 sm:px-8">
+      <main className="mx-auto max-w-5xl space-y-8 px-5 pt-8 pb-24 sm:px-8 sm:pt-10">
         {/* Page Heading + Search + Brand & Category Filters */}
         <section className="space-y-5">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <BookOpen className="h-3.5 w-3.5 shrink-0 text-[#B56576] dark:text-[#D48395]" />
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#B56576] dark:text-[#D48395]">
-                {language === "ur"
-                  ? `DerméScan Editorial Hub · ${UNIFIED_PRODUCTS_CATALOG.length} Verified Monographs`
-                  : `DerméScan Dermatology Journal · ${UNIFIED_PRODUCTS_CATALOG.length} Jenpharm & AccuFix Monographs`}
+                DerméScan Dermatology Journal · Trusted Pakistani Brands
               </p>
             </div>
             <h2
@@ -647,12 +642,8 @@ export function SkincareGuidesDrawer({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Search all 36 Jenpharm and AccuFix products, conditions, ingredients, or skin types"
-                placeholder={
-                  language === "ur"
-                    ? "Search karein: melasma, oily skin, pimple patches, lip balm, dandruff, AccuFix..."
-                    : "Search all 36 products: melasma, oily skin, lip balm, dandruff, AccuFix, retinol..."
-                }
+                aria-label="Search products, conditions, ingredients, or skin types"
+                placeholder="Search product..."
                 className="w-full rounded-full border border-[#ECE0E3] bg-white py-3 pr-11 pl-11 text-[15px] text-[#1E181A] placeholder:text-[#7A686D] transition-colors duration-300 focus:border-[#B56576] focus:outline-none sm:text-base dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
               />
               {searchQuery && (
@@ -668,8 +659,8 @@ export function SkincareGuidesDrawer({
             </div>
 
             {/* Brand Filter Bar */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#7A686D] dark:text-[#A9959B]">
+            <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
+              <span className="mr-1 shrink-0 whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] text-[#7A686D] dark:text-[#A9959B]">
                 Brand:
               </span>
               {BRAND_FILTER_OPTIONS.map((option) => {
@@ -679,7 +670,7 @@ export function SkincareGuidesDrawer({
                     key={option.id}
                     type="button"
                     onClick={() => setBrandFilter(option.id)}
-                    className={`min-h-[34px] rounded-full border px-3.5 py-1 text-xs font-semibold transition-colors duration-200 active:scale-95 ${
+                    className={`min-h-[34px] shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1 text-xs font-semibold transition-colors duration-200 active:scale-95 ${
                       isSelected
                         ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F5B8C6]"
                         : "border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
@@ -692,7 +683,7 @@ export function SkincareGuidesDrawer({
             </div>
 
             {/* Category Tabs */}
-            <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
+            <div className="flex flex-wrap items-center gap-2 pb-1">
               <button
                 type="button"
                 onClick={() => {
@@ -705,7 +696,7 @@ export function SkincareGuidesDrawer({
                     : "border border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
                 }`}
               >
-                All Products ({brandScopedCatalog.length})
+                All Products
               </button>
               {SKINCARE_GUIDE_ARTICLES.map((article) => {
                 const isActive = !isSearching && activeTab === article.id;
@@ -754,7 +745,7 @@ export function SkincareGuidesDrawer({
             </div>
 
             {searchResults.length > 0 ? (
-              <div className="space-y-5">
+              <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
                 {searchResults.map((product) => (
                   <ProductMonographCard
                     key={product.affiliateId}
@@ -820,7 +811,7 @@ export function SkincareGuidesDrawer({
                   <h4 className="border-b border-[#ECE0E3] pb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:border-[#34262B] dark:text-[#D48395]">
                     {sectionLabel} ({sectionItems.length})
                   </h4>
-                  <div className="space-y-5">
+                  <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
                     {sectionItems.map((product) => (
                       <ProductMonographCard
                         key={product.affiliateId}
@@ -856,7 +847,7 @@ export function SkincareGuidesDrawer({
             </header>
 
             {categoryProducts.length > 0 ? (
-              <div className="space-y-5">
+              <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
                 {categoryProducts.map((product) => (
                   <ProductMonographCard
                     key={product.affiliateId}

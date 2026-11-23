@@ -11,7 +11,6 @@ const TAB_BANNER_COPY: Record<
   {
     title: { en: string; ur: string };
     subtitle: { en: string; ur: string };
-    tips: { en: string; ur: string };
   }
 > = {
   skin: {
@@ -23,10 +22,6 @@ const TAB_BANNER_COPY: Record<
       en: "Personalized routines for Pakistani weather & water.",
       ur: "Pakistani mausam aur paani ke mutabiq routine.",
     },
-    tips: {
-      en: "Good lighting · No filters · Close-up",
-      ur: "Saaf roshni · No filters · Nazdeek se photo",
-    },
   },
   hair: {
     title: {
@@ -36,10 +31,6 @@ const TAB_BANNER_COPY: Record<
     subtitle: {
       en: "Balanced scalp and strand care for Pakistani water.",
       ur: "Khushki ke baghair baal aur sar ki hifazat.",
-    },
-    tips: {
-      en: "Good lighting · No filters · Close-up",
-      ur: "Saaf roshni · No filters · Nazdeek se photo",
     },
   },
   steroid: {
@@ -51,23 +42,15 @@ const TAB_BANNER_COPY: Record<
       en: "Spot hidden steroids and switch to gentle daily care.",
       ur: "Chhupay steroids pehchanein aur safe badal paayein.",
     },
-    tips: {
-      en: "Good lighting · No filters · Close-up",
-      ur: "Saaf roshni · No filters · Nazdeek se photo",
-    },
   },
   verify: {
     title: {
-      en: "Authenticity & Formula Check",
+      en: "Real or Fake? Product & Website Check",
       ur: "Asli-Naqli Aur Ingredients Check",
     },
     subtitle: {
       en: "Verified packaging checks, decoded actives, and skin suitability.",
       ur: "Asli-naqli pehchan, active ingredients aur munasibat check.",
-    },
-    tips: {
-      en: "Good lighting · No filters · Close-up",
-      ur: "Saaf roshni · No filters · Nazdeek se photo",
     },
   },
 };
@@ -85,9 +68,6 @@ export function TabHeaderIllustration({
       </h2>
       <p className="text-sm leading-relaxed text-[#5E5055] transition-colors duration-300 dark:text-[#C9B6BC]">
         {copy.subtitle[language]}
-      </p>
-      <p className="pt-0.5 text-xs font-medium tracking-wide text-[#7A686D] transition-colors duration-300 dark:text-[#A9939B]">
-        {copy.tips[language]}
       </p>
     </header>
   );
