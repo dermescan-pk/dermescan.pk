@@ -188,16 +188,14 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     <div className="min-w-0 space-y-6">
       <TabHeaderIllustration variant="verify" language={language} />
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="min-w-0 space-y-1.5">
             <label
               htmlFor="verify-product-name"
               className="block text-xs font-bold text-[#1E181A]"
             >
-              {language === "ur"
-                ? "1. Product Ka Naam / Brand (Optional)"
-                : "1. Product Name / Brand (Optional)"}
+              {language === "ur" ? "Product ka naam" : "Product name"}
             </label>
             <input
               id="verify-product-name"
@@ -205,7 +203,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="Or type product name / brand if label is blurry"
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className="h-11 w-full rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:bg-white focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
@@ -214,20 +212,18 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               htmlFor="verify-profile-type"
               className="block text-xs font-bold text-[#1E181A]"
             >
-              {language === "ur"
-                ? "2. Meri Skin / Baal Ki Qism (Optional)"
-                : "2. My Skin / Hair Type (Optional)"}
+              {language === "ur" ? "Skin ya hair type" : "Your skin or hair type"}
             </label>
             <select
               id="verify-profile-type"
               value={userProfileType}
               onChange={(e) => setUserProfileType(e.target.value)}
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-4 py-3 text-xs leading-relaxed text-[#1E181A] transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className="h-11 w-full rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] transition-all focus:border-[#B56576] focus:bg-white focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             >
               <option value="">
                 {language === "ur"
-                  ? "Munasibat check karne ke liye chunein (Optional)"
-                  : "Select skin or hair type to check suitability (Optional)"}
+                  ? "Munasibat check karne ke liye chunein"
+                  : "Select to check suitability"}
               </option>
               {USER_PROFILE_TYPES.map((typeOption) => (
                 <option key={typeOption} value={typeOption}>
@@ -242,9 +238,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               htmlFor="verify-store-input"
               className="block text-xs font-bold text-[#1E181A]"
             >
-              {language === "ur"
-                ? "3. Website / Seller Link Ya Store Ka Naam (Optional)"
-                : "3. Website / Seller Link or Store Name (Optional)"}
+              {language === "ur" ? "Website ya store link" : "Store or website"}
             </label>
             <input
               id="verify-store-input"
@@ -252,19 +246,19 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={storeInput}
               onChange={(e) => setStoreInput(e.target.value)}
               placeholder="e.g., dvago.pk, naheed.pk, theordinary.com, or Instagram seller..."
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className="h-11 w-full rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:bg-white focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-4 md:col-span-2">
+          <div className="flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)] md:col-span-2">
             <div className="space-y-2">
               <label
                 htmlFor="verify-suspicious-signs"
                 className="block text-xs font-bold text-[#1E181A]"
               >
                 {language === "ur"
-                  ? "4. Shakk Wali Baatein (Agar Kuch Ajeeb Lage)"
-                  : "4. Suspicious Signs (Optional Fake Red Flags)"}
+                  ? "Shakk wali baatein"
+                  : "Anything look off?"}
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {SUSPICIOUS_SIGNS_CHIPS.map((chip) => {
@@ -283,7 +277,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6D2D6] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -294,11 +288,15 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
             </div>
             <textarea
               id="verify-suspicious-signs"
-              rows={2}
+              rows={1}
               value={suspiciousSigns}
               onChange={(e) => setSuspiciousSigns(e.target.value)}
               placeholder="e.g. Price market se aadhi hai, smell ajeeb/tezi wali hai, ya bottom par batch code nahi hai..."
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+                suspiciousSigns.length > 72 || suspiciousSigns.includes("\n")
+                  ? "h-20 overflow-y-auto py-2.5"
+                  : "h-11 overflow-hidden py-3"
+              }`}
             />
           </div>
         </div>
@@ -306,8 +304,8 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
         <div>
           <h3 className="mb-3 text-xs font-bold text-[#1E181A]">
             {language === "ur"
-              ? "5. Bottle, Ingredients Aur Batch Code Photos (Upload Ya Live Camera)"
-              : "5. Bottle, Ingredients & Batch Code Photos (Upload or Camera)"}
+              ? "Packaging aur batch code photos"
+              : "Packaging & batch photos"}
           </h3>
           <MultiAngleUploader
             slots={PACKAGING_SLOTS}
@@ -391,7 +389,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                   !result.identifiedProductName
                     .toLowerCase()
                     .includes(result.identifiedBrand.toLowerCase())
-                    ? `${result.identifiedBrand} — ${result.identifiedProductName}`
+                    ? `${result.identifiedBrand} ${result.identifiedProductName}`
                     : result.identifiedProductName}
                 </h3>
               </div>
@@ -741,7 +739,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                         : "Recommended Safer Match"}
                     </p>
                     <h4 className="font-editorial break-words text-xl font-semibold text-[#1E181A]">
-                      {result.saferAlternative.brand} —{" "}
+                      {result.saferAlternative.brand}{" "}
                       {result.saferAlternative.name}
                     </h4>
                     <p className="text-xs text-[#5E5055]">

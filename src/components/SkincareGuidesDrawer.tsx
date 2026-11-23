@@ -39,19 +39,19 @@ export const SKINCARE_GUIDE_ARTICLES: GuideArticleMeta[] = [
     id: "sunblocks",
     categoryLabel: "Sunblocks",
     readTime: "3 min read",
-    title: "The Pakistani Sunscreen Guide — Choosing the Right Jenpharm SPF",
+    title: "The Pakistani Sunscreen Guide: Choosing the Right Jenpharm SPF",
     intro:
-      "In Pakistan's intense UV index—especially across Sindh and Punjab—skipping daily sunscreen is the #1 reason melasma, sun tan, and post-acne marks refuse to fade. Compare the full clinical profile of every Jenpharm SPF formula below:",
+      "In Pakistan's intense UV index, especially across Sindh and Punjab, skipping daily sunscreen is the #1 reason melasma, sun tan, and post-acne marks refuse to fade. Compare the full profile of every Jenpharm SPF formula below:",
     takeawayTitle: "Key Takeaway: Two-Finger Rule & Reapplication",
     takeawayBody:
-      "Apply two full finger-lengths across your face and neck every morning—even indoors near bright windows—and reapply every 2–3 hours when stepping outside in direct Pakistani sunlight.",
+      "Apply two full finger-lengths across your face and neck every morning, even indoors near bright windows, and reapply every 2–3 hours when stepping outside in direct Pakistani sunlight.",
   },
   {
     id: "creams-serums",
     categoryLabel: "Creams & Serums",
     readTime: "6 min read",
     title:
-      "Steroid-Free Brightening & Barrier Repair — Moisturizers, Creams & Serums",
+      "Steroid-Free Brightening & Barrier Repair: Moisturizers, Creams & Serums",
     intro:
       'Local "3-day whitening" creams thin your epidermis with unprescribed steroids. True skin brightening happens safely by repairing your moisture barrier first and fading excess melanin gradually with targeted clinical actives:',
     takeawayTitle: "Key Takeaway: Calm Barrier First, Brighten Safely",

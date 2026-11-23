@@ -64,7 +64,7 @@ export const JENPHARM_PRODUCTS_CATALOG: readonly JenpharmProductMonograph[] = [
     bottleKind: "wash",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      "Combination, mildly oily, dull, and textured skin—including sensitive South Asian skin that cannot tolerate harsh scrubs or strong glycolic acid.",
+      "Combination, mildly oily, dull, and textured skin, including sensitive South Asian skin that cannot tolerate harsh scrubs or strong glycolic acid.",
     bestFor:
       "Closed comedones (tiny whiteheads), rough uneven skin texture, post-acne dullness, and mild sun tan.",
     keyPerks:
@@ -189,7 +189,7 @@ export const JENPHARM_PRODUCTS_CATALOG: readonly JenpharmProductMonograph[] = [
     bottleKind: "jar",
     suitsWhomLabel: "Suits Whom & Skin Type",
     suitsWhom:
-      'Very dry, rough, flaky, and lipid-depleted skin types (Note: Despite the word "Oily" in its name, it is an oil-rich moisturizer formulated for dry skin—not for oily skin).',
+      'Very dry, rough, flaky, and lipid-depleted skin types (Note: Despite the word "Oily" in its name, it is an oil-rich moisturizer formulated for dry skin, not for oily skin).',
     bestFor:
       "Severe winter dryness, rough dry patches, dry hands/elbows, and non-acne-prone dry skin barriers.",
     keyPerks:
@@ -294,7 +294,7 @@ export const JENPHARM_PRODUCTS_CATALOG: readonly JenpharmProductMonograph[] = [
     bestFor:
       "Stubborn melasma, post-acne dark marks (PIH), and sun-induced hyperpigmentation.",
     keyPerks:
-      "Combines ultra-high UV filters with iron oxides (mineral tint) that block high-energy visible light—the hidden trigger that darkens melasma even when wearing untinted sunscreen.",
+      "Combines ultra-high UV filters with iron oxides (mineral tint) that block high-energy visible light, the hidden trigger that darkens melasma even when wearing untinted sunscreen.",
     whoShouldAvoid:
       "Very fair or very deep skin tones if the single universal tint does not match their undertone, or very oily skin in extreme humidity.",
     couldCause:
@@ -519,7 +519,7 @@ export const JENPHARM_PRODUCTS_CATALOG: readonly JenpharmProductMonograph[] = [
     bottleKind: "serum",
     suitsWhomLabel: "Suits Whom & Scalp/Hair Type",
     suitsWhom:
-      "All scalp types—especially low-porosity hair and oily scalps that get weighed down by traditional hair oils.",
+      "All scalp types, especially low-porosity hair and oily scalps that get weighed down by traditional hair oils.",
     bestFor:
       "Early hair thinning, widening part lines, and diffuse shedding where greasy oils cause buildup.",
     keyPerks:

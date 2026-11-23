@@ -190,17 +190,17 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
         </div>
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <div>
           <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
             {language === "ur"
-              ? "1. Cream / Product Ka Naam Aur Box Photo"
-              : "1. Cream / Product Name & Packaging Photo"}
+              ? "Cream Ka Naam Aur Photos"
+              : "Cream Name & Photos"}
           </h3>
           <p className="mb-3 text-xs leading-relaxed text-[#5E5055]">
             {language === "ur"
               ? "Saaf roshni mein front aur peechay likhay ingredients ki photo lein."
-              : "Take clear close-ups of the front tube/jar and the ingredients list on the back."}
+              : "Upload clear photos of the front tube and back ingredients."}
           </p>
           <MultiAngleUploader
             slots={CREAM_SLOTS}
@@ -225,12 +225,12 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             className="block text-xs font-bold text-[#1E181A]"
           >
             {language === "ur"
-              ? "Cream Ka Naam / Ingredients Likhein"
-              : "Type the Cream Name / Ingredients"}
+              ? "Cream ka naam ya ingredients"
+              : "Cream name or ingredients"}
           </label>
           <textarea
             id="steroid-cream-name"
-            rows={2}
+            rows={1}
             value={productNameOrIngredients}
             onChange={(e) => setProductNameOrIngredients(e.target.value)}
             placeholder={
@@ -238,20 +238,25 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 ? "Maslan: Dermovate + Golden Pearl mix, Clobetasol, Betnovate-N, ya ingredients list likhein..."
                 : "e.g., Clobetasol, Dermovate, Betnovate-N, Golden Pearl, or paste ingredients here..."
             }
-            className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 p-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+            className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+              productNameOrIngredients.length > 72 ||
+              productNameOrIngredients.includes("\n")
+                ? "h-20 overflow-y-auto py-2.5"
+                : "h-11 overflow-hidden py-3"
+            }`}
           />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4">
+          <div className="flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)]">
             <div className="space-y-2">
               <label
                 htmlFor="steroid-duration-reason"
                 className="block text-xs font-bold text-[#1E181A]"
               >
                 {language === "ur"
-                  ? "2. Kitne Time Se Aur Kyun Use Ki? (How Long Used & Why)"
-                  : "2. How Long Used & Why (Kitne time se aur kyun?)"}
+                  ? "Kitne time se use kar rahe hain?"
+                  : "How long have you used it?"}
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {STEROID_DURATION_CHIPS.map((chip) => {
@@ -270,7 +275,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -281,23 +286,27 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
             <textarea
               id="steroid-duration-reason"
-              rows={2}
+              rows={1}
               value={durationAndReason}
               onChange={(e) => setDurationAndReason(e.target.value)}
               placeholder="e.g. 4 months se daily raat ko fairness ya melasma ke liye laga rahe hain..."
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+                durationAndReason.length > 62 || durationAndReason.includes("\n")
+                  ? "h-20 overflow-y-auto py-2.5"
+                  : "h-11 overflow-hidden py-3"
+              }`}
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4">
+          <div className="flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)]">
             <div className="space-y-2">
               <label
                 htmlFor="steroid-side-effects"
                 className="block text-xs font-bold text-[#1E181A]"
               >
                 {language === "ur"
-                  ? "3. Kya Side Effects Nazar Aaye? (Side Effects Noticed)"
-                  : "3. Side Effects Noticed (Skin par kya asar dikha?)"}
+                  ? "Skin par kya asar dikha?"
+                  : "Any side effects noticed?"}
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {STEROID_SIDE_EFFECT_CHIPS.map((chip) => {
@@ -316,7 +325,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -327,11 +336,16 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
             </div>
             <textarea
               id="steroid-side-effects"
-              rows={2}
+              rows={1}
               value={sideEffectsNoticed}
               onChange={(e) => setSideEffectsNoticed(e.target.value)}
               placeholder="e.g. Chhorne par cheeks laal aur dark ho jate hain, veins dikh rahi hain, ya baal barh rahe hain..."
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+                sideEffectsNoticed.length > 62 ||
+                sideEffectsNoticed.includes("\n")
+                  ? "h-20 overflow-y-auto py-2.5"
+                  : "h-11 overflow-hidden py-3"
+              }`}
             />
           </div>
         </div>
@@ -605,7 +619,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
 
           <WhatsAppShareButton
             language={language}
-            summaryText={`*DerméScan — Steroid Check*\nProduct: ${result.productDetectedName}\nVerdict: ${result.verdictBadge[language]}\n${result.summaryBullets[language].map((b) => `• ${b}`).join("\n")}`}
+            summaryText={`*DerméScan: Steroid Check*\nProduct: ${result.productDetectedName}\nVerdict: ${result.verdictBadge[language]}\n${result.summaryBullets[language].map((b) => `• ${b}`).join("\n")}`}
           />
         </div>
       )}

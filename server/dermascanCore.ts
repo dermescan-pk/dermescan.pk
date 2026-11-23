@@ -556,8 +556,8 @@ export function checkStoreDeterministic(
       return {
         status: "unverified",
         badgeText: {
-          en: "Potentially Fake / Unverified Seller — Upload Bottle Photos",
-          ur: "Naqli Ka Khatra / Unverified Seller — Bottle Photos Upload Karein",
+          en: "Potentially Fake / Unverified Seller: Upload Bottle Photos",
+          ur: "Naqli Ka Khatra / Unverified Seller: Bottle Photos Upload Karein",
         },
         explanation: {
           en: `"${storeTrimmed}" appears to be a social media or WhatsApp seller, NOT an official verified store. Never trust social sellers without uploading clear Front Label, Back Barcode, and Batch-Code photos.`,
@@ -622,8 +622,8 @@ export function checkStoreDeterministic(
       return {
         status: "unverified",
         badgeText: {
-          en: "Potentially Fake / Unverified Seller — Upload Bottle Photos to Verify",
-          ur: "Naqli Ka Khatra / Unverified Seller — Bottle Photos Upload Karein",
+          en: "Potentially Fake / Unverified Seller: Upload Bottle Photos to Verify",
+          ur: "Naqli Ka Khatra / Unverified Seller: Bottle Photos Upload Karein",
         },
         explanation: {
           en: `"${hostname}" is NOT on our verified authentic list. Never assume an unknown website is real without uploading clear Front Label, Back Barcode, and Batch-Code photos.`,
@@ -677,8 +677,8 @@ export function checkStoreDeterministic(
     return {
       status: "unverified",
       badgeText: {
-        en: "Potentially Fake / Unverified Seller — Upload Bottle Photos to Verify",
-        ur: "Naqli Ka Khatra / Unverified Seller — Bottle Photos Upload Karein",
+        en: "Potentially Fake / Unverified Seller: Upload Bottle Photos to Verify",
+        ur: "Naqli Ka Khatra / Unverified Seller: Bottle Photos Upload Karein",
       },
       explanation: {
         en: `"${storeTrimmed}" is NOT on our verified Pakistani brand or retailer list. Upload clear Front Label, Back Barcode, and Batch-Code photos so we can inspect the product itself.`,
@@ -716,8 +716,8 @@ export function checkStoreDeterministic(
   return {
     status: "unverified",
     badgeText: {
-      en: "Potentially Fake / Unverified Brand — Upload Bottle Photos to Verify",
-      ur: "Naqli Ka Khatra / Unverified Brand — Bottle Photos Upload Karein",
+      en: "Potentially Fake / Unverified Brand: Upload Bottle Photos to Verify",
+      ur: "Naqli Ka Khatra / Unverified Brand: Bottle Photos Upload Karein",
     },
     explanation: {
       en: `"${productTrimmed}" is not on our verified brand directory and no trusted store URL was provided. Upload clear Front Label, Back Barcode, and Batch-Code photos before trusting it.`,
@@ -870,6 +870,7 @@ SIMPLE EVERYDAY LANGUAGE & FORMATTING RULES (VERY IMPORTANT):
 - Format EVERY summary, observation, cause, warning, and habit item as 2–3 SHORT, CLEAR BULLETS (max 10–12 words per bullet).
 - Keep morning and evening routines to 3–4 clear steps each.
 - NEVER write long paragraphs anywhere.
+- NEVER use em-dashes ("—") anywhere in any generated text, heading, badge, or bullet; use commas, colons, or short sentences instead.
 - For every routine step:
   * "timingBadge": short tag like "MORNING · DAILY" or "NIGHT · 3X A WEEK" (max 3–4 words)
   * "usageCaution": mandatory short caution badge (max 5–6 words), e.g., "Patch test 48h · No shaving right before", "Bleaches fabric · Wash hands", "Gentle daily use · Sun-safe", or "Short-contact 5 min wash only"
@@ -879,7 +880,7 @@ SIMPLE EVERYDAY LANGUAGE & FORMATTING RULES (VERY IMPORTANT):
   * "dose": simple amount (max 8 words, e.g., "Coin-sized drop on wet fingertips")
   * "method": simple step-by-step instructions (max 10–12 words, e.g., "Wash gently for 20–30 seconds, rinse with cool clean water")
   * "note": simple helpful tip or timing (max 10–12 words, e.g., "Do not scrub red bumps; skin calms in 3–4 weeks")
-- Provide BOTH simple English ("en") AND simple, natural Pakistani Roman Urdu in Latin letters ONLY ("ur" — NEVER Arabic/Urdu script) in every bilingual field.`;
+- Provide BOTH simple English ("en") AND simple, natural Pakistani Roman Urdu in Latin letters ONLY ("ur": NEVER Arabic/Urdu script) in every bilingual field.`;
 
 export function hydrateProductPicks(
   picks: RecommendedProductPick[] | undefined
@@ -1267,8 +1268,8 @@ MANDATORY CLINICAL TRIAGE & OUTPUT RULES:
 1. **RANKED POSSIBILITIES (2–3 CONCISE BULLETS IN "assessment.summaryBullets"):**
    - Cross-reference visual cues from the photos with ALL 7 box answers (especially duration, night itch vs pain, texture, ring/symmetric/crease pattern, and household history).
    - Format the first 2–3 bullets in "assessment.summaryBullets" cleanly as ranked possibilities from most likely to alternative possibilities, e.g.:
-     * "1st Most Likely: Fungal / sweat bumps — matches humid itching and tiny uniform bumps."
-     * "2nd Possibility: Friction rash — possible if tight clothes or heat worsen it."
+     * "1st Most Likely: Fungal or sweat bumps, matches humid itching and tiny uniform bumps."
+     * "2nd Possibility: Friction rash, possible if tight clothes or heat worsen it."
      * Plus 1 crisp audit bullet telling the user what to **STOP** right away from Box 6 if anything clashes (e.g., whitening/steroid formula creams, walnut scrubs, lemon/toothpaste/sugar scrubs on lips, home blade cutting on feet, heavy oils causing milia, or clashing acids).
 
 2. **CLEAR TRIAGE DECISION BADGE ("triageDecision" — CRITICAL):**
@@ -1608,7 +1609,8 @@ ZERO-MISTAKE AUTHENTICITY & DECODER RULES (FOLLOW STRICTLY):
    ${jenpharmCatalogList}
 4. LANGUAGE & CONCISENESS:
    - Keep every bullet crisp and easy to read (max 10–14 words per bullet).
-    - Provide BOTH simple English ("en") AND natural Pakistani Roman Urdu in Latin letters ONLY ("ur" — NEVER Arabic/Urdu script) for ALL bilingual fields.
+   - NEVER use em-dashes ("—") anywhere in any generated JSON string, badge, title, or bullet; use commas or colons instead.
+   - Provide BOTH simple English ("en") AND natural Pakistani Roman Urdu in Latin letters ONLY ("ur": NEVER Arabic/Urdu script) for ALL bilingual fields.
 ${jsonBlockInstruction}`;
 }
 

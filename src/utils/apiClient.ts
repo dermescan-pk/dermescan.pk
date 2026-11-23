@@ -9,7 +9,7 @@ export class ApiKeyConfigError extends Error {
 
 export class RateLimitError extends Error {
   constructor(
-    message = "High traffic right now — please wait 30 seconds and try again."
+    message = "High traffic right now, please wait 30 seconds and try again."
   ) {
     super(message);
     this.name = "RateLimitError";
@@ -92,7 +92,7 @@ export async function postApi<TResponse>(
       rawText.includes("<")
     ) {
       throw new RateLimitError(
-        "The scan server is temporarily busy or waking up — please wait a few seconds and tap Scan again."
+        "The scan server is temporarily busy or waking up, please wait a few seconds and tap Scan again."
       );
     }
     throw new Error(
@@ -114,7 +114,7 @@ export async function postApi<TResponse>(
     ) {
       throw new RateLimitError(
         err?.message ||
-          "High traffic right now — please wait 30 seconds and try again."
+          "High traffic right now, please wait 30 seconds and try again."
       );
     }
     throw new Error(err?.message || `Request failed (${response.status}).`);

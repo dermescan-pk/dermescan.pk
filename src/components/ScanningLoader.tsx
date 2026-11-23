@@ -134,8 +134,8 @@ export function ScanningLoader({
             </p>
             <p className="break-words text-xs font-medium leading-relaxed text-[#7A686D]">
               {language === "ur"
-                ? "Aapki photos aur details ko ghaur se check kiya ja raha hai — is mein aam taur par 1 minute se kam waqt lagta hai. Meharbani kar ke screen khuli rakhein."
-                : "Reviewing your photos and care notes — this usually takes under a minute. Please keep this page open."}
+                ? "Aapki photos aur details ko ghaur se check kiya ja raha hai. Is mein aam taur par 1 minute se kam waqt lagta hai. Meharbani kar ke screen khuli rakhein."
+                : "Reviewing your photos and care notes. This usually takes under a minute. Please keep this page open."}
             </p>
           </div>
         </div>

@@ -72,7 +72,7 @@ function SegmentedSelector({
               className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
                 active
                   ? "bg-gradient-to-b from-[#BF6E7F] to-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
-                  : "border border-[#E6D2D6] bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
+                  : "border border-[#E8D5D9]/80 bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
               }`}
             >
               {opt}
@@ -136,7 +136,6 @@ function appendHairChip(prev: string, chip: string): string {
 function HairStructuredBox({
   id,
   label,
-  instruction,
   chips,
   value,
   onChange,
@@ -145,26 +144,24 @@ function HairStructuredBox({
 }: {
   id: string;
   label: string;
-  instruction: string;
   chips: readonly string[];
   value: string;
   onChange: (val: string) => void;
   placeholder: string;
   fullWidth?: boolean;
 }) {
+  const isLongText = value.length > 62 || value.includes("\n");
+
   return (
     <div
-      className={`flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4 ${
+      className={`flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)] ${
         fullWidth ? "md:col-span-2" : ""
       }`}
     >
-      <div className="space-y-2">
-        <div className="space-y-0.5">
-          <label htmlFor={id} className="block text-xs font-bold text-[#1E181A]">
-            {label}
-          </label>
-          <p className="text-[11px] leading-relaxed text-[#5E5055]">{instruction}</p>
-        </div>
+      <div className="space-y-2.5">
+        <label htmlFor={id} className="block text-xs font-bold text-[#1E181A]">
+          {label}
+        </label>
 
         <div className="flex flex-wrap gap-1.5">
           {chips.map((chip) => {
@@ -181,7 +178,7 @@ function HairStructuredBox({
                 className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                   isSelected
                     ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                    : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                    : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                 }`}
               >
                 + {chip}
@@ -193,11 +190,13 @@ function HairStructuredBox({
 
       <textarea
         id={id}
-        rows={2}
+        rows={1}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+        className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+          isLongText ? "h-20 overflow-y-auto py-2.5" : "h-11 overflow-hidden py-3"
+        }`}
       />
     </div>
   );
@@ -328,21 +327,19 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
 
       <PhotoGuideBanner language={language} />
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
           <div className="min-w-0">
             <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
-              {language === "ur"
-                ? "Step 1: Sar, Hairline Aur Baalon Ki Photos Add Karein"
-                : "Step 1: Add Hair & Scalp Photos"}
+              {language === "ur" ? "Photos Add Karein" : "Add Photos"}
             </h2>
             <p className="text-xs leading-relaxed text-[#5E5055]">
               {language === "ur"
-                ? "1 se 4 photos add karein taake sar, baal aur neeche ke hissay alag check hon."
-                : "Add 1 to 4 photos so we can check your scalp, hair body, and ends separately."}
+                ? "Sar, hairline aur baalon ki 1 se 4 saaf photos add karein."
+                : "Upload 1 to 4 clear photos of your scalp, hairline, and ends."}
             </p>
           </div>
-          <span className="shrink-0 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
+          <span className="shrink-0 rounded-full border border-[#E8D5D9]/80 bg-[#FAF6F7] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
             {uploadedList.length}/4
           </span>
         </div>
@@ -367,11 +364,9 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
-          {language === "ur"
-            ? "Step 2: Baal Ki Type, Paani Aur Masla Likhein"
-            : "Step 2: Hair Type, Water & Your Concerns"}
+          {language === "ur" ? "Baal Aur Paani" : "Hair & Water Details"}
         </h2>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -388,9 +383,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
           />
 
           <SegmentedSelector
-            label={
-              language === "ur" ? "Baal Ka Style (Strand Type)" : "Hair Strand Type"
-            }
+            label={language === "ur" ? "Hair Type" : "Hair Strand Type"}
             options={["Straight", "Wavy", "Curly / Coily", "Chemically Treated"]}
             value={hairStrandType}
             onChange={setHairStrandType}
@@ -414,12 +407,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <HairStructuredBox
             id="hair-box-symptoms"
-            label="1. Hair & Scalp Symptoms + Duration (Masla aur kitne time se hai?)"
-            instruction={
-              language === "ur"
-                ? "Baal girna, maang chori hona ya bald patch kab se shuru hua?"
-                : "Describe hair shedding, receding hairline, itchy spots, or bald patches and how long it has lasted."
-            }
+            label="How long & what's happening?"
             chips={HAIR_SYMPTOM_CHIPS}
             value={symptomsAndDuration}
             onChange={setSymptomsAndDuration}
@@ -428,12 +416,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
 
           <HairStructuredBox
             id="hair-box-scalp"
-            label="2. Scalp Feel & Flake Texture (Sar ki jild aur khushki kaisi hai?)"
-            instruction={
-              language === "ur"
-                ? "Kya khushki sookhi powder jaisi hai ya oily chipchipi flakes aur dane hain?"
-                : "Does your scalp feel oily/itchy with sticky yellow scales, dry powdery flakes, or painful pimples?"
-            }
+            label="Scalp feel & flakes"
             chips={SCALP_TEXTURE_CHIPS}
             value={scalpFeelAndFlakes}
             onChange={setScalpFeelAndFlakes}
@@ -442,12 +425,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
 
           <HairStructuredBox
             id="hair-box-water"
-            label="3. Water Type & Climate Notes (Paani aur mausam ka asar)"
-            instruction={
-              language === "ur"
-                ? "Bore water ki wajah se baal sakht ho rahe hain ya garmi/paseene ka asar?"
-                : "Share any hard/bore water buildup, humidity, or tight hijab/sweat notes."
-            }
+            label="What makes it worse?"
             chips={HAIR_WATER_CLIMATE_CHIPS}
             value={waterAndClimate}
             onChange={setWaterAndClimate}
@@ -456,12 +434,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
 
           <HairStructuredBox
             id="hair-box-routine"
-            label="4. Current Shampoo, Oil & Treatment History (Abhi kya lagate hain?)"
-            instruction={
-              language === "ur"
-                ? "Abhi kaunsa shampoo, tel, mask, serum ya keratin/dye treatment karwaya hai?"
-                : "List your current shampoo, conditioner, hair oils (how often), serums, or heat/keratin treatments."
-            }
+            label="Products you're using"
             chips={HAIR_ROUTINE_CHIPS}
             value={currentRoutineAndHistory}
             onChange={setCurrentRoutineAndHistory}
@@ -470,12 +443,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
 
           <HairStructuredBox
             id="hair-box-family"
-            label="5. Family History (Family mein pattern thinning, thyroid ya PCOS?)"
-            instruction={
-              language === "ur"
-                ? "Kya family mein baal patle hone ka masla hai ya aapko thyroid/PCOS ya recent illness hui hai?"
-                : "Note family pattern thinning, thyroid issues, PCOS, iron deficiency, or recent fever/stress."
-            }
+            label="Anything else?"
             chips={HAIR_FAMILY_CHIPS}
             value={familyHistory}
             onChange={setFamilyHistory}

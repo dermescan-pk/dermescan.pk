@@ -17,58 +17,58 @@ const TAB_BANNER_COPY: Record<
 > = {
   skin: {
     eyebrow: {
-      en: "Dermatology Studio",
-      ur: "Skin & Body Studio",
+      en: "Skin Studio",
+      ur: "Skin Studio",
     },
     title: {
-      en: "Face, Body & Barrier Analysis",
-      ur: "Chehre Aur Jism Ki Skin Check",
+      en: "Skin & Body Check",
+      ur: "Skin & Body Check",
     },
     subtitle: {
-      en: "Climate-aware care tailored for Pakistani water & sun.",
-      ur: "Pakistani paani aur dhoop ke mutabiq asaan routine.",
+      en: "Personalized routines for Pakistani weather & water.",
+      ur: "Pakistani mausam aur paani ke mutabiq routine.",
     },
   },
   hair: {
     eyebrow: {
-      en: "Trichology Care",
-      ur: "Hair & Scalp Studio",
+      en: "Hair Studio",
+      ur: "Hair Studio",
     },
     title: {
-      en: "Porosity, Scalp & Strand Studio",
-      ur: "Baal Ki Porosity Aur Sar Ka Check",
+      en: "Hair & Scalp Check",
+      ur: "Hair & Scalp Check",
     },
     subtitle: {
-      en: "Balanced hydration & targeted scalp rotation without dryness.",
-      ur: "Khushki ke baghair baal aur sar ki mukammal hifazat.",
+      en: "Balanced scalp and strand care for Pakistani water.",
+      ur: "Khushki ke baghair baal aur sar ki hifazat.",
     },
   },
   steroid: {
     eyebrow: {
-      en: "Safety Audit",
-      ur: "Formula Cream Audit",
+      en: "Safety Check",
+      ur: "Formula Audit",
     },
     title: {
-      en: "Steroid & Mercury Screening",
-      ur: "Steroids Aur Tezi Chemicals Check",
+      en: "Cream Safety Check",
+      ur: "Steroids Aur Chemicals Check",
     },
     subtitle: {
-      en: "Spot hidden topical steroids & switch safely to clinic-grade care.",
-      ur: "Chhupay steroids pehchanein aur safe pharmacy badal paayein.",
+      en: "Spot hidden steroids and switch to gentle daily care.",
+      ur: "Chhupay steroids pehchanein aur safe badal paayein.",
     },
   },
   verify: {
     eyebrow: {
-      en: "Product Check & Decoder",
-      ur: "Product Check & Decoder",
+      en: "Product Decoder",
+      ur: "Product Decoder",
     },
     title: {
-      en: "Authenticity & Formula Decoder",
-      ur: "Asli-Naqli Aur Ingredients Decoder",
+      en: "Authenticity & Formula Check",
+      ur: "Asli-Naqli Aur Ingredients Check",
     },
     subtitle: {
-      en: "Live search-verified packaging checks, decoded actives, and skin or hair suitability.",
-      ur: "Live search se asli-naqli pehchan, active ingredients aur skin/hair munasibat check.",
+      en: "Verified packaging checks, decoded actives, and skin suitability.",
+      ur: "Asli-naqli pehchan, active ingredients aur munasibat check.",
     },
   },
 };
@@ -534,24 +534,24 @@ export function TabHeaderIllustration({
   return (
     <div
       ref={containerRef}
-      className="min-w-0 overflow-hidden rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] transition-colors duration-300 sm:px-8"
+      className="min-w-0 overflow-hidden rounded-3xl border border-[#E8D5D9]/80 bg-gradient-to-r from-[#FFFDFD] via-[#FCF4F6] to-[#F7E8EC] px-6 py-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:from-[#1F1619] dark:via-[#23181C] dark:to-[#291C21] sm:px-8"
     >
       <div className="flex min-w-0 items-center justify-between gap-4">
-        <div className="min-w-0 space-y-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#B56576] transition-colors duration-300">
+        <div className="min-w-0 space-y-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#B56576] transition-colors duration-300 dark:text-[#D48395]">
             {copy.eyebrow[language]}
           </p>
-          <h2 className="font-editorial break-words text-2xl font-semibold leading-tight text-[#1E181A] transition-colors duration-300 sm:text-[26px]">
+          <h2 className="font-editorial break-words text-2xl font-semibold leading-tight tracking-tight text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF] sm:text-[29px]">
             {copy.title[language]}
           </h2>
-          <p className="break-words text-xs leading-relaxed text-[#5E5055] transition-colors duration-300">
+          <p className="break-words text-xs leading-relaxed text-[#5E5055] transition-colors duration-300 dark:text-[#C9B6BC]">
             {copy.subtitle[language]}
           </p>
         </div>
 
         <div
           data-anim-paused={isAnimationPaused ? "true" : "false"}
-          className="tab-anim-stage flex min-h-16 min-w-28 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-2 py-1 transition-colors duration-300 sm:min-h-20 sm:min-w-36"
+          className="tab-anim-stage flex min-h-16 min-w-28 shrink-0 items-center justify-center rounded-2xl border border-[#E8D5D9]/70 bg-white/75 px-2 py-1 transition-colors duration-300 dark:border-[#38282D] dark:bg-[#181113]/80 sm:min-h-20 sm:min-w-36"
         >
           {isActive && (
             <>

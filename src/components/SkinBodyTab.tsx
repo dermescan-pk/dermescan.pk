@@ -122,7 +122,7 @@ function SegmentedSelector({
               className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
                 active
                   ? "bg-gradient-to-b from-[#BF6E7F] to-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
-                  : "border border-[#E6D2D6] bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
+                  : "border border-[#E8D5D9]/80 bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
               }`}
             >
               {opt}
@@ -211,7 +211,6 @@ const AREA_DYNAMIC_PLACEHOLDERS: Record<BodyArea, AreaDynamicPlaceholders> = {
 interface BoxFieldSchema {
   id: string;
   label: string;
-  instruction: string;
   chips: readonly string[];
   placeholder: string;
   fullWidth?: boolean;
@@ -265,15 +264,12 @@ function getSevenBoxConfig(
 
   if (bodyArea === "Under-Eyes") {
     return {
-      headingEn: "7-Point Under-Eye & Periorbital Check (Tap Quick Chips or Type)",
-      headingUr: "Under-Eyes Ke Liye 7 Khas Sawalat (Quick Chips Ya Likhein)",
+      headingEn: "Tell us what you're noticing",
+      headingUr: "Apni aankhon ke neeche ki skin ke baare mein batayein",
       boxes: [
         {
           id: "skin-box-duration",
-          label: "Box 1 — Duration (Kitne time se hai?)",
-          instruction: ur
-            ? "Aankhon ke neeche dark circles, soojan ya lines kab se hain?"
-            : "How long have you noticed dark circles, puffiness, or lines?",
+          label: "How long has it been there?",
           chips: [
             "Since Childhood / Genetic",
             "Few Months",
@@ -285,10 +281,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-sensation",
-          label: "Box 2 — Eye-Area Sensation (Aankhon ke qareeb kya mehsoos hota hai?)",
-          instruction: ur
-            ? "Kya thakan, paani/kharish, khushki ya dard/soojan feel hoti hai?"
-            : "Do your under-eyes feel tired, itchy/watery, dry, or painfully swollen?",
+          label: "How does it feel?",
           chips: [
             "Tired / Heavy",
             "Itchy / Watery (Allergy)",
@@ -301,10 +294,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-texture",
-          label: "Box 3 — Under-Eye Look & Texture (Dekhne aur chhoone mein kaisa lagta hai?)",
-          instruction: ur
-            ? "Rang (brown/blue), gaddha (hollow), puffy bags, lines ya white bumps batayein."
-            : "Describe pigment shade, sunken hollows, puffiness, fine lines, or white milia bumps.",
+          label: "Texture & appearance",
           chips: [
             "Brown Pigment",
             "Bluish / Purple Tint",
@@ -318,10 +308,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-spreading",
-          label: "Box 4 — Symmetry & Area (Dono aankhon par hai ya ek taraf?)",
-          instruction: ur
-            ? "Kya yeh dono aankhon par barabar hai, ek aankh mein, ya oopar/neeche eyelids par?"
-            : "Is it equal on both eyes, one eye only, or on upper/lower lids?",
+          label: "Where does it show up?",
           chips: [
             "Both Eyes Equally",
             "One Eye Only",
@@ -332,10 +319,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-triggers",
-          label: "Box 5 — Sleep, Screen & Eye Triggers (Neend, screen aur allergies)",
-          instruction: ur
-            ? "Der se sona, screen time, aankhein malna, sinus allergy ya dhoop?"
-            : "Which sleep, screen, rubbing, sinus allergy, or sun habits affect your eyes?",
+          label: "What makes it worse?",
           chips: [
             "Poor Sleep / Late Nights",
             "Heavy Mobile / Laptop Screen",
@@ -348,10 +332,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-routine",
-          label: "Box 6 — Past & Current Eye / Face Products (Abhi aur pehle kya lagaya?)",
-          instruction: ur
-            ? "Aankhon ke qareeb jo eye cream, face serum, tel ya whitening cream lagayi ho woh likhein."
-            : "List any eye creams, face serums/acids, heavy oils, or formula creams used near eyes.",
+          label: "Products you're using",
           chips: [
             "Applied Face Actives Near Eyes",
             "Used Whitening / Formula Cream",
@@ -363,10 +344,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-family",
-          label: "Box 7 — Family & Health Context (Family aur sehat ki maloomat)",
-          instruction: ur
-            ? "Kya family mein dark circles hain, ya sinus allergy, khoon ki kami (iron), ya thyroid/PCOS hai?"
-            : "Any genetic dark circles in family, sinus allergies, anemia/low iron, or thyroid/PCOS?",
+          label: "Anything else?",
           chips: [
             "Genetic / Runs in Family",
             "Sinus / Allergies",
@@ -384,15 +362,12 @@ function getSevenBoxConfig(
 
   if (bodyArea === "Lips") {
     return {
-      headingEn: "7-Point Clinical Lip Care Check (Tap Your Lip Concerns or Type)",
-      headingUr: "Lips Ke Liye 7 Khas Sawalat (Apna Masla Chunein Ya Likhein)",
+      headingEn: "Tell us what you're noticing",
+      headingUr: "Apne lips ke baare mein batayein",
       boxes: [
         {
           id: "skin-box-duration",
-          label: "Box 1 — Duration (Honton ka masla kab se hai?)",
-          instruction: ur
-            ? "Khushki, dark pigmentation, corner cracks ya blisters kitne time se hain?"
-            : "How long have you noticed dryness, darkening, corner cracks, or blisters?",
+          label: "How long has it been there?",
           chips: [
             "Few Days (Sudden)",
             "2–6 Weeks",
@@ -403,10 +378,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-sensation",
-          label: "Box 2 — Main Lip Concern (Honton ka asal masla aur feeling)",
-          instruction: ur
-            ? "Apne honton ka main masla chunein ya dard/jalan/swelling batayein."
-            : "Select your main lip concern(s) or describe any stinging, burning, or soreness.",
+          label: "How does it feel?",
           chips: [
             "Dry, Chapped & Peeling Lips",
             "Dark / Pigmented Lips & Sun Tan",
@@ -418,10 +390,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-texture",
-          label: "Box 3 — Lip Look & Texture (Dekhne aur chhoone mein kaisa hai?)",
-          instruction: ur
-            ? "Chilka utarna, dark border, konon par cracks, ya pani walay daane/soojan?"
-            : "Describe peeling flakes, two-tone darkening, painful corner splits, or fluid blisters.",
+          label: "Texture & appearance",
           chips: [
             "Flaking / Peeling Skin",
             "Two-Tone / Dark Outer Border",
@@ -433,10 +402,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-spreading",
-          label: "Box 4 — Exact Lip Zone (Honton ke kis hissay par hai?)",
-          instruction: ur
-            ? "Poore hont, sirf nichla hont, honton ke konay (corners) ya outer border?"
-            : "Is it across both lips, lower lip mostly, lip corners only, or around the lip border?",
+          label: "Where does it show up?",
           chips: [
             "Upper & Lower Lips",
             "Lower Lip Mostly",
@@ -448,10 +414,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-triggers",
-          label: "Box 5 — Daily Lip Triggers (Aadat, dhoop aur toothpaste/cosmetics)",
-          instruction: ur
-            ? "Lip licking, dhoop baghair SPF, matte lipstick, mint toothpaste ya chai/smoking?"
-            : "Which daily habits like lip licking, sun without SPF, matte lipstick, or hot tea worsen it?",
+          label: "What makes it worse?",
           chips: [
             "Frequent Lip Licking / Biting",
             "Sun Exposure (No Lip SPF)",
@@ -463,10 +426,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-routine",
-          label: "Box 6 — Past Lip Products & DIY Remedies (Pehle aur abhi kya lagaya?)",
-          instruction: ur
-            ? "Lip balm, Vaseline, lipstick, ya lemon / sugar scrub / toothpaste waghera likhein."
-            : "List every lip balm, gloss, lipstick, or DIY remedy (lemon, sugar scrub, baking soda, toothpaste) used.",
+          label: "Products you're using",
           chips: [
             "Used Lemon / Sugar Scrub / Toothpaste",
             "Using Plain Vaseline Only",
@@ -479,10 +439,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-family",
-          label: "Box 7 — Dehydration, Vitamins & Meds (Paani, khoon ki kami ya dawai)",
-          instruction: ur
-            ? "Kam paani peena, iron/B12 ki kami, mouth breathing, ya Isotretinoin (Accutane) chal rahi ho?"
-            : "Mention low water intake, anemia/iron or Vitamin B12 deficiency, eczema, or oral Isotretinoin/Retinoids.",
+          label: "Anything else?",
           chips: [
             "Low Water Intake / Dehydration",
             "Iron / Vitamin B12 Deficiency",
@@ -500,25 +457,19 @@ function getSevenBoxConfig(
 
   if (bodyArea === "Hands & Nails") {
     return {
-      headingEn: "7-Point Hands & Nails Check (Tap Quick Chips or Type)",
-      headingUr: "Hands & Nails Ke Liye 7 Khas Sawalat (Quick Chips Ya Likhein)",
+      headingEn: "Tell us what you're noticing",
+      headingUr: "Haathon aur nakhun ke baare mein batayein",
       boxes: [
         {
           id: "skin-box-duration",
-          label: "Box 1 — Duration (Kitne time se hai?)",
-          instruction: ur
-            ? "Haathon ki khushki, cracks ya nakhun ka masla kitne time se hai?"
-            : "How long have you had these hand skin or nail changes?",
+          label: "How long has it been there?",
           chips: ["Few Days", "2–6 Weeks", "Months / Years", "Worse in Winter"],
           placeholder:
             "e.g. 2 months se haathon ki skin dry aur phati hui hai, ya nails peele aur kamzor hain...",
         },
         {
           id: "skin-box-sensation",
-          label: "Box 2 — Hand & Nail Sensation (Haath ya nakhun mein kaisa feel hota hai?)",
-          instruction: ur
-            ? "Kya kharish, cracks mein jalan, ya nakhun ke aas paas dard/soojan hai?"
-            : "Do your hands itch, sting with soap, or throb around the nail fold?",
+          label: "How does it feel?",
           chips: [
             "Itchy / Kharish",
             "Painful Cracks / Stinging",
@@ -530,10 +481,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-texture",
-          label: "Box 3 — Skin & Nail Texture (Jild aur nakhun kaise lagte hain?)",
-          instruction: ur
-            ? "Haathon ki khushki, pani wale daane, ya motay/peele/toot'tay nakhun batayein."
-            : "Describe palm peeling, side-finger blisters, knuckle darkening, or thick/brittle nails.",
+          label: "Texture & appearance",
           chips: [
             "Dry / Rough / Peeling Palms",
             "Tiny Itchy Side-Finger Blisters",
@@ -546,10 +494,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-spreading",
-          label: "Box 4 — Area & Spread (Kahan kahan aur kaise phail raha hai?)",
-          instruction: ur
-            ? "Ungliyon ke beech, hatheli, knuckles ya kitne nakhun par asar hai?"
-            : "Where on your hands or nails is it located?",
+          label: "Where does it show up?",
           chips: [
             "Finger Webs / Sides",
             "Back of Hands & Knuckles",
@@ -562,10 +507,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-triggers",
-          label: "Box 5 — Daily Hand & Water Triggers (Bartan, detergent ya paani ke triggers)",
-          instruction: ur
-            ? "Bartan/kapray ka detergent, bore water, sanitizer ya dhoop ka asar?"
-            : "Which soaps, bore water, sanitizers, nail acetone, or sun exposure worsen it?",
+          label: "What makes it worse?",
           chips: [
             "Frequent Dish Soap / Detergent",
             "Hard / Bore Water",
@@ -578,10 +520,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-routine",
-          label: "Box 6 — Past & Current Hand / Nail Care (Abhi aur pehle kya lagaya?)",
-          instruction: ur
-            ? "Pehle aur abhi jo hand cream, antifungal, cuticle oil ya steroid lagaya ho likhein."
-            : "Share any hand lotions, cuticle oils, antifungals, or steroid creams applied.",
+          label: "Products you're using",
           chips: [
             "Used Steroid / Whitening Cream",
             "Using Regular Hand Lotion",
@@ -593,10 +532,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-family",
-          label: "Box 7 — Family & Health Context (Ghar ya sehat ki maloomat)",
-          instruction: ur
-            ? "Kya ghar mein kisi aur ko kharish hai ya eczema, iron/biotin ki kami ya diabetes hai?"
-            : "Anyone else at home itching, or any eczema, psoriasis, iron/biotin deficiency, or diabetes?",
+          label: "Anything else?",
           chips: [
             "Someone at Home Itching Too",
             "Family Eczema / Psoriasis",
@@ -614,15 +550,12 @@ function getSevenBoxConfig(
 
   if (bodyArea === "Feet & Heels") {
     return {
-      headingEn: "7-Point Feet & Heels Check (Tap Quick Chips or Type)",
-      headingUr: "Feet & Heels Ke Liye 7 Khas Sawalat (Quick Chips Ya Likhein)",
+      headingEn: "Tell us what you're noticing",
+      headingUr: "Paon aur eriyon ke baare mein batayein",
       boxes: [
         {
           id: "skin-box-duration",
-          label: "Box 1 — Duration (Kitne time se hai?)",
-          instruction: ur
-            ? "Eriyon ki sakhti/cracks ya ungliyon ke beech kharish kitne time se hai?"
-            : "How long have you had cracked heels, calluses, or itching between toes?",
+          label: "How long has it been there?",
           chips: [
             "Few Weeks",
             "Months / Years",
@@ -634,10 +567,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-sensation",
-          label: "Box 2 — Foot & Heel Sensation (Paon aur eriyon mein kaisa mehsoos hota hai?)",
-          instruction: ur
-            ? "Chalne par dard/khoon, ungliyon mein kharish, garam soojan ya sunn-pan?"
-            : "Are cracks painful/bleeding, toes itchy, spot tender, or skin hot/swollen/numb?",
+          label: "How does it feel?",
           chips: [
             "Painful / Bleeding Cracks",
             "Intensely Itchy Between Toes",
@@ -650,10 +580,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-texture",
-          label: "Box 3 — Foot & Sole Texture (Talway aur heel ki skin kaisi hai?)",
-          instruction: ur
-            ? "Sakht peeli callus, gehri cracks, chilka utarna ya geeli safed skin batayein."
-            : "Describe hard yellow calluses, deep heel cracks, chalky peeling, or soggy toe-web skin.",
+          label: "Texture & appearance",
           chips: [
             "Hard / Thickened Yellow Callus",
             "Deep Cracked Heels",
@@ -666,10 +593,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-spreading",
-          label: "Box 4 — Foot Location & Spread (Paon ke kis hissay par hai?)",
-          instruction: ur
-            ? "Heels, talway ke pressure points, ungliyon ke beech ya sandal strap lines par?"
-            : "Where on your feet is the dryness, peeling, bump, or cracking located?",
+          label: "Where does it show up?",
           chips: [
             "Heels & Back Edge",
             "Ball of Foot / Pressure Points",
@@ -682,10 +606,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-triggers",
-          label: "Box 5 — Footwear & Climate Triggers (Jootay, nange paon aur wudu/paseena)",
-          instruction: ur
-            ? "Nange paon chalna, chappal, tight jootay, wudu ke baad geelay paon ya bore water?"
-            : "What footwear, barefoot walking, wet Wudu feet, sweat, or water habits trigger it?",
+          label: "What makes it worse?",
           chips: [
             "Walking Barefoot at Home",
             "Open-Back Sandals / Slippers",
@@ -698,10 +619,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-routine",
-          label: "Box 6 — Past & Current Foot Care (Abhi aur pehle kya lagaya/use kiya?)",
-          instruction: ur
-            ? "Pumice stone, blade, Vaseline, urea/foot cream ya steroid cream use ki ho toh batayein."
-            : "Mention pumice stones, blades, Vaseline, creams, powders, or steroids already used.",
+          label: "Products you're using",
           chips: [
             "Used Pumice Stone / Blade",
             "Applied Vaseline / Cream",
@@ -713,10 +631,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-family",
-          label: "Box 7 — Diabetes & Health Red Flags (CRITICAL)",
-          instruction: ur
-            ? "Agar diabetes, paon sunn rehna (numbness) ya kharab circulation hai toh laazmi select karein."
-            : "CRITICAL SAFETY CHECK: Always disclose diabetes, foot numbness/tingling, poor circulation, or fungal nails.",
+          label: "Anything else?",
           chips: [
             "Diabetes / High Sugar",
             "Foot Numbness / Tingling",
@@ -734,25 +649,19 @@ function getSevenBoxConfig(
 
   if (bodyArea === "Other Body Area") {
     return {
-      headingEn: "7-Point General Body Check (Tap Quick Chips or Type)",
-      headingUr: "Is Hissay Ke Liye 7 Aam Sawalat (Quick Chips Ya Likhein)",
+      headingEn: "Tell us what you're noticing",
+      headingUr: "Is hissay ke baare mein batayein",
       boxes: [
         {
           id: "skin-box-duration",
-          label: "Box 1 — Which Body Part & Duration (Kaunsa hissa aur kitne time se hai?)",
-          instruction: ur
-            ? "Jism ke kis hissay par masla hai aur kitne din/mahine se hai?"
-            : "Name the exact body part (ear, abdomen, shoulder, etc.) and how long it has been there.",
+          label: "How long has it been there?",
           chips: ["Few Days", "2–6 Weeks", "Months / Years", "Comes & Goes"],
           placeholder:
             "e.g. Kaan ke peeche / kamar / shoulder par 2 weeks se hai...",
         },
         {
           id: "skin-box-sensation",
-          label: "Box 2 — Sensation / Feeling (Kya mehsoos hota hai?)",
-          instruction: ur
-            ? "Kya kharish, dard, jalan, garam soojan ya koi feeling nahi?"
-            : "Does this spot feel itchy, tender/painful, burning, hot/swollen, or completely flat?",
+          label: "How does it feel?",
           chips: [
             "Itchy / Kharish",
             "Painful / Tender",
@@ -765,10 +674,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-texture",
-          label: "Box 3 — Skin Texture (Chhoone mein kaisa lagta hai?)",
-          instruction: ur
-            ? "Chhoone par smooth, rough/scaly, ubhre daane, blisters ya moti sakht jild hai?"
-            : "What does the surface look and feel like when touched?",
+          label: "Texture & appearance",
           chips: [
             "Smooth & Flat",
             "Rough / Scaly",
@@ -781,10 +687,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-spreading",
-          label: "Box 4 — Spread & Shape (Kaisa nishaan aur phailao hai?)",
-          instruction: ur
-            ? "Ek chhota spot hai, baahar phail raha hai ya kai patches hain?"
-            : "Describe whether it is one small spot, spreading outward, or multiple symmetric patches.",
+          label: "Where does it show up?",
           chips: [
             "One Small Spot",
             "Spreading Outward",
@@ -796,10 +699,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-triggers",
-          label: "Box 5 — Possible Triggers & Climate (Kin cheezon se barhta hai?)",
-          instruction: ur
-            ? "Garmi/paseena, tight kapray, naya soap/perfume ya dhoop se barhta hai?"
-            : "What sweat, friction, soap/perfume, or sun triggers make it worse?",
+          label: "What makes it worse?",
           chips: [
             "Sweat / Heat",
             "Tight Clothing / Friction",
@@ -812,10 +712,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-routine",
-          label: "Box 6 — Past Creams & Current Products (Pehle aur abhi kya lagaya?)",
-          instruction: ur
-            ? "Jo cream, ointment, soap ya totka is jagah par lagaya ho woh likhein."
-            : "Share any cream, ointment, soap, or home remedy already applied to this spot.",
+          label: "Products you're using",
           chips: [
             "Used Steroid / Formula Cream",
             "Using Plain Moisturizer",
@@ -827,10 +724,7 @@ function getSevenBoxConfig(
         },
         {
           id: "skin-box-family",
-          label: "Box 7 — Family & Health History (Family aur ghar ki maloomat)",
-          instruction: ur
-            ? "Family mein eczema/psoriasis, ghar mein kisi aur ko aisi rash, ya diabetes/PCOS?"
-            : "Any family eczema/psoriasis, household member with a similar rash, or diabetes/PCOS?",
+          label: "Anything else?",
           chips: [
             "Family Eczema / Psoriasis",
             "Someone at Home Has Similar Rash",
@@ -846,24 +740,18 @@ function getSevenBoxConfig(
   }
 
   return {
-    headingEn: `7-Point Clinical Details for ${bodyArea} (Tap Quick Chips or Type)`,
-    headingUr: `${bodyArea} Ke Liye 7 Zaroori Sawalat (Quick Chips Ya Likhein)`,
+    headingEn: "Tell us what you're noticing",
+    headingUr: "Apni skin ke baare mein batayein",
     boxes: [
       {
         id: "skin-box-duration",
-        label: "Box 1 — Duration (Kitne time se hai?)",
-        instruction: ur
-          ? "Yeh masla is jagah par kitne arsay se hai?"
-          : "How long has this issue been present on this area?",
+        label: "How long has it been there?",
         chips: ["Few Days", "2–6 Weeks", "Months / Years", "Comes & Goes"],
         placeholder: areaPlaceholders.duration,
       },
       {
         id: "skin-box-sensation",
-        label: "Box 2 — Sensation / Feeling on This Area (Kya mehsoos hota hai?)",
-        instruction: ur
-          ? "Din ya raat ko is hissay par kaisa mehsoos hota hai?"
-          : "What does this spot feel like during the day or at night?",
+        label: "How does it feel?",
         chips: [
           "Itchy / Kharish",
           "Worse at Night",
@@ -875,10 +763,7 @@ function getSevenBoxConfig(
       },
       {
         id: "skin-box-texture",
-        label: "Box 3 — Describe Texture (Chhoone mein kaisa lagta hai?)",
-        instruction: ur
-          ? "Chhoone par jild, dane ya bumps kaise lagte hain?"
-          : "What does the skin surface or bump feel like to touch?",
+        label: "Texture & appearance",
         chips: [
           "Smooth & Flat",
           "Rough / Scaly",
@@ -890,10 +775,7 @@ function getSevenBoxConfig(
       },
       {
         id: "skin-box-spreading",
-        label: "Box 4 — Spreading Pattern (Kaise phail raha hai?)",
-        instruction: ur
-          ? "Yeh kis jagah par hai aur kis tarah phail raha hai?"
-          : "Where is it located and how is the pattern spreading?",
+        label: "Where does it show up?",
         chips: [
           "Spreading in Rings",
           "Both Sides (Symmetric)",
@@ -905,10 +787,7 @@ function getSevenBoxConfig(
       },
       {
         id: "skin-box-triggers",
-        label: "Box 5 — Triggers & Current Climate (Kin cheezon se barhta hai?)",
-        instruction: ur
-          ? "Kis mausam, paani ya aadat ke baad yeh zyada barhta hai?"
-          : "Which weather, water, or daily habits make it flare up?",
+        label: "What makes it worse?",
         chips: [
           "Hot & Humid Sweat",
           "Sun / Dhoop",
@@ -921,11 +800,7 @@ function getSevenBoxConfig(
       },
       {
         id: "skin-box-routine",
-        label:
-          "Box 6 — Past Creams & Current Routine / Treatment History (Abhi kya laga rahe ho & pehle kya lagaya?)",
-        instruction: ur
-          ? "Pehli formula/steroid creams aur abhi ke wash, serum, moisturizer ya sunscreen likhein."
-          : "Share past formula/steroid creams AND every wash, serum, moisturizer, or sunscreen you use now.",
+        label: "Products you're using",
         chips: [
           "Used Whitening / Formula Cream",
           "Used Steroid Cream",
@@ -938,10 +813,7 @@ function getSevenBoxConfig(
       },
       {
         id: "skin-box-family",
-        label: "Box 7 — Family & Household History (Ghar ya family mein kisi ko hai?)",
-        instruction: ur
-          ? "Kya ghar mein kisi aur ko kharish hai ya family mein eczema, psoriasis, diabetes ya PCOS hai?"
-          : "Does anyone else at home have itching, or is there family eczema, psoriasis, diabetes, or PCOS?",
+        label: "Anything else?",
         chips: [
           "Family Eczema / Psoriasis",
           "Someone at Home Itching Too",
@@ -973,37 +845,32 @@ function appendChipValue(prev: string, chip: string): string {
 function ClinicalInputBox({
   id,
   label,
-  instruction,
   chips,
   value,
   onChange,
   placeholder,
-  rows = 2,
   fullWidth = false,
 }: {
   id: string;
   label: string;
-  instruction: string;
   chips: readonly string[];
   value: string;
   onChange: (val: string) => void;
   placeholder: string;
-  rows?: number;
   fullWidth?: boolean;
 }) {
+  const isLongText = value.length > 62 || value.includes("\n");
+
   return (
     <div
-      className={`flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4 ${
+      className={`flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)] ${
         fullWidth ? "md:col-span-2" : ""
       }`}
     >
-      <div className="space-y-2">
-        <div className="space-y-0.5">
-          <label htmlFor={id} className="block text-xs font-bold text-[#1E181A]">
-            {label}
-          </label>
-          <p className="text-[11px] leading-relaxed text-[#5E5055]">{instruction}</p>
-        </div>
+      <div className="space-y-2.5">
+        <label htmlFor={id} className="block text-xs font-bold text-[#1E181A]">
+          {label}
+        </label>
 
         <div className="flex flex-wrap gap-1.5">
           {chips.map((chip) => {
@@ -1020,7 +887,7 @@ function ClinicalInputBox({
                 className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                   isSelected
                     ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                    : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                    : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                 }`}
               >
                 + {chip}
@@ -1032,11 +899,13 @@ function ClinicalInputBox({
 
       <textarea
         id={id}
-        rows={rows}
+        rows={1}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+        className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+          isLongText ? "h-20 overflow-y-auto py-2.5" : "h-11 overflow-hidden py-3"
+        }`}
       />
     </div>
   );
@@ -1220,15 +1089,13 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
 
       <PhotoGuideBanner language={language} />
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <div>
           <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
             <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
-              {language === "ur"
-                ? "Step 1: Jism Ka Hissa Chunein"
-                : "Step 1: Pick the Area to Check"}
+              {language === "ur" ? "Hissa Chunein" : "Select Area"}
             </h2>
-            <span className="shrink-0 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-xs font-semibold text-[#B56576]">
+            <span className="shrink-0 rounded-full border border-[#E8D5D9]/80 bg-[#FAF6F7] px-3 py-1 text-xs font-semibold text-[#B56576]">
               {bodyArea}
             </span>
           </div>
@@ -1244,7 +1111,7 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
                   className={`inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
                     active
                       ? "bg-gradient-to-b from-[#BF6E7F] to-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
-                      : "border border-[#E6D2D6] bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
+                      : "border border-[#E8D5D9]/80 bg-[#FAF6F7]/80 text-[#5E5055] hover:border-[#B56576]/40 hover:bg-[#F6ECEF]"
                   }`}
                 >
                   {area === "Lips" && <LipIcon className="h-3.5 w-3.5 shrink-0" />}
@@ -1255,18 +1122,13 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
           </div>
         </div>
 
-        <div className="border-t border-[#EAD8DC] pt-5">
-          <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
+        <div className="border-t border-[#E8D5D9]/80 pt-5">
+          <div className="mb-3.5">
             <p className="text-xs font-bold text-[#1E181A]">
               {language === "ur"
                 ? sevenBoxConfig.headingUr
                 : sevenBoxConfig.headingEn}
             </p>
-            <span className="text-[11px] text-[#5E5055]">
-              {language === "ur"
-                ? "Hissa badalne par sawal aur misalein khud update hongi"
-                : "Questions & examples update automatically for selected area"}
-            </span>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -1275,7 +1137,6 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
                 key={`${bodyArea}-${box.id}`}
                 id={box.id}
                 label={box.label}
-                instruction={box.instruction}
                 chips={box.chips}
                 value={boxValues[index]}
                 onChange={boxSetters[index]}
@@ -1287,21 +1148,19 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         </div>
       </div>
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
           <div className="min-w-0">
             <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
-              {language === "ur"
-                ? `Step 2: 1 se ${slots.length} Photos Add Karein`
-                : `Step 2: Add 1 to ${slots.length} Photos`}
+              {language === "ur" ? "Photos Add Karein" : "Add Photos"}
             </h2>
             <p className="text-xs leading-relaxed text-[#5E5055]">
               {language === "ur"
-                ? "Camera ya gallery se saaf close-up photos add karein."
-                : `Take or upload 1–${slots.length} clear photos from different angles.`}
+                ? `1 se ${slots.length} saaf photos add karein.`
+                : `Upload 1 to ${slots.length} clear photos.`}
             </p>
           </div>
-          <span className="shrink-0 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
+          <span className="shrink-0 rounded-full border border-[#E8D5D9]/80 bg-[#FAF6F7] px-3 py-1 text-xs font-bold tabular-nums text-[#B56576]">
             {uploadedList.length}/{slots.length}
           </span>
         </div>
@@ -1326,11 +1185,9 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
         <h2 className="font-editorial text-2xl font-semibold text-[#1E181A]">
-          {language === "ur"
-            ? "Step 3: Apni Skin Aur Paani Ki Details"
-            : "Step 3: About Your Skin & Water"}
+          {language === "ur" ? "Skin Aur Mausam" : "Skin & Weather"}
         </h2>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">

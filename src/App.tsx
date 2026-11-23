@@ -277,7 +277,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-[#FDFBFC] via-[#FAF6F7] to-[#F5ECEE] transition-colors duration-300 dark:bg-[#161012] dark:from-[#161012] dark:via-[#161012] dark:to-[#1E1518]">
+    <div className="min-h-screen overflow-x-hidden bg-[#F7F0F1] transition-colors duration-300 dark:bg-[#140E10]">
       {/* Top Curated Luxury Pharmacy & Jenpharm Bar */}
       <button
         type="button"
@@ -292,7 +292,7 @@ export default function App() {
           className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[420%]"
         />
         <span className="relative text-[11px] font-medium uppercase tracking-[0.14em] decoration-[#FAF6F7]/65 underline-offset-4 transition-all duration-300 group-hover:underline sm:text-xs dark:decoration-[#D48395]/75">
-          Read more about products · Explore ingredients, skin types &amp; best prices →
+          Explore Pakistani skincare &amp; product guides →
         </span>
       </button>
 
@@ -311,7 +311,7 @@ export default function App() {
           onTouchStart={handleNavTouchStart}
           onTouchEnd={handleNavTouchEnd}
           onTouchCancel={handleNavTouchCancel}
-          className="mb-7 flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-[#EAD8DC] bg-[#F3E7EA] p-1.5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] sm:flex-nowrap"
+          className="mb-7 flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-[#E8D5D9]/80 bg-[#EFE4E6]/90 p-1.5 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1F1619] sm:flex-nowrap"
         >
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -347,7 +347,7 @@ export default function App() {
 
         <section
           aria-labelledby="popular-pk-checks-heading"
-          className="mt-10 space-y-4 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 text-xs text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC]"
+          className="mt-10 space-y-4 rounded-3xl border border-[#E8D5D9]/80 bg-white px-6 py-5 text-xs text-[#5E5055] shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1F1619] dark:text-[#C9B6BC]"
         >
           {/* Editorial Magazine Article Hub Quick-Launch */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -363,7 +363,7 @@ export default function App() {
               <p className="font-editorial text-lg font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]">
                 {language === "ur"
                   ? "Sunblocks, Serums, Face Washes Aur Hair Guides"
-                  : "Dermatology Reading Hub — Sunblocks, Creams, Cleansers & Scalp"}
+                  : "Sunblocks, Creams, Cleansers & Scalp Guides"}
               </p>
             </div>
 
@@ -437,11 +437,11 @@ export default function App() {
           </details>
         </section>
 
-        <footer className="mt-5 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.08)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC]">
+        <footer className="mt-5 rounded-3xl border border-[#E8D5D9]/80 bg-white px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1F1619] dark:text-[#C9B6BC]">
           <p>
             {language === "ur"
               ? "DerméScan sirf aam skin, hair aur cream ki rehnumai deta hai, yeh doctor ka checkup nahi hai. Agar shadeed dard, khoon ya tez rash ho toh fauran skin doctor ko dikhayein."
-              : "DerméScan shares simple everyday skin, hair, and product tips. It is not a medical checkup—please visit a skin doctor if you have severe pain, bleeding, or a spreading rash."}
+              : "DerméScan shares simple everyday skin, hair, and product tips. It is not a medical checkup. Please visit a skin doctor if you have severe pain, bleeding, or a spreading rash."}
           </p>
           <div className="mt-2">
             <button

@@ -15,7 +15,7 @@ export const API_KEY_ALERT_MESSAGE =
   "GEMINI_API_KEY is not configured yet. Add your Google AI Studio key in Project Settings -> Secrets / Environment Variables to activate live scans.";
 
 export const PEAK_DEMAND_RETRY_MESSAGE =
-  "Our AI skin specialist is experiencing peak demand right now — please tap Scan again in 5 seconds.";
+  "Our AI skin specialist is experiencing peak demand right now, please tap Scan again in 5 seconds.";
 
 export const HIGH_TRAFFIC_MESSAGE = PEAK_DEMAND_RETRY_MESSAGE;
 export const MODEL_OVERLOAD_MESSAGE = PEAK_DEMAND_RETRY_MESSAGE;

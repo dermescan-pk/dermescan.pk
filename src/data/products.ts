@@ -29,11 +29,11 @@ export const MASTER_TRUSTED_CATALOG = {
       "Metafil (Gentle Skin Cleanser, Moisturizing Lotion)",
       "Physiogel (Daily Moisture Therapy Cream/Lotion/Dermo-Cleanser, Calming Relief A.I. Cream)",
       "Skinoren (Azelaic Acid 20% Cream)",
-      "Adapco / Skin-A (Adapalene 0.1% / Tretinoin — strictly blocked if Pregnant or Breastfeeding)",
+      "Adapco / Skin-A (Adapalene 0.1% / Tretinoin, strictly blocked if Pregnant or Breastfeeding)",
       "Benzacide (Benzoyl Peroxide) / Acnesol (Clindamycin 1% Gel & Lotion)",
       "Eventone-C Cream",
       "Dermoteen",
-      "Conaz 2% (Ketoconazole) / Selsun Blue (short-contact fungal acne wash — pair with ultra-light oil-free gel moisturizer)",
+      "Conaz 2% (Ketoconazole) / Selsun Blue (short-contact fungal acne wash, pair with ultra-light oil-free gel moisturizer)",
       "Canesten (Clotrimazole)",
       "Fucidin / Bactroban (for doctor-guided superficial bacterial spots)",
       "Sunplay Skin Aqua UV Super Moisture Gel",
@@ -83,7 +83,7 @@ export const MASTER_TRUSTED_CATALOG = {
       "Jenpharm (Anagrow Anti-Hairfall Shampoo, Anagrow Hair Serum, Sebornil Shampoo)",
       "AccuFix Salicylic Acid Scalp Shampoo (1x/week clarifying for hard water & low porosity)",
       "Conatural (Sulfate-Free Hair Growth / Intense Repair Shampoo, Hair Growth Water)",
-      "Saeed Ghani (pure cold-pressed carrier oils only — almond, coconut, castor, mustard)",
+      "Saeed Ghani (pure cold-pressed carrier oils only: almond, coconut, castor, mustard)",
       "BioOne / Neophar Clinical Hair Lines",
     ],
     pharmacyScalpCare: [
@@ -110,7 +110,7 @@ export const MASTER_TRUSTED_CATALOG = {
       "Ducray Anaphase+ / Kelual DS",
     ],
     additionalPureOilsAndClinicalScalpCare: [
-      "Organic Traveller / Nirvana Botanics (pure Rosemary Essential Oil — strictly diluted 3–5 drops in a carrier oil)",
+      "Organic Traveller / Nirvana Botanics (pure Rosemary Essential Oil, strictly diluted 3–5 drops in a carrier oil)",
       "Hair Energy / Vince (targeted keratin/biotin masks)",
       "Phototar (medicated coal-tar scalp cleanser)",
     ],
@@ -359,7 +359,7 @@ export const VERIFIED_EXACT_PRODUCT_LINEUPS: Record<string, string[]> = {
     "ISDIN Fusion Water",
   ],
   "Beauty of Joseon / COSRX / Paula's Choice / Vichy / Avene / Sebamed / Aveeno / Simple / Vaseline / O'Keeffe's": [
-    "Beauty of Joseon Revive Eye Serum (Ginseng + Retinal — strictly non-pregnant only)",
+    "Beauty of Joseon Revive Eye Serum (Ginseng + Retinal, strictly non-pregnant only)",
     "COSRX Advanced Snail 96 Mucin Power Essence / Low pH Good Morning Gel Cleanser",
     "Paula's Choice 2% BHA Liquid Exfoliant / Clear Acne Body Spray 2% BHA",
     "Vichy Minéral 89 Eyes / Fragrance-Free Deodorants",
@@ -979,7 +979,7 @@ export const VERIFIED_PK_STORES: VerifiedStoreEntry[] = [
     noteEn:
       "Verified official Pakistani brand website for Urapra skincare & haircare.",
     noteUr:
-      "Urapra ki asli official Pakistani website hai — 100% authentic products.",
+      "Urapra ki asli official Pakistani website hai, 100% authentic products.",
   },
   {
     name: "Jenpharm",
@@ -1003,7 +1003,7 @@ export const VERIFIED_PK_STORES: VerifiedStoreEntry[] = [
     noteEn:
       "Verified official Conatural Pakistani natural skincare & haircare store.",
     noteUr:
-      "Conatural ki asli official Pakistani website hai — direct brand se authentic stock.",
+      "Conatural ki asli official Pakistani website hai, direct brand se authentic stock.",
   },
   {
     name: "Accufix Cosmetics",
@@ -1027,7 +1027,7 @@ export const VERIFIED_PK_STORES: VerifiedStoreEntry[] = [
     noteEn:
       "Verified official Primary Skin Pakistani skincare website.",
     noteUr:
-      "Primary Skin ki asli official Pakistani website hai — 100% authentic serums aur creams.",
+      "Primary Skin ki asli official Pakistani website hai, 100% authentic serums aur creams.",
   },
   {
     name: "Organic Traveller",
@@ -1063,7 +1063,7 @@ export const VERIFIED_PK_STORES: VerifiedStoreEntry[] = [
     noteEn:
       "Verified official Saeed Ghani website for Pakistani herbal skin & hair care.",
     noteUr:
-      "Saeed Ghani ki asli official Pakistani website hai — direct brand se authentic stock.",
+      "Saeed Ghani ki asli official Pakistani website hai, direct brand se authentic stock.",
   },
   {
     name: "Hira Ali Beauty",
@@ -1280,7 +1280,7 @@ export const VERIFIED_PK_STORES: VerifiedStoreEntry[] = [
     noteEn:
       "Verified Pakistani pharmacy dermatology brand (Wisdom Pharma). Buy from licensed pharmacies like Dvago, Servaid, Clinix, or Fazal Din.",
     noteUr:
-      "Wisdom Pharma Pakistan ka authentic pharmacy skincare brand hai — registered pharmacies (Dvago, Servaid, Clinix) se khareedein.",
+      "Wisdom Pharma Pakistan ka authentic pharmacy skincare brand hai, registered pharmacies (Dvago, Servaid, Clinix) se khareedein.",
   },
   {
     name: "Herbalist",
@@ -1612,8 +1612,8 @@ export const VERIFIED_PK_STORES: VerifiedStoreEntry[] = [
     stemTokens: ["daraz"],
     trustLevel: "caution_marketplace",
     noteEn:
-      "Daraz is an open marketplace! ALWAYS check for the red/purple 'DarazMall / Official Flagship Store' badge before buying—avoid random third-party sellers.",
+      "Daraz is an open marketplace! ALWAYS check for the red/purple 'DarazMall / Official Flagship Store' badge before buying, and avoid random third-party sellers.",
     noteUr:
-      "Daraz ek open marketplace hai! Khareedne se pehle hamesha 'DarazMall / Official Flagship Store' badge verify karein—aam sellers se bachein.",
+      "Daraz ek open marketplace hai! Khareedne se pehle hamesha 'DarazMall / Official Flagship Store' badge verify karein, aur aam sellers se bachein.",
   },
 ];

@@ -26,7 +26,7 @@ export function applyThemeToDocument(theme: ThemeMode): void {
   if (themeMeta) {
     themeMeta.setAttribute(
       "content",
-      theme === "dark" ? "#161012" : "#FAF6F7"
+      theme === "dark" ? "#140E10" : "#F7F0F1"
     );
   }
 }

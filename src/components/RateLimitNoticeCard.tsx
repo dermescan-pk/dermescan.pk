@@ -12,9 +12,9 @@ export function RateLimitNoticeCard({
 }: RateLimitNoticeCardProps) {
   const displayMessage =
     language === "ur"
-      ? "Scanner abhi masroof hai — meharbani kar ke 30 seconds intezar karein aur dobara check karein."
+      ? "Scanner abhi masroof hai. Meharbani kar ke 30 seconds intezar karein aur dobara check karein."
       : message ||
-        "High traffic right now — please wait 30 seconds and try again.";
+        "High traffic right now. Please wait 30 seconds and try again.";
 
   return (
     <div

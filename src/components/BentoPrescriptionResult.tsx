@@ -69,7 +69,7 @@ export function BentoPrescriptionResult({
   });
 
   const shareText = [
-    `*DerméScan — ${scanTitle}*`,
+    `*DerméScan: ${scanTitle}*`,
     `Focus: ${t(data.primaryConcernTag)}`,
     ``,
     `*1. What Your Photos Show:*`,
@@ -83,7 +83,7 @@ export function BentoPrescriptionResult({
     `*3. Water & Daily Habits:*`,
     ...tl(data.lifestyleAndWater.waterAndClimateBullets).map((b) => `• ${b}`),
     ``,
-    `*Note:* Simple everyday skin & hair tips — visit a skin doctor for a medical checkup.`,
+    `*Note:* Simple everyday skin & hair tips. Visit a skin doctor for a medical checkup.`,
   ].join("\n");
 
   const isHairScan = Boolean(data.assessment.hairBreakdown);
@@ -402,8 +402,8 @@ export function BentoPrescriptionResult({
         {data.routine.morning.length === 0 && data.routine.evening.length === 0 ? (
           <div className="rounded-2xl border border-[#E8C5CA] bg-[#FDF4F5] p-5 text-xs font-medium leading-relaxed text-[#8C3B4A]">
             {language === "ur"
-              ? "Active serums ya treatment creams abhi bilkul band rakhein — seedha PMDC skin doctor se checkup karwane ke baad hi naya ilaj shuru karein."
-              : "Pause active creams, acids, and scrubs for now — visit a PMDC dermatologist in person first before starting active treatments."}
+              ? "Active serums ya treatment creams abhi bilkul band rakhein. Seedha PMDC skin doctor se checkup karwane ke baad hi naya ilaj shuru karein."
+              : "Pause active creams, acids, and scrubs for now. Visit a PMDC dermatologist in person first before starting active treatments."}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

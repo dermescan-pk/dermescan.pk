@@ -72,27 +72,27 @@ export function Header({
   onToggleTheme,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#EAD8DC] bg-[#FDFBFC] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1B1316]">
-      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-[#E8D5D9]/80 bg-white/95 backdrop-blur-sm transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1B1316]/95">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3.5 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
         {/* Row 1 (Mobile) / Left Side (Desktop) */}
         <div className="min-w-0">
           <div className="flex items-center gap-2 sm:gap-2.5">
-            <h1 className="font-['Alex_Brush',_'Great_Vibes',_cursive] whitespace-nowrap py-1 text-4xl leading-none tracking-normal text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF] sm:text-5xl">
+            <h1 className="font-['Alex_Brush',_'Great_Vibes',_cursive] whitespace-nowrap py-0.5 text-4xl leading-none tracking-normal text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF] sm:text-5xl">
               DerméScan
             </h1>
             <HorizontalBotanicalAccent />
           </div>
-          <p className="font-sans text-[10px] uppercase tracking-[0.22em] text-[#7A686D] transition-colors duration-300 dark:text-[#C9B6BC] sm:whitespace-nowrap">
-            SKIN &amp; HAIR ATELIER • PAKISTAN
+          <p className="mt-1 font-sans text-[10px] uppercase tracking-[0.22em] text-[#7A686D] transition-colors duration-300 dark:text-[#C9B6BC] sm:whitespace-nowrap">
+            SKIN &amp; HAIR ATELIER · PAKISTAN
           </p>
         </div>
 
         {/* Row 2 (Mobile) / Right Side (Desktop) */}
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-end">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-end sm:gap-2.5">
           <button
             type="button"
             onClick={onOpenHealthProfile}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[#EAD8DC] bg-white px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap text-[#1E181A] shadow-xs transition-colors duration-300 hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576] active:scale-95 dark:border-[#3A292E] dark:bg-[#21181B] dark:text-[#F7EFEF] dark:hover:border-[#D48395] dark:hover:bg-[#2B1F24] dark:hover:text-[#D48395]"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[#E8D5D9]/80 bg-[#FAF6F7]/70 px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap text-[#1E181A] shadow-xs transition-colors duration-300 hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576] active:scale-95 dark:border-[#3A292E] dark:bg-[#21181B] dark:text-[#F7EFEF] dark:hover:border-[#D48395] dark:hover:bg-[#2B1F24] dark:hover:text-[#D48395]"
           >
             <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#B56576] dark:text-[#D48395]" />
             <span>My Health Profile</span>
