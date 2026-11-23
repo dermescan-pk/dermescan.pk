@@ -17,6 +17,7 @@ import { ApiKeyAlertCard } from "./ApiKeyAlertCard.tsx";
 import { RateLimitNoticeCard } from "./RateLimitNoticeCard.tsx";
 import { WhatsAppShareButton } from "./WhatsAppShareButton.tsx";
 import { findCatalogMatch, getAuthenticBuyUrl } from "../data/products.ts";
+import { getVerifiedAffiliateUrl } from "../data/affiliates.ts";
 import {
   ApiKeyConfigError,
   RateLimitError,
@@ -192,11 +193,17 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
       const match = findCatalogMatch(pick.productId, pick.brand, pick.name);
       const brand = pick.brand || match?.brand || "Safe Pharmacy Pick";
       const name = pick.name || match?.name || "Gentle Skincare";
+      const verifiedAffiliateUrl = getVerifiedAffiliateUrl({
+        brand,
+        name,
+        productId: pick.productId,
+      });
       return {
         key: `${pick.productId || ""}-${brand}-${name}`,
         brand,
         name,
         approxPricePkr: pick.approxPricePkr || match?.approxPricePkr || "Check Pharmacy",
+        verifiedAffiliateUrl,
         buyUrl: getAuthenticBuyUrl(brand, name, pick.productId),
         bullets: pick.bullets,
       };
@@ -586,7 +593,16 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                     </div>
 
                     <div className="border-t border-[#EAD8DC] pt-3">
-                      {item.buyUrl ? (
+                      {item.verifiedAffiliateUrl ? (
+                        <a
+                          href={item.verifiedAffiliateUrl}
+                          target="_blank"
+                          rel="sponsored noopener noreferrer"
+                          className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+                        >
+                          Buy at the best price here →
+                        </a>
+                      ) : item.buyUrl ? (
                         <a
                           href={item.buyUrl}
                           target="_blank"

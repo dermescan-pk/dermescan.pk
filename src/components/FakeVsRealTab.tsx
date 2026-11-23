@@ -26,7 +26,7 @@ import {
   RateLimitError,
   postApi,
 } from "../utils/apiClient.ts";
-import { getJenpharmAffiliateUrl } from "../data/jenpharmAffiliates.ts";
+import { getVerifiedAffiliateUrl } from "../data/affiliates.ts";
 import { getAuthenticBuyUrl } from "../data/products.ts";
 import type {
   Language,
@@ -179,7 +179,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
   }
 
   const saferAltAffiliateUrl = result?.saferAlternative
-    ? getJenpharmAffiliateUrl({
+    ? getVerifiedAffiliateUrl({
         brand: result.saferAlternative.brand,
         name: result.saferAlternative.name,
         productId: result.saferAlternative.productId,

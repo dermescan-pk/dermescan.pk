@@ -13,7 +13,7 @@ import {
   findCatalogMatch,
   getAuthenticBuyUrl,
 } from "../data/products.ts";
-import { getJenpharmAffiliateUrl } from "../data/jenpharmAffiliates.ts";
+import { getVerifiedAffiliateUrl } from "../data/affiliates.ts";
 import { WhatsAppShareButton } from "./WhatsAppShareButton.tsx";
 import type {
   BentoPrescriptionResponse,
@@ -47,7 +47,7 @@ export function BentoPrescriptionResult({
     const match = findCatalogMatch(pick.productId, pick.brand, pick.name);
     const brand = pick.brand || match?.brand || "Trusted Brand";
     const name = pick.name || match?.name || "Recommended Product";
-    const jenpharmAffiliateUrl = getJenpharmAffiliateUrl({
+    const verifiedAffiliateUrl = getVerifiedAffiliateUrl({
       brand,
       name,
       productId: pick.productId,
@@ -62,7 +62,7 @@ export function BentoPrescriptionResult({
         pick.whereToBuy ||
         match?.whereToBuy ||
         "Official Brand Store • Dvago • Naheed • Daraz Mall",
-      jenpharmAffiliateUrl,
+      verifiedAffiliateUrl,
       buyUrl: getAuthenticBuyUrl(brand, name, pick.productId),
       bullets: pick.bullets,
     };
@@ -114,7 +114,7 @@ export function BentoPrescriptionResult({
         : "Based on your photos and clinical answers, this is safe to manage with a targeted home and pharmacy routine.");
 
   function renderRoutineStepCard(step: RoutineStep) {
-    const jenpharmAffiliateUrl = getJenpharmAffiliateUrl({
+    const verifiedAffiliateUrl = getVerifiedAffiliateUrl({
       brand: step.brand,
       name: step.productName,
       title: step.title.en,
@@ -148,10 +148,10 @@ export function BentoPrescriptionResult({
             </span>
           </div>
 
-          {jenpharmAffiliateUrl && (
+          {verifiedAffiliateUrl && (
             <div className="flex min-w-0 items-start">
               <a
-                href={jenpharmAffiliateUrl}
+                href={verifiedAffiliateUrl}
                 target="_blank"
                 rel="sponsored noopener noreferrer"
                 className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-4.5 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
@@ -196,7 +196,7 @@ export function BentoPrescriptionResult({
         </div>
 
         {/* Row 4: Real affiliate button if configured, else safe stockist / link */}
-        {!jenpharmAffiliateUrl &&
+        {!verifiedAffiliateUrl &&
           (buyUrl ? (
             <a
               href={buyUrl}
@@ -504,7 +504,7 @@ export function BentoPrescriptionResult({
               </div>
 
               <div className="border-t border-[#EAD8DC] pt-3">
-                {item.jenpharmAffiliateUrl ? (
+                {item.verifiedAffiliateUrl ? (
                   <div className="flex min-w-0 flex-col items-start gap-2.5">
                     <p className="break-words text-[11px] leading-relaxed text-[#5E5055]">
                       {language === "ur" ? "Kahan milega: " : "Where to buy: "}
@@ -513,7 +513,7 @@ export function BentoPrescriptionResult({
                       </strong>
                     </p>
                     <a
-                      href={item.jenpharmAffiliateUrl}
+                      href={item.verifiedAffiliateUrl}
                       target="_blank"
                       rel="sponsored noopener noreferrer"
                       className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"

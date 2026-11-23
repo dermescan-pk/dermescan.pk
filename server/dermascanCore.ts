@@ -6,7 +6,7 @@ import {
   VERIFIED_PK_STORES,
   findCatalogMatch,
 } from "../src/data/products.ts";
-import { findJenpharmAffiliate } from "../src/data/jenpharmAffiliates.ts";
+import { findVerifiedAffiliate } from "../src/data/affiliates.ts";
 import type {
   HairStructuredInputs,
   HealthProfile,
@@ -727,10 +727,10 @@ export function checkStoreDeterministic(
 }
 
 const HAIR_ONLY_ITEM_PATTERN =
-  /\b(Anagrow|Sebornil|Salicylic Acid Shampoo|Clarify & Rebalance Shampoo|Hair Growth|Intense Repair Shampoo|Sweet Almond Oil|Nodé Shampoo|Multi-Peptide Serum for Hair Density|Cold-Pressed Argan Oil|Follihair|Nizoral)\b/i;
+  /\b(Anagrow|Sebornil|Salicylic Acid Shampoo|Clarify and Rebalance Shampoo|Clarify & Rebalance Shampoo|Strength & Shine Leave-In Conditioner|AccuFix Hair Mask|AccuFix Frizz Control Serum|Hair Growth|Intense Repair Shampoo|Sweet Almond Oil|Nodé Shampoo|Multi-Peptide Serum for Hair Density|Cold-Pressed Argan Oil|Follihair|Nizoral)\b/i;
 
 const SKIN_ONLY_ITEM_PATTERN =
-  /\b(Dermive|MandelAC|Spectra|Niaronic|Maxdif|Eventone|Invisible Shield|Blemish Cream|Crème B3-B5-E|Barrier Repair Moisturizer|Powerhouse Niacinamide|Salicylic Acid Body|AHA\/BHA Body|Salicylic Acid Cleanser|Hydrating Gentle Cleanser|Aloe Vera Face Wash|Saffron Face Wash|Metafil|Skinoren|Adapco|Skin-A|Benzacide|Acnesol|Dermoteen|Hydrophil|Canesten|Candid|Lamisil|Daktarin|Loceryl|Fucidin|Photoderm|Sensibio|Sébium|Atoderm|Niacinamide 10%|Salicylic Acid 2%|Glycolic Acid 7%|Alpha Arbutin|Hyaluronic Acid 2%|Azelaic Acid Suspension|Caffeine Solution|Multi-Peptide Eye)\b/i;
+  /\b(Dermive|MandelAC|Spectra|Niaronic|Maxdif|Eventone|Invisible Shield|Crème B3-B5-E|Salicylic Acid Cleanser|Hydrating Gentle Cleanser|Glycolic Acid Toner|Salicylic Acid Serum|Pimple Patches|Dark Lip Treatment Balm|Unscrub Lip Scrub|AHA BHA Body Wash|Oats and Lipid Hydrating Body Wash|Aloe Vera Face Wash|Saffron Face Wash|Metafil|Skinoren|Adapco|Skin-A|Benzacide|Acnesol|Dermoteen|Hydrophil|Canesten|Candid|Lamisil|Daktarin|Loceryl|Fucidin|Photoderm|Sensibio|Sébium|Atoderm|Niacinamide 10%|Salicylic Acid 2%|Glycolic Acid 7%|Alpha Arbutin|Hyaluronic Acid 2%|Azelaic Acid Suspension|Caffeine Solution|Multi-Peptide Eye)\b/i;
 
 function formatCatalogBrandsSummary(items: string[]): string {
   return items
@@ -803,8 +803,9 @@ export const VERIFIED_PK_LIP_CATALOG_PROMPT = `VERIFIED PAKISTANI CLINICAL LIP C
   * *Aquaphor* — "Aquaphor Healing Ointment" (PKR 1,800 – 2,600)
   * *CeraVe* — "CeraVe Healing Ointment" (PKR 2,800 – 4,200)
   * *Bioderma* — "Bioderma Atoderm Lèvres Moisturizing Stick" (PKR 1,450 – 1,950)
-- **Gentle Lip Pigmentation Care (Non-Irritating):**
-  * *AccuFix Cosmetics* — "AccuFix Lip Brightening Balm" (PKR 1,100 – 1,450)
+- **Gentle Lip Pigmentation Care & Gentle Exfoliation (Non-Irritating):**
+  * *AccuFix Cosmetics* — "AccuFix Dark Lip Treatment Balm" (PKR 1,100 – 1,450) — ALWAYS pair daytime use with a dedicated SPF 30 lip balm!
+  * *AccuFix Cosmetics* — "AccuFix Unscrub Lip Scrub" (PKR 950 – 1,250) — gentle non-abrasive smoothing 1–2x/week max (follow immediately with balm; skip if lips are cracked or bleeding).
   * *Conatural* — "Conatural Organic Lip Balm" (PKR 650 – 950) — ALWAYS pair daytime use with a dedicated SPF 30 lip balm!
 - **Where to Buy Lip Care in Pakistan:** Pharmacies • Naheed • Al-Fatah • Vegas.pk • Daraz Mall.
 - **STRICT SAFETY BAN FOR LIPS:** NEVER recommend facial acids (*MandelAC*, *Salicylic Acid*, *Glycolic Acid*, *Retinol*, *Adapalene*, *Tretinoin*) or standard foaming face washes for lips — lip mucosa lacks oil glands and burns easily.`;
@@ -894,7 +895,7 @@ export function hydrateProductPicks(
       return true;
     })
     .map((pick) => {
-      const affiliateHit = findJenpharmAffiliate({
+      const affiliateHit = findVerifiedAffiliate({
         brand: pick.brand,
         name: pick.name,
         productId: pick.productId,
@@ -903,7 +904,7 @@ export function hydrateProductPicks(
 
       if (affiliateHit) {
         const matchAffiliate = match
-          ? findJenpharmAffiliate({
+          ? findVerifiedAffiliate({
               brand: match.brand,
               name: match.name,
               productId: match.id,
@@ -914,17 +915,17 @@ export function hydrateProductPicks(
 
         return {
           ...pick,
-          brand: "Jenpharm",
+          brand: affiliateHit.brand,
           productId: isSameCatalogProduct
             ? match!.id
             : pick.productId || affiliateHit.id,
-          name: pick.name?.trim() || affiliateHit.productName,
+          name: affiliateHit.productName || pick.name?.trim(),
           subCategory:
             pick.subCategory ||
-            (isSameCatalogProduct ? match!.subCategory : "Dermatologist Formulation"),
+            (isSameCatalogProduct ? match!.subCategory : affiliateHit.subCategory),
           approxPricePkr:
             pick.approxPricePkr ||
-            (isSameCatalogProduct ? match!.approxPricePkr : "Check Pharmacy"),
+            (isSameCatalogProduct ? match!.approxPricePkr : affiliateHit.approxPricePkr),
           whereToBuy: "Official Brand Store • Dvago • Naheed • Daraz Mall",
         };
       }
@@ -1090,7 +1091,7 @@ function buildAreaSpecificProtocolPrompt(bodyArea: string): string {
 - **STRICTLY RECOMMEND ONLY DERMATOLOGIST-TRUSTED LIP PRODUCTS AVAILABLE IN PAKISTAN (Pharmacies, Daraz Mall, Naheed, Al-Fatah, Vegas.pk):**
   * **Daytime UV Protection (Essential for Dark/Pigmented Lips):** *Sebamed Lip Defense SPF 30*, *Nivea Sun Protect Lip Balm SPF 30*, or *Neutrogena Revitalizing Lip Balm SPF 20*.
   * **Deep Overnight Barrier Repair & Chapping:** *Vaseline Pure Petroleum Jelly (Original)*, *Aquaphor Healing Ointment*, *CeraVe Healing Ointment*, or *Bioderma Atoderm Lèvres Moisturizing Stick*.
-  * **Gentle Lip Pigmentation Care (Non-Irritating):** *AccuFix Lip Brightening Balm* or *Conatural Organic Lip Balm* (MUST pair strictly with a daytime SPF 30 lip balm so UV rays do not darken pigment further).
+  * **Gentle Lip Pigmentation Care & Smoothing (Non-Irritating):** *AccuFix Dark Lip Treatment Balm* (daily/PM pigment care), *AccuFix Unscrub Lip Scrub* (gentle 1-2x/week non-tearing polish on flaky non-cracked lips only), or *Conatural Organic Lip Balm* (MUST pair strictly with a daytime SPF 30 lip balm so UV rays do not darken pigment further).
 - **STRICT DIY & HABIT WARNINGS ("lifestyleAndWater.habitChecklist" & "redFlags.warningBullets"):**
   * Strongly warn against DIY **lemon juice**, **baking soda**, **toothpaste**, or **harsh sugar scrubs** — these strip thin lip skin and trigger rebound hyperpigmentation and contact dermatitis!
   * Warn against lip licking, peeling dead skin with teeth/fingers, heavily fragranced matte lipsticks during flare-ups, and steroid/whitening formula creams on lips.
@@ -1103,7 +1104,7 @@ function buildAreaSpecificProtocolPrompt(bodyArea: string): string {
     case "Neck & Underarms":
       return `AREA-SPECIFIC PROTOCOL — NECK & UNDERARMS (STRICT):
 - Recommend ONLY verified targeted care:
-  * Exfoliating & Tone Care: *The Ordinary Glycolic Acid 7% Toning Solution* (2–3x/week swipe for odor & mild darkening — EXPLICITLY WARN NEVER to apply right after shaving or waxing!), *AccuFix AHA/BHA Body Lotion*, *BioOne Glycolic Acid Cream*, *CeraVe SA Smoothing Cream*, *Paula's Choice 2% BHA*.
+  * Exfoliating & Tone Care: *AccuFix Glycolic Acid Toner* (2–3x/week PM swipe for mild darkening — EXPLICITLY WARN NEVER to apply right after shaving or waxing!), *The Ordinary Glycolic Acid 7% Toning Solution*, *BioOne Glycolic Acid Cream*, *CeraVe SA Smoothing Cream*, *Paula's Choice 2% BHA*.
   * Pigmentation Brightening: *Skinoren (Azelaic Acid 20%)*, *Jenpharm Maxdif*, or *Eventone-C*.
   * Soothing Shaving / Friction Barrier: *Physiogel*, *Cetaphil*, or *Bioderma Atoderm*, plus fragrance-free *Dove Sensitive / Vichy* deodorants.
   * Humid Sweat / Yeast Rashes: *Canesten (Clotrimazole Powder/Cream)* or *Candid / Clotrimazole Antifungal Dusting Powder*.
@@ -1112,7 +1113,7 @@ function buildAreaSpecificProtocolPrompt(bodyArea: string): string {
     case "Back & Chest":
       return `AREA-SPECIFIC PROTOCOL — BACK & CHEST (STRICT):
 - Recommend ONLY verified body-acne & fungal-patch staples:
-  * Exfoliating Washes & Lotions: *AccuFix Salicylic Acid Body Wash & AHA/BHA Body Lotion*, *Jenpharm MandelAC Wash*, *BioOne Acno Wash*, *CeraVe SA Smoothing Cleanser*, *Paula's Choice Clear Acne Body Spray 2% BHA*, *La Roche-Posay Effaclar Micro-Peeling Gel*, *Bioderma Sébium Gel Moussant*, *Neutrogena Body Clear Wash*.
+  * Exfoliating & Soothing Body Washes: *AccuFix AHA BHA Body Wash* (leave on acne-prone back/chest 1-2 mins before rinsing), *AccuFix Oats and Lipid Hydrating Body Wash* (for dry/eczema-prone body skin), *Jenpharm MandelAC Wash*, *BioOne Acno Wash*, *CeraVe SA Smoothing Cleanser*, *Paula's Choice Clear Acne Body Spray 2% BHA*, *La Roche-Posay Effaclar Micro-Peeling Gel*, *Bioderma Sébium Gel Moussant*, *Neutrogena Body Clear Wash*.
   * Antibacterial Acne: *Benzacide (Benzoyl Peroxide)* [EXPLICITLY WARN it bleaches colored clothes & towels!], *Acnesol (Clindamycin lotion/gel)*.
   * Fungal / *Tinea Versicolor* / Fungal Folliculitis: *Conaz 2% / Selsun Blue / Nizoral / Phototar* (short-contact 5-min wash in the shower, paired with ultra-light oil-free gel moisture if needed).
   * Post-Acne Dark Marks: *Skinoren (Azelaic Acid 20%)* or *The Ordinary Alpha Arbutin 2% + HA*.`;
@@ -1138,8 +1139,8 @@ function buildAreaSpecificProtocolPrompt(bodyArea: string): string {
     case "Arms & Legs":
       return `AREA-SPECIFIC PROTOCOL — ARMS & LEGS (STRICT):
 - Recommend ONLY verified Body Care Master Catalog items:
-  * Strawberry Skin / KP & Rough Texture: *AccuFix Salicylic Acid Body Wash & AHA/BHA Body Lotion*, *CeraVe SA Smoothing Cleanser & Cream*, *The Ordinary Glycolic Acid 7% Toning Solution*.
-  * Body Eczema & Dryness: *Physiogel Daily Moisture / Calming Relief Body Lotion*, *Bioderma Atoderm Intensive Baume*, *Cetaphil Moisturizing Lotion/Cream*, *Aveeno Daily Moisturizing / Dermexa Lotion*, *Sebamed Liquid Face & Body Wash pH 5.5*, *Dove Sensitive Bar/Wash*.
+  * Strawberry Skin / KP & Rough Texture: *AccuFix AHA BHA Body Wash*, *CeraVe SA Smoothing Cleanser & Cream*, *The Ordinary Glycolic Acid 7% Toning Solution*.
+  * Body Eczema & Dryness: *AccuFix Oats and Lipid Hydrating Body Wash*, *Physiogel Daily Moisture / Calming Relief Body Lotion*, *Bioderma Atoderm Intensive Baume*, *Cetaphil Moisturizing Lotion/Cream*, *Aveeno Daily Moisturizing / Dermexa Lotion*, *Sebamed Liquid Face & Body Wash pH 5.5*, *Dove Sensitive Bar/Wash*.
   * Exposed Arms / Tanning Protection: *Jenpharm Spectra Block* or *Sunplay Skin Aqua UV Super Moisture Gel*.`;
 
     case "Other Body Area":
@@ -1393,16 +1394,16 @@ Never prescribe a harsh, one-dimensional routine that strips or dries out the ha
   Next, match the targeted active treatment for their 5 box answers or visible scalp issues (oily/sticky vs dry powdery flakes, scalp pimples, hair fall, hard water) WITHOUT stripping the hair shaft defined in Step A.
 
 DUAL-SHAMPOO ROTATION RULE (CRITICAL — NEVER USE MEDICATED OR CLARIFYING SHAMPOO EVERY WASH):
-- Whenever a medicated, anti-dandruff, or clarifying shampoo is needed (*AccuFix Salicylic Acid Scalp Shampoo*, *AccuFix Clarify & Rebalance Shampoo*, *Conaz 2%*, *Selsun Blue*, *Nizoral / Polytar / Phototar*, *Ducray Kelual DS*, *Jenpharm Sebornil Shampoo*, *Sebamed Anti-Dandruff*, or *Pantene Lively Clean*):
+- Whenever a medicated, anti-dandruff, or clarifying shampoo is needed (*AccuFix Salicylic Acid Shampoo*, *AccuFix Clarify and Rebalance Shampoo*, *Conaz 2%*, *Selsun Blue*, *Nizoral / Polytar / Phototar*, *Ducray Kelual DS*, *Jenpharm Sebornil Shampoo*, *Sebamed Anti-Dandruff*, or *Pantene Lively Clean*):
   1. Prescribe it **ONLY 1x or 2x a week** on the scalp roots ONLY (massage gently, leave on 3–5 minutes, rinse thoroughly).
-  2. ALWAYS pair and rotate it with a **Hydrating / Gentle Everyday Shampoo** for all other washes (*L'Oréal Paris Elvive Hyaluron Moisture 72H*, *L'Oréal Paris Elvive Extraordinary Oil / Dream Lengths / Total Repair 5*, *Conatural Sulfate-Free Shampoo*, *Bioderma Nodé*, *Sebamed Everyday*, or *Dove Intense Repair / Dermacare*) PLUS a conditioner or mask on mid-lengths and ends so hair never turns dry, straw-like, or brittle.
+  2. ALWAYS pair and rotate it with a **Hydrating / Gentle Everyday Shampoo** for all other washes (*L'Oréal Paris Elvive Hyaluron Moisture 72H*, *L'Oréal Paris Elvive Extraordinary Oil / Dream Lengths / Total Repair 5*, *Conatural Sulfate-Free Shampoo*, *Bioderma Nodé*, *Sebamed Everyday*, or *Dove Intense Repair / Dermacare*) PLUS a conditioner or mask (*AccuFix Strength & Shine Leave-In Conditioner* or *AccuFix Hair Mask*) on mid-lengths and ends so hair never turns dry, straw-like, or brittle.
   3. When using dual-shampoo rotation, list BOTH shampoos cleanly inside Step 1 ("Shampoo (Scalp Wash) — Dual Rotation: ...") AND include both shampoos inside "recommendedProducts"!
 
 COMPREHENSIVE HAIR & SCALP PROBLEM-SOLVING ENGINE (FOLLOW EVERY MATCHING CASE):
 1. DIRECTLY ADDRESS TYPED INPUTS FIRST:
    - Read every detail across Boxes 1–5 alongside the photos. Directly answer their exact symptoms and evaluate/fix mistakes in their current routine inside "assessment.summaryBullets" and "routine".
 2. DANDRUFF, ITCHY SCALP, FLAKES, SEBORRHEIC SCALP, OR SCALP PIMPLES / FOLLICULITIS:
-   - Recommend targeted scalp care 1–2x/week (*Conaz 2% Shampoo*, *Selsun Blue*, *Nizoral / Polytar / Phototar*, *Ducray Kelual DS*, *AccuFix Salicylic Acid Scalp Shampoo*, *Sebamed Anti-Dandruff*, or *Jenpharm Sebornil Shampoo*) ROTATED with a gentle hydrating shampoo on other washes.
+   - Recommend targeted scalp care 1–2x/week (*Conaz 2% Shampoo*, *Selsun Blue*, *Nizoral / Polytar / Phototar*, *Ducray Kelual DS*, *AccuFix Salicylic Acid Shampoo*, *Sebamed Anti-Dandruff*, or *Jenpharm Sebornil Shampoo*) ROTATED with a gentle hydrating shampoo on other washes.
    - EXPLICITLY tell the user to STOP applying raw heavy hair oils directly onto the scalp if they have oily/sticky flakes or scalp pimples, because oil feeds dandruff yeast and clogs follicles.
 3. HAIR FALL, WIDENING PART, RECEDING HAIRLINE, OR POSTPARTUM SHEDDING:
    - Recommend gentle follicle-supporting care (*Jenpharm Anagrow Shampoo / Serum*, *The Ordinary Multi-Peptide Serum for Hair Density*, *Follihair / Tricogen Peptide Serums*, *Ducray Anaphase+*, *Conatural Hair Growth Water*, *BioOne / Neophar Clinical Hair Lines*, or *Organic Traveller / Nirvana Botanics* pure Rosemary Essential Oil STRICTLY DILUTED 3–5 drops in a *Saeed Ghani* carrier oil).
@@ -1412,10 +1413,10 @@ COMPREHENSIVE HAIR & SCALP PROBLEM-SOLVING ENGINE (FOLLOW EVERY MATCHING CASE):
    - Trigger "see_dermatologist_directly" and "redFlags.urgencyLevel": "urgent".
    - NEVER claim hair oils or shampoos regrow autoimmune bald patches.
 5. POROSITY, STRAND TYPE & HARD-WATER COATING:
-   - If "Low Porosity": Strictly forbid heavy butter/oil shampoos (NEVER recommend *SheaMoisture* for Low Porosity)! Prescribe lightweight water-based care (*L'Oréal Paris Elvive Hyaluron Moisture 72H*, *Conatural Sulfate-Free*) + 1x/week *AccuFix Salicylic Scalp Shampoo*, *Pantene Lively Clean*, or diluted *Bragg Apple Cider Vinegar* chelating rinse.
-   - If "Medium Porosity" or "Not Sure": Balanced hydration + light masks (*Dove Intense Repair / Dermacare*, *TRESemmé Keratin Smooth / Detox*, *OGX*, *Head & Shoulders* if mild flakes, *Hair Energy / Vince* masks).
-   - If "High Porosity" or "Chemically Treated" / Heat / Dye damage: Rich bond & moisture care (*L'Oréal Paris Elvive Extraordinary Oil / Dream Lengths / Total Repair 5*, *Garnier Hair Food Masks*, *Olaplex / Redken / Kérastase*, *SheaMoisture* allowed for High Porosity only, *Hair Energy / Vince* keratin/biotin masks).
-   - If "Hard / Bore Water": Explain mineral film coating clearly in Card 4 & prescribe *AccuFix Salicylic Scalp Shampoo* / *Pantene Pro-V Lively Clean* or diluted *Bragg Apple Cider Vinegar* chelating rinse 1x/week.
+   - If "Low Porosity": Strictly forbid heavy butter/oil shampoos (NEVER recommend *SheaMoisture* for Low Porosity)! Prescribe lightweight water-based care (*L'Oréal Paris Elvive Hyaluron Moisture 72H*, *Conatural Sulfate-Free*) + 1x/week *AccuFix Salicylic Acid Shampoo*, *AccuFix Clarify and Rebalance Shampoo*, *Pantene Lively Clean*, or diluted *Bragg Apple Cider Vinegar* chelating rinse.
+   - If "Medium Porosity" or "Not Sure": Balanced hydration + light conditioning (*AccuFix Strength & Shine Leave-In Conditioner*, *Dove Intense Repair / Dermacare*, *TRESemmé Keratin Smooth / Detox*, *OGX*, *Head & Shoulders* if mild flakes, *Hair Energy / Vince* masks).
+   - If "High Porosity" or "Chemically Treated" / Heat / Dye damage: Rich bond & moisture care (*AccuFix Hair Mask*, *AccuFix Strength & Shine Leave-In Conditioner*, *AccuFix Frizz Control Serum* on ends, *L'Oréal Paris Elvive Extraordinary Oil / Dream Lengths / Total Repair 5*, *Garnier Hair Food Masks*, *Olaplex / Redken / Kérastase*, *SheaMoisture* allowed for High Porosity only, *Hair Energy / Vince* keratin/biotin masks).
+   - If "Hard / Bore Water": Explain mineral film coating clearly in Card 4 & prescribe *AccuFix Clarify and Rebalance Shampoo* / *AccuFix Salicylic Acid Shampoo* / *Pantene Pro-V Lively Clean* or diluted *Bragg Apple Cider Vinegar* chelating rinse 1x/week.
 6. PREMATURE GREYING OR NUTRITIONAL SHEDDING:
    - State honestly that topical shampoos and oils CANNOT reverse genetic premature greying. Suggest gentle sulfate-free hydrating care to prevent dryness, and recommend checking Vitamin B12, Copper/Zinc, and Ferritin with a doctor.
 
@@ -1525,6 +1526,7 @@ export function buildVerifyProductPrompt(
   const suspiciousSigns = (body?.suspiciousSigns || "").trim();
   const images = Array.isArray(body?.images) ? body.images : [];
   const jenpharmCatalogList = (VERIFIED_EXACT_PRODUCT_LINEUPS["Jenpharm"] || []).join(" | ");
+  const accufixCatalogList = (VERIFIED_EXACT_PRODUCT_LINEUPS["AccuFix Cosmetics"] || []).join(" | ");
 
   const jsonBlockInstruction = isSearchGrounded
     ? `
@@ -1576,10 +1578,10 @@ LIVE GOOGLE SEARCH GROUNDING & OUTPUT FORMAT (CRITICAL):
   "saferAlternative": null
 }
 \`\`\`
-- Only populate "saferAlternative" (an object with { "brand": "Jenpharm", "name": "<exact SKU from 22 Jenpharm list below>", "subCategory": "...", "approxPricePkr": "PKR ...", "whereToBuy": "Official Brand Store • Dvago • Naheed • Daraz Mall", "bullets": { "en": ["..."], "ur": ["..."] } }) if the scanned product is unsafe, suspicious/fake, or unsuitable/clashing for "${userProfileType || "sensitive Pakistani skin"}". Otherwise set "saferAlternative": null.`
+- Only populate "saferAlternative" (an object with { "brand": "Jenpharm" | "AccuFix Cosmetics", "name": "<exact SKU from the verified Jenpharm or AccuFix Cosmetics list below>", "subCategory": "...", "approxPricePkr": "PKR ...", "whereToBuy": "Official Brand Store • Dvago • Naheed • Daraz Mall", "bullets": { "en": ["..."], "ur": ["..."] } }) if the scanned product is unsafe, suspicious/fake, or unsuitable/clashing for "${userProfileType || "sensitive Pakistani skin"}". Otherwise set "saferAlternative": null.`
     : `
 SAFER ALTERNATIVE RULE:
-- Only populate "saferAlternative" using an exact Jenpharm SKU from the list below if the scanned product is unsafe, suspicious/fake, or unsuitable for "${userProfileType || "sensitive Pakistani skin"}"; otherwise omit it.`;
+- Only populate "saferAlternative" using an exact Jenpharm or AccuFix Cosmetics SKU from the verified lists below if the scanned product is unsafe, suspicious/fake, or unsuitable for "${userProfileType || "sensitive Pakistani skin"}"; otherwise omit it.`;
 
   return `You are DerméScan's strict Product Check, Authenticity Inspector & Formula Decoder for Pakistan.
 In Pakistan, fake copies of The Ordinary, CeraVe, La Roche-Posay, Garnier, L'Oreal, Sunplay, and popular local serums circulate on lookalike sites and social pages, and users also need plain-English clarity on what a bottle actually treats, its verified INCI actives, who should avoid it, routine clashes, and how to use it.
@@ -1605,8 +1607,9 @@ ZERO-MISTAKE AUTHENTICITY & DECODER RULES (FOLLOW STRICTLY):
    - Specifically evaluate compatibility with "${userProfileType || "Not specified"}" inside "profileMatchVerdict" (if not specified, set status: "general_info" and explain generally who benefits most).
    - Clearly list who should avoid it ("whoShouldAvoid" — e.g., pregnancy/breastfeeding retinoid/BHA bans, fungal acne/dandruff oil triggers, low-porosity heavy-butter buildup) AND routine clashes ("routineClashes" — e.g., do not layer Vitamin C / AHAs / Benzoyl Peroxide with Retinol in the same routine).
    - Provide 2–4 crisp **AM / PM / Weekly** steps in "howToUse.steps".
-3. VERIFIED 22 JENPHARM CATALOG (ONLY FOR "saferAlternative" IF NEEDED):
-   ${jenpharmCatalogList}
+3. VERIFIED JENPHARM & ACCUFIX COSMETICS CATALOG (ONLY FOR "saferAlternative" IF NEEDED):
+   - Jenpharm: ${jenpharmCatalogList}
+   - AccuFix Cosmetics: ${accufixCatalogList}
 4. LANGUAGE & CONCISENESS:
    - Keep every bullet crisp and easy to read (max 10–14 words per bullet).
    - NEVER use em-dashes ("—") anywhere in any generated JSON string, badge, title, or bullet; use commas or colons instead.

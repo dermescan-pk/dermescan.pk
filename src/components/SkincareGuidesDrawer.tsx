@@ -12,18 +12,65 @@ import {
   UserCheck,
   X,
 } from "lucide-react";
+import { JENPHARM_PRODUCTS_CATALOG } from "../data/jenpharmProductsCatalog.ts";
 import {
-  JENPHARM_PRODUCTS_CATALOG,
-  type BottleKind,
-  type GuideCategoryId,
-  type JenpharmProductMonograph,
-  type MonographSectionLabel,
-} from "../data/jenpharmProductsCatalog.ts";
+  ACCUFIX_PRODUCTS_CATALOG,
+  type CatalogBrandName,
+  type ExtendedBottleKind,
+  type UnifiedGuideCategoryId,
+  type UnifiedMonographSectionLabel,
+  type UnifiedProductMonograph,
+} from "../data/accufixProductsCatalog.ts";
 import type { Language } from "../types/dermascan.ts";
 
-export type { GuideCategoryId };
+export type GuideCategoryId = UnifiedGuideCategoryId;
 
 type DrawerTabId = GuideCategoryId | "all";
+type BrandFilterId = "all" | CatalogBrandName;
+
+const UNIFIED_PRODUCTS_CATALOG: readonly UnifiedProductMonograph[] = [
+  ...JENPHARM_PRODUCTS_CATALOG.map((item): UnifiedProductMonograph => {
+    let guideCategory: UnifiedGuideCategoryId = "sunblocks";
+    let monographSection: UnifiedMonographSectionLabel = "Sunscreens";
+
+    if (item.guideCategory === "sunblocks") {
+      guideCategory = "sunblocks";
+      monographSection = "Sunscreens";
+    } else if (item.guideCategory === "cleansers") {
+      guideCategory = "cleansers";
+      monographSection = "Cleansers & Face Washes";
+    } else if (item.guideCategory === "shampoos-scalp") {
+      guideCategory = "hair-scalp";
+      monographSection = "Hair & Scalp Treatments";
+    } else if (item.monographSection === "Moisturizers & Barrier Repair") {
+      guideCategory = "moisturizers-toners";
+      monographSection = "Moisturizers & Toners";
+    } else {
+      guideCategory = "serums-creams-patches";
+      monographSection = "Targeted Serums, Creams & Patches";
+    }
+
+    return {
+      order: item.order,
+      brand: "Jenpharm",
+      affiliateId: item.affiliateId,
+      slug: item.slug,
+      name: item.name,
+      guideCategory,
+      monographSection,
+      imagePath: item.imagePath,
+      affiliateUrl: item.affiliateUrl,
+      bottleKind: item.bottleKind,
+      suitsWhomLabel: item.suitsWhomLabel,
+      suitsWhom: item.suitsWhom,
+      bestFor: item.bestFor,
+      keyPerks: item.keyPerks,
+      whoShouldAvoid: item.whoShouldAvoid,
+      couldCause: item.couldCause,
+    };
+  }),
+  ...ACCUFIX_PRODUCTS_CATALOG,
+];
 
 interface GuideArticleMeta {
   id: GuideCategoryId;
@@ -40,58 +87,99 @@ export const SKINCARE_GUIDE_ARTICLES: GuideArticleMeta[] = [
     id: "sunblocks",
     categoryLabel: "Sunblocks",
     readTime: "3 min read",
-    title: "The Pakistani Sunscreen Guide: Choosing the Right Jenpharm SPF",
+    title: "The Pakistani Sunscreen Guide: Choosing the Right SPF",
     intro:
-      "In Pakistan's intense UV index, especially across Sindh and Punjab, skipping daily sunscreen is the #1 reason melasma, sun tan, and post-acne marks refuse to fade. Compare the full profile of every Jenpharm SPF formula below:",
+      "In Pakistan's intense UV index, especially across Sindh and Punjab, skipping daily sunscreen is the #1 reason melasma, sun tan, and post-acne marks refuse to fade. Compare every verified SPF formula below:",
     takeawayTitle: "Key Takeaway: Two-Finger Rule & Reapplication",
     takeawayBody:
-      "Apply two full finger-lengths across your face and neck every morning, even indoors near bright windows, and reapply every 2–3 hours when stepping outside in direct Pakistani sunlight.",
-  },
-  {
-    id: "creams-serums",
-    categoryLabel: "Creams & Serums",
-    readTime: "6 min read",
-    title:
-      "Steroid-Free Brightening & Barrier Repair: Moisturizers, Creams & Serums",
-    intro:
-      'Local "3-day whitening" creams thin your epidermis with unprescribed steroids. True skin brightening happens safely by repairing your moisture barrier first and fading excess melanin gradually with targeted clinical actives:',
-    takeawayTitle: "Key Takeaway: Calm Barrier First, Brighten Safely",
-    takeawayBody:
-      "Never rush fading pigmentation with unlabelled steroid creams. Pair daily barrier hydration with gentle brightening actives in the morning and keep Retinol or exfoliating acids strictly spaced out on separate nights.",
+      "Apply two full finger-lengths across your face and neck every morning, even indoors near bright windows, and reapply every 2-3 hours when stepping outside in direct Pakistani sunlight.",
   },
   {
     id: "cleansers",
     categoryLabel: "Cleansers",
-    readTime: "3 min read",
+    readTime: "4 min read",
     title: "How to Pick a Face Wash Without Stripping Your Barrier",
     intro:
-      "If your face feels tight and squeaky after washing, your cleanser is damaging your lipid barrier. Match your cleanser directly to your skin type, comedones, or post-steroid sensitivity:",
-    takeawayTitle: "Key Takeaway: Lukewarm Water & 45–60 Seconds",
+      "If your face feels tight and squeaky after washing, your cleanser is damaging your lipid barrier. Compare Jenpharm and AccuFix cleansers matched to oily pores, gentle texture smoothing, or post-steroid sensitivity:",
+    takeawayTitle: "Key Takeaway: Lukewarm Water & 45-60 Seconds",
     takeawayBody:
-      "Use lukewarm (not hot) water, massage gently for 45–60 seconds so active washes like Clarevo or MandelAC can lift sebum cleanly, and pat dry before applying moisturizer on slightly damp skin.",
+      "Use lukewarm water, massage gently for 45-60 seconds so BHA or AHA cleansers can lift oil cleanly, and pat dry before applying moisturizer on slightly damp skin.",
   },
   {
-    id: "shampoos-scalp",
-    categoryLabel: "Shampoos & Scalp",
+    id: "moisturizers-toners",
+    categoryLabel: "Moisturizers & Toners",
     readTime: "4 min read",
+    title: "Barrier Moisturizers & Resurfacing Toners for Pakistani Weather",
+    intro:
+      "Healthy skin stays balanced when hydration matches humidity and exfoliating toners stay spaced out. Explore Dermive barrier moisturizers alongside AccuFix Glycolic Acid Toner:",
+    takeawayTitle: "Key Takeaway: Hydrate Daily, Exfoliate 2-3 Nights a Week",
+    takeawayBody:
+      "Layer lightweight oil-free moisturizers morning and night, and keep leave-on glycolic acid toners strictly to 2-3 evenings a week on intact skin.",
+  },
+  {
+    id: "serums-creams-patches",
+    categoryLabel: "Serums, Creams & Patches",
+    readTime: "6 min read",
+    title:
+      "Steroid-Free Brightening, Pore Serums & Hydrocolloid Pimple Patches",
+    intro:
+      'Local "3-day whitening" creams thin skin with hidden steroids. Safe brightening and acne control come from targeted serums, gradual creams, and sterile pimple patches:',
+    takeawayTitle: "Key Takeaway: Never Clash Retinol, AHAs & BHAs",
+    takeawayBody:
+      "Use brightening or pore serums on separate nights from Retinol, protect whitehead pimples with hydrocolloid patches instead of squeezing, and wear SPF 50+ every morning.",
+  },
+  {
+    id: "lip-care",
+    categoryLabel: "Lip Care",
+    readTime: "2 min read",
+    title: "Clinical Lip Care: Healing Chapping & Dark Lip Pigmentation Safely",
+    intro:
+      "Lip skin has zero oil glands and burns easily from harsh facial acids or lemon DIYs. Use dedicated soothing lip care designed gently for dark or flaky lips:",
+    takeawayTitle: "Key Takeaway: Exfoliate Gently Once a Week & Protect from Sun",
+    takeawayBody:
+      "Keep lip polishing gentle at 1-2 times weekly, apply treatment balm at night, and never step outdoors without daytime SPF lip protection.",
+  },
+  {
+    id: "body-washes",
+    categoryLabel: "Body Washes",
+    readTime: "3 min read",
+    title: "Targeted Body Washes for Back Acne, Strawberry Skin & Eczema",
+    intro:
+      "Hot humid summers cause clogged follicles on the back and chest, while borehole hard water triggers dry itchy arms and legs. Choose active exfoliating or calming oat-lipid washes cleanly:",
+    takeawayTitle: "Key Takeaway: Match Body Wash to Breakout vs Dryness Zones",
+    takeawayBody:
+      "Leave AHA/BHA body wash on acne-prone back or bumpy arms for 1-2 minutes before rinsing, and switch to soothing oat-lipid wash whenever skin feels dry or eczema-prone.",
+  },
+  {
+    id: "hair-scalp",
+    categoryLabel: "Hair & Scalp",
+    readTime: "5 min read",
     title: "Solving Hard-Water Hair Fall, Dandruff & Frizz in Pakistan",
     intro:
-      "Mineral-heavy borehole and tap water across Pakistan coats hair shafts in calcium buildup, leading to breakage, thinning, and scalp flakes. Separate your scalp treatment from your hair-shaft care:",
+      "Mineral-heavy borehole water coats hair shafts in buildup while humidity triggers scalp flakes and frizz. Rotate clarifying scalp shampoos with porosity-matched leave-ins, masks, and ends serums:",
     takeawayTitle: "Key Takeaway: Keep Scalp & Hair-Length Care Separate",
     takeawayBody:
-      "When dealing with dandruff or seborrheic flakes, skip scalp oiling completely and use lightweight targeted drops instead; reserve smoothing serums strictly for damp mid-lengths and ends.",
+      "Rotate medicated or clarifying shampoos 1-2x weekly with a gentle wash, skip raw oils on flaky scalps, and keep leave-in conditioners, masks, and serums strictly on mid-lengths and ends.",
   },
 ];
 
-const ALL_MONOGRAPH_SECTIONS: MonographSectionLabel[] = [
+const ALL_MONOGRAPH_SECTIONS: UnifiedMonographSectionLabel[] = [
   "Cleansers & Face Washes",
-  "Moisturizers & Barrier Repair",
+  "Moisturizers & Toners",
   "Sunscreens",
-  "Targeted Serums & Creams",
+  "Targeted Serums, Creams & Patches",
+  "Lip Care",
+  "Body Washes",
   "Hair & Scalp Treatments",
 ];
 
-function MinimalBottleSvg({ kind }: { kind: BottleKind }) {
+const BRAND_FILTER_OPTIONS: { id: BrandFilterId; label: string }[] = [
+  { id: "all", label: "All Brands" },
+  { id: "Jenpharm", label: "Jenpharm" },
+  { id: "AccuFix Cosmetics", label: "AccuFix" },
+];
+
+function MinimalBottleSvg({ kind }: { kind: ExtendedBottleKind }) {
   return (
     <svg
       viewBox="0 0 88 88"
@@ -107,7 +195,7 @@ function MinimalBottleSvg({ kind }: { kind: BottleKind }) {
         className="fill-[#FAF6F7] stroke-[#EAD8DC] dark:fill-[#1B1316] dark:stroke-[#38282D]"
         strokeWidth="1.2"
       />
-      {kind === "tube" && (
+      {(kind === "tube" || kind === "lip") && (
         <g stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
           <path
             d="M31 18H57L53.5 60H34.5L31 18Z"
@@ -136,7 +224,7 @@ function MinimalBottleSvg({ kind }: { kind: BottleKind }) {
           />
         </g>
       )}
-      {kind === "jar" && (
+      {(kind === "jar" || kind === "mask") && (
         <g stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
           <rect
             x="25"
@@ -201,7 +289,7 @@ function MinimalBottleSvg({ kind }: { kind: BottleKind }) {
           />
         </g>
       )}
-      {(kind === "wash" || kind === "shampoo") && (
+      {(kind === "wash" || kind === "shampoo" || kind === "toner") && (
         <g stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
           <path d="M40 16H52" strokeLinecap="round" />
           <line
@@ -243,6 +331,23 @@ function MinimalBottleSvg({ kind }: { kind: BottleKind }) {
           />
         </g>
       )}
+      {kind === "patch" && (
+        <g stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
+          <rect
+            x="24"
+            y="24"
+            width="40"
+            height="40"
+            rx="6"
+            fill="currentColor"
+            fillOpacity="0.07"
+          />
+          <circle cx="36" cy="36" r="4.5" fill="currentColor" fillOpacity="0.16" />
+          <circle cx="52" cy="36" r="4.5" fill="currentColor" fillOpacity="0.16" />
+          <circle cx="36" cy="52" r="4.5" fill="currentColor" fillOpacity="0.16" />
+          <circle cx="52" cy="52" r="4.5" fill="currentColor" fillOpacity="0.16" />
+        </g>
+      )}
     </svg>
   );
 }
@@ -254,7 +359,7 @@ function ProductPhotoFrame({
 }: {
   imagePath: string;
   productName: string;
-  bottleKind: BottleKind;
+  bottleKind: ExtendedBottleKind;
 }) {
   const [imgFailed, setImgFailed] = useState(false);
 
@@ -286,7 +391,7 @@ function ProductPhotoFrame({
 function ProductMonographCard({
   product,
 }: {
-  product: JenpharmProductMonograph;
+  product: UnifiedProductMonograph;
 }) {
   return (
     <article className="rounded-2xl border border-[#ECE0E3] bg-white p-5 transition-colors duration-300 sm:p-6 dark:border-[#34262B] dark:bg-[#1E1619]">
@@ -302,6 +407,9 @@ function ProductMonographCard({
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-block rounded-full border border-[#ECE0E3] bg-[#FAF6F7] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#B56576] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113] dark:text-[#D48395]">
                 #{product.order} · {product.monographSection}
+              </span>
+              <span className="inline-block rounded-full border border-[#EAD8DC] bg-[#B56576]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#8F4556] dark:border-[#49323A] dark:bg-[#D48395]/15 dark:text-[#F0B2C0]">
+                {product.brand}
               </span>
             </div>
             <h4 className="font-editorial break-words text-lg font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-xl dark:text-[#F7EFEF]">
@@ -395,12 +503,14 @@ export function SkincareGuidesDrawer({
   onClose,
 }: SkincareGuidesDrawerProps) {
   const [activeTab, setActiveTab] = useState<DrawerTabId>(initialCategory);
+  const [brandFilter, setBrandFilter] = useState<BrandFilterId>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setActiveTab(initialCategory);
+      setBrandFilter("all");
       setSearchQuery("");
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
@@ -424,13 +534,21 @@ export function SkincareGuidesDrawer({
     };
   }, [isOpen, onClose]);
 
+  const brandScopedCatalog = useMemo(() => {
+    if (brandFilter === "all") return UNIFIED_PRODUCTS_CATALOG;
+    return UNIFIED_PRODUCTS_CATALOG.filter(
+      (product) => product.brand === brandFilter
+    );
+  }, [brandFilter]);
+
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return [];
     const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
-    return JENPHARM_PRODUCTS_CATALOG.filter((product) => {
+    return brandScopedCatalog.filter((product) => {
       const searchableText = [
+        product.brand,
         product.name,
         product.monographSection,
         product.suitsWhom,
@@ -443,28 +561,22 @@ export function SkincareGuidesDrawer({
         .toLowerCase();
       return tokens.every((token) => searchableText.includes(token));
     });
-  }, [normalizedQuery]);
+  }, [brandScopedCatalog, normalizedQuery]);
 
   const activeArticle =
     SKINCARE_GUIDE_ARTICLES.find((a) => a.id === activeTab) ||
     SKINCARE_GUIDE_ARTICLES[0];
 
   const categoryProducts = useMemo(() => {
-    if (activeTab === "all") return JENPHARM_PRODUCTS_CATALOG;
-    return JENPHARM_PRODUCTS_CATALOG.filter(
+    if (activeTab === "all") return brandScopedCatalog;
+    return brandScopedCatalog.filter(
       (product) => product.guideCategory === activeTab
     );
-  }, [activeTab]);
+  }, [activeTab, brandScopedCatalog]);
 
   if (!isOpen) return null;
 
   const isSearching = normalizedQuery.length > 0;
-  const creamsMoisturizers = categoryProducts.filter(
-    (p) => p.monographSection === "Moisturizers & Barrier Repair"
-  );
-  const creamsTargetedSerums = categoryProducts.filter(
-    (p) => p.monographSection === "Targeted Serums & Creams"
-  );
 
   return (
     <div
@@ -504,15 +616,15 @@ export function SkincareGuidesDrawer({
 
       {/* Full-Screen Centered Editorial Column */}
       <main className="mx-auto max-w-4xl space-y-8 px-5 py-6 pb-24 sm:px-8">
-        {/* Page Heading + Search + Category Filter Pills */}
+        {/* Page Heading + Search + Brand & Category Filters */}
         <section className="space-y-5">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <BookOpen className="h-3.5 w-3.5 shrink-0 text-[#B56576] dark:text-[#D48395]" />
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#B56576] dark:text-[#D48395]">
                 {language === "ur"
-                  ? "DerméScan Editorial Hub · 22 Verified Monographs"
-                  : "DerméScan Dermatology Journal · All 22 Jenpharm Monographs"}
+                  ? `DerméScan Editorial Hub · ${UNIFIED_PRODUCTS_CATALOG.length} Verified Monographs`
+                  : `DerméScan Dermatology Journal · ${UNIFIED_PRODUCTS_CATALOG.length} Jenpharm & AccuFix Monographs`}
               </p>
             </div>
             <h2
@@ -535,11 +647,11 @@ export function SkincareGuidesDrawer({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Search all 22 Jenpharm products, conditions, ingredients, or skin types"
+                aria-label="Search all 36 Jenpharm and AccuFix products, conditions, ingredients, or skin types"
                 placeholder={
                   language === "ur"
-                    ? "Search karein: melasma, oily skin, dandruff, SPF, retinol, MandelAC..."
-                    : "Search all 22 products: melasma, oily skin, dandruff, SPF, retinol, post-steroid..."
+                    ? "Search karein: melasma, oily skin, pimple patches, lip balm, dandruff, AccuFix..."
+                    : "Search all 36 products: melasma, oily skin, lip balm, dandruff, AccuFix, retinol..."
                 }
                 className="w-full rounded-full border border-[#ECE0E3] bg-white py-3 pr-11 pl-11 text-[15px] text-[#1E181A] placeholder:text-[#7A686D] transition-colors duration-300 focus:border-[#B56576] focus:outline-none sm:text-base dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
               />
@@ -555,7 +667,46 @@ export function SkincareGuidesDrawer({
               )}
             </div>
 
+            {/* Brand Filter Bar */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#7A686D] dark:text-[#A9959B]">
+                Brand:
+              </span>
+              {BRAND_FILTER_OPTIONS.map((option) => {
+                const isSelected = brandFilter === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setBrandFilter(option.id)}
+                    className={`min-h-[34px] rounded-full border px-3.5 py-1 text-xs font-semibold transition-colors duration-200 active:scale-95 ${
+                      isSelected
+                        ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F5B8C6]"
+                        : "border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Category Tabs */}
             <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveTab("all");
+                }}
+                className={`min-h-[38px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors duration-200 active:scale-95 sm:text-sm ${
+                  !isSearching && activeTab === "all"
+                    ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                    : "border border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+                }`}
+              >
+                All Products ({brandScopedCatalog.length})
+              </button>
               {SKINCARE_GUIDE_ARTICLES.map((article) => {
                 const isActive = !isSearching && activeTab === article.id;
                 return (
@@ -576,20 +727,6 @@ export function SkincareGuidesDrawer({
                   </button>
                 );
               })}
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setActiveTab("all");
-                }}
-                className={`min-h-[38px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors duration-200 active:scale-95 sm:text-sm ${
-                  !isSearching && activeTab === "all"
-                    ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-                    : "border border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
-                }`}
-              >
-                All 22 Products
-              </button>
             </div>
           </div>
         </section>
@@ -604,7 +741,7 @@ export function SkincareGuidesDrawer({
                 </p>
                 <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] sm:text-3xl dark:text-[#F7EFEF]">
                   Showing {searchResults.length} of{" "}
-                  {JENPHARM_PRODUCTS_CATALOG.length} products
+                  {brandScopedCatalog.length} products
                 </h3>
               </div>
               <button
@@ -629,19 +766,22 @@ export function SkincareGuidesDrawer({
               <div className="rounded-2xl border border-[#ECE0E3] bg-white p-8 text-center dark:border-[#34262B] dark:bg-[#1E1619]">
                 <Info className="mx-auto mb-3 h-7 w-7 text-[#B56576] dark:text-[#D48395]" />
                 <p className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                  No matching Jenpharm monograph found
+                  No matching monograph found
                 </p>
                 <p className="mt-2 text-[15px] leading-relaxed text-[#5E5055] sm:text-base dark:text-[#C9B6BC]">
                   Try searching for a skin concern like &ldquo;melasma&rdquo;,
-                  &ldquo;acne&rdquo;, &ldquo;dandruff&rdquo;, &ldquo;retinol&rdquo;,
-                  or &ldquo;oil-free&rdquo;.
+                  &ldquo;acne&rdquo;, &ldquo;dandruff&rdquo;, &ldquo;lip balm&rdquo;,
+                  or switch Brand back to All Brands.
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setBrandFilter("all");
+                  }}
                   className="mt-5 inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#B56576] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#9E5263] dark:bg-[#D48395] dark:text-[#140F11]"
                 >
-                  View All Categories
+                  Reset Filters
                 </button>
               </div>
             )}
@@ -652,30 +792,33 @@ export function SkincareGuidesDrawer({
               <div className="flex flex-wrap items-center gap-2.5">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ECE0E3] bg-white px-3 py-1 text-xs font-semibold text-[#8C3B4A] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F0B2C0]">
                   <Clock className="h-3.5 w-3.5 shrink-0" />
-                  <span>8 min full index</span>
+                  <span>Full Clinical Index</span>
                 </span>
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
-                  Complete Clinical Encyclopedia (1–22)
+                  Complete Encyclopedia ({brandScopedCatalog.length} Products)
                 </span>
               </div>
               <h3 className="font-editorial text-2xl font-semibold leading-snug text-[#1E181A] sm:text-3xl dark:text-[#F7EFEF]">
-                All 22 Verified Jenpharm Clinical Monographs
+                {brandFilter === "all"
+                  ? "All 36 Verified Clinical Monographs"
+                  : `All ${brandScopedCatalog.length} Verified ${brandFilter} Monographs`}
               </h3>
               <p className="text-[15px] leading-relaxed text-[#5E5055] sm:text-base dark:text-[#C9B6BC]">
-                Browse every cleanser, moisturizer, sunscreen, targeted serum,
-                and scalp treatment with skin-type suitability, active perks,
-                contraindications, and potential side effects.
+                Browse cleansers, moisturizers, toners, sunscreens, targeted serums,
+                pimple patches, lip care, body washes, and hair treatments with
+                suitability, perks, warnings, and side effects.
               </p>
             </header>
 
-            {ALL_MONOGRAPH_SECTIONS.map((sectionLabel, idx) => {
-              const sectionItems = JENPHARM_PRODUCTS_CATALOG.filter(
+            {ALL_MONOGRAPH_SECTIONS.map((sectionLabel) => {
+              const sectionItems = brandScopedCatalog.filter(
                 (item) => item.monographSection === sectionLabel
               );
+              if (sectionItems.length === 0) return null;
               return (
                 <section key={sectionLabel} className="space-y-4">
                   <h4 className="border-b border-[#ECE0E3] pb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:border-[#34262B] dark:text-[#D48395]">
-                    {idx + 1}. {sectionLabel} ({sectionItems.length})
+                    {sectionLabel} ({sectionItems.length})
                   </h4>
                   <div className="space-y-5">
                     {sectionItems.map((product) => (
@@ -712,37 +855,7 @@ export function SkincareGuidesDrawer({
               </p>
             </header>
 
-            {activeTab === "creams-serums" ? (
-              <div className="space-y-8">
-                <section className="space-y-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:text-[#D48395]">
-                    Moisturizers &amp; Barrier Repair ({creamsMoisturizers.length})
-                  </p>
-                  <div className="space-y-5">
-                    {creamsMoisturizers.map((product) => (
-                      <ProductMonographCard
-                        key={product.affiliateId}
-                        product={product}
-                      />
-                    ))}
-                  </div>
-                </section>
-
-                <section className="space-y-4 pt-2">
-                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:text-[#D48395]">
-                    Targeted Serums &amp; Creams ({creamsTargetedSerums.length})
-                  </p>
-                  <div className="space-y-5">
-                    {creamsTargetedSerums.map((product) => (
-                      <ProductMonographCard
-                        key={product.affiliateId}
-                        product={product}
-                      />
-                    ))}
-                  </div>
-                </section>
-              </div>
-            ) : (
+            {categoryProducts.length > 0 ? (
               <div className="space-y-5">
                 {categoryProducts.map((product) => (
                   <ProductMonographCard
@@ -750,6 +863,23 @@ export function SkincareGuidesDrawer({
                     product={product}
                   />
                 ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-[#ECE0E3] bg-white p-7 text-center dark:border-[#34262B] dark:bg-[#1E1619]">
+                <Info className="mx-auto mb-2.5 h-6 w-6 text-[#B56576] dark:text-[#D48395]" />
+                <p className="font-editorial text-xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                  No {brandFilter} products in {activeArticle.categoryLabel}
+                </p>
+                <p className="mt-1.5 text-sm text-[#5E5055] dark:text-[#C9B6BC]">
+                  Switch back to All Brands to view verified products in this category.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setBrandFilter("all")}
+                  className="mt-4 inline-flex min-h-[38px] items-center justify-center rounded-full bg-[#B56576] px-5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#9E5263] dark:bg-[#D48395] dark:text-[#140F11]"
+                >
+                  Show All Brands
+                </button>
               </div>
             )}
 
