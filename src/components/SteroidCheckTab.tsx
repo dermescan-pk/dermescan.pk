@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FlaskConical,
   ShieldAlert,
@@ -70,6 +70,41 @@ function appendCreamChip(prev: string, chip: string): string {
   if (alreadyIncluded) return prev;
   const separator = trimmed.endsWith(",") ? " " : ", ";
   return `${trimmed}${separator}${chip}`;
+}
+
+function AutoGrowTextarea({
+  id,
+  value,
+  onChange,
+  placeholder,
+}: {
+  id: string;
+  value: string;
+  onChange: (val: string) => void;
+  placeholder: string;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    if (value) {
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [value]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      id={id}
+      rows={2}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="w-full resize-none overflow-hidden rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-colors duration-200 focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
+    />
+  );
 }
 
 interface SteroidCheckTabProps {
@@ -190,7 +225,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
         </div>
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
         <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
           <div className="pb-6">
             <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
@@ -229,22 +264,15 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 ? "Cream ka naam ya ingredients"
                 : "Cream name or ingredients"}
             </label>
-            <textarea
+            <AutoGrowTextarea
               id="steroid-cream-name"
-              rows={1}
               value={productNameOrIngredients}
-              onChange={(e) => setProductNameOrIngredients(e.target.value)}
+              onChange={setProductNameOrIngredients}
               placeholder={
                 language === "ur"
-                  ? "Maslan: Dermovate + Golden Pearl mix, Clobetasol, Betnovate-N, ya ingredients list likhein..."
-                  : "e.g., Clobetasol, Dermovate, Betnovate-N, Golden Pearl, or paste ingredients here..."
+                  ? "e.g., Dermovate, Golden Pearl, ya ingredients"
+                  : "e.g., Clobetasol, Dermovate, Golden Pearl"
               }
-              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
-                productNameOrIngredients.length > 72 ||
-                productNameOrIngredients.includes("\n")
-                  ? "h-20 overflow-y-auto"
-                  : "h-11 overflow-hidden"
-              }`}
             />
           </div>
 
@@ -271,10 +299,10 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                     onClick={() =>
                       setDurationAndReason((prev) => appendCreamChip(prev, chip))
                     }
-                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
                       selected
-                        ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
-                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                        ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                        : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#8F4556] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
                     }`}
                   >
                     + {chip}
@@ -282,17 +310,11 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 );
               })}
             </div>
-            <textarea
+            <AutoGrowTextarea
               id="steroid-duration-reason"
-              rows={1}
               value={durationAndReason}
-              onChange={(e) => setDurationAndReason(e.target.value)}
-              placeholder="e.g. 4 months se daily raat ko fairness ya melasma ke liye laga rahe hain..."
-              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
-                durationAndReason.length > 68 || durationAndReason.includes("\n")
-                  ? "h-20 overflow-y-auto"
-                  : "h-11 overflow-hidden"
-              }`}
+              onChange={setDurationAndReason}
+              placeholder="e.g., 4 months nightly for fairness or melasma"
             />
           </div>
 
@@ -319,10 +341,10 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                     onClick={() =>
                       setSideEffectsNoticed((prev) => appendCreamChip(prev, chip))
                     }
-                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
                       selected
-                        ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
-                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                        ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                        : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#8F4556] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
                     }`}
                   >
                     + {chip}
@@ -330,18 +352,11 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
                 );
               })}
             </div>
-            <textarea
+            <AutoGrowTextarea
               id="steroid-side-effects"
-              rows={1}
               value={sideEffectsNoticed}
-              onChange={(e) => setSideEffectsNoticed(e.target.value)}
-              placeholder="e.g. Chhorne par cheeks laal aur dark ho jate hain, veins dikh rahi hain, ya baal barh rahe hain..."
-              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
-                sideEffectsNoticed.length > 68 ||
-                sideEffectsNoticed.includes("\n")
-                  ? "h-20 overflow-y-auto"
-                  : "h-11 overflow-hidden"
-              }`}
+              onChange={setSideEffectsNoticed}
+              placeholder="e.g., red cheeks, visible veins, or dark rebound"
             />
           </div>
         </div>
@@ -351,7 +366,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           disabled={isChecking}
           aria-busy={isChecking}
           onClick={handleInspectCream}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#B56576] to-[#9E4E5F] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_-6px_rgba(181,101,118,0.45)] transition-all duration-200 hover:brightness-105 active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:from-[#D48395] dark:to-[#B56576] dark:text-[#140F11]"
         >
           <FlaskConical className="h-4 w-4 shrink-0" />
           <span>

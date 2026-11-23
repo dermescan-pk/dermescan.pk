@@ -275,7 +275,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#F8F2F3] transition-colors duration-300 dark:bg-[#140F11]">
+    <div className="min-h-screen overflow-x-hidden bg-[#F7EEF0] transition-colors duration-300 dark:bg-[#140E10]">
       {/* Top Curated Luxury Pharmacy & Jenpharm Bar */}
       <button
         type="button"
@@ -309,7 +309,7 @@ export default function App() {
           onTouchStart={handleNavTouchStart}
           onTouchEnd={handleNavTouchEnd}
           onTouchCancel={handleNavTouchCancel}
-          className="flex flex-wrap items-center justify-center gap-1 rounded-full border border-[#ECE0E3] bg-white p-1.5 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:flex-nowrap"
+          className="grid grid-cols-2 gap-1.5 rounded-2xl border border-[#EAD8DC] bg-[#F3E7EA]/85 p-1.5 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:flex sm:items-center sm:rounded-full"
         >
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -319,13 +319,13 @@ export default function App() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex min-h-[40px] flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-200 active:scale-95 sm:gap-2 sm:px-4 ${
+                className={`flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 sm:flex-1 sm:rounded-full sm:text-sm ${
                   isActive
-                    ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-                    : "text-[#5E5055] hover:bg-[#FAF6F7] hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
+                    ? "bg-[#B56576] text-white shadow-xs dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                    : "text-[#5E5055] hover:bg-white/75 hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
                 }`}
               >
-                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <Icon className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
                 <span>{tab.label}</span>
               </button>
             );

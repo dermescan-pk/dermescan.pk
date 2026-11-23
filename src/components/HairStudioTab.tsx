@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Scissors, AlertTriangle, RefreshCw } from "lucide-react";
 import { TabHeaderIllustration } from "./TabHeaderIllustration.tsx";
 import {
@@ -68,10 +68,10 @@ function SegmentedSelector({
               key={opt}
               type="button"
               onClick={() => onChange(opt)}
-              className={`min-h-[36px] rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 ${
+              className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 ${
                 active
-                  ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11]"
-                  : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#1E181A] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
+                  ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                  : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#1E181A] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
               }`}
             >
               {opt}
@@ -147,7 +147,16 @@ function HairStructuredRow({
   onChange: (val: string) => void;
   placeholder: string;
 }) {
-  const isLongText = value.length > 68 || value.includes("\n");
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    if (value) {
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [value]);
 
   return (
     <div className="min-w-0 space-y-3 py-5 first:pt-0 last:pb-0">
@@ -170,10 +179,10 @@ function HairStructuredRow({
               key={chip}
               type="button"
               onClick={() => onChange(appendHairChip(value, chip))}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
                 isSelected
-                  ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
-                  : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                  ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                  : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#8F4556] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
               }`}
             >
               + {chip}
@@ -183,14 +192,13 @@ function HairStructuredRow({
       </div>
 
       <textarea
+        ref={textareaRef}
         id={id}
-        rows={1}
+        rows={2}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
-          isLongText ? "h-20 overflow-y-auto" : "h-11 overflow-hidden"
-        }`}
+        className="w-full resize-none overflow-hidden rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-colors duration-200 focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
       />
     </div>
   );
@@ -319,12 +327,17 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
     <div className="min-w-0 space-y-8">
       <TabHeaderIllustration variant="hair" language={language} />
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
         <div className="mb-5 flex min-w-0 items-baseline justify-between gap-2">
           <div className="min-w-0 space-y-1">
-            <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-              {language === "ur" ? "Photos Add Karein" : "Add Photos"}
-            </h3>
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
+                01
+              </span>
+              <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                {language === "ur" ? "Photos Add Karein" : "Add Photos"}
+              </h3>
+            </div>
             <p className="text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
               {language === "ur"
                 ? "Sar, hairline aur baalon ki 1 se 4 saaf photos add karein."
@@ -356,10 +369,15 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
-        <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-          {language === "ur" ? "Baal Aur Paani" : "Hair & Water Details"}
-        </h3>
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
+        <div className="flex items-baseline gap-2.5">
+          <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
+            02
+          </span>
+          <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+            {language === "ur" ? "Baal Aur Paani" : "Hair & Water Details"}
+          </h3>
+        </div>
 
         <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
           <div className="grid grid-cols-1 gap-6 pb-5 sm:grid-cols-2">
@@ -405,7 +423,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
             chips={HAIR_SYMPTOM_CHIPS}
             value={symptomsAndDuration}
             onChange={setSymptomsAndDuration}
-            placeholder="e.g. 4 months se hair fall bohat tez hai aur front hairline thin ho rahi hai (or sudden circular patch)..."
+            placeholder="e.g., 4 months hair fall or hairline thinning"
           />
 
           <HairStructuredRow
@@ -414,7 +432,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
             chips={SCALP_TEXTURE_CHIPS}
             value={scalpFeelAndFlakes}
             onChange={setScalpFeelAndFlakes}
-            placeholder="e.g. Wash ke 2 din baad scalp oily/itchy ho jata hai aur yellow sticky flakes ya chhote dane bante hain..."
+            placeholder="e.g., oily itchy scalp or yellow flakes"
           />
 
           <HairStructuredRow
@@ -423,7 +441,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
             chips={HAIR_WATER_CLIMATE_CHIPS}
             value={waterAndClimate}
             onChange={setWaterAndClimate}
-            placeholder="e.g. Ghar mein khara/bore water aata hai aur humid garmi mein scalp paseene se chipchipa rehta hai..."
+            placeholder="e.g., bore water or humid scalp sweat"
           />
 
           <HairStructuredRow
@@ -432,7 +450,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
             chips={HAIR_ROUTINE_CHIPS}
             value={currentRoutineAndHistory}
             onChange={setCurrentRoutineAndHistory}
-            placeholder="e.g. Hafte mein 2 baar coconut/mustard oil raat bhar lagate hain aur sulfate shampoo use karte hain..."
+            placeholder="e.g., coconut oil twice a week + shampoo"
           />
 
           <HairStructuredRow
@@ -441,7 +459,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
             chips={HAIR_FAMILY_CHIPS}
             value={familyHistory}
             onChange={setFamilyHistory}
-            placeholder="e.g. Father ya mother side mein pattern thinning hai, ya PCOS / thyroid / recent dengue ke baad shedding hui..."
+            placeholder="e.g., pattern thinning, PCOS, or recent fever"
           />
         </div>
 
@@ -450,7 +468,7 @@ export function HairStudioTab({ language, healthProfile }: HairStudioTabProps) {
           disabled={isScanning}
           aria-busy={isScanning}
           onClick={handleRunHairScan}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#B56576] to-[#9E4E5F] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_-6px_rgba(181,101,118,0.45)] transition-all duration-200 hover:brightness-105 active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:from-[#D48395] dark:to-[#B56576] dark:text-[#140F11]"
         >
           <Scissors className="h-4 w-4 shrink-0" />
           <span>

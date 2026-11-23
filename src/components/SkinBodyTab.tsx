@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScanFace, AlertTriangle, RefreshCw } from "lucide-react";
 import { TabHeaderIllustration } from "./TabHeaderIllustration.tsx";
 import {
@@ -118,10 +118,10 @@ function SegmentedSelector({
               key={opt}
               type="button"
               onClick={() => onChange(opt)}
-              className={`min-h-[36px] rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 ${
+              className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 ${
                 active
-                  ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11]"
-                  : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#1E181A] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
+                  ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                  : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#1E181A] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
               }`}
             >
               {opt}
@@ -143,67 +143,67 @@ interface AreaDynamicPlaceholders {
 
 const AREA_DYNAMIC_PLACEHOLDERS: Record<BodyArea, AreaDynamicPlaceholders> = {
   Face: {
-    duration: "e.g. 3 weeks se forehead aur gaalon par chhote dane / daag hain...",
-    sensation: "e.g. Paseene mein kharish hoti hai, ya dard walay bade pimples / jalan...",
-    texture: "e.g. Blackheads, tiny uniform bumps, ya shahad-rang khurand / pus spots...",
-    spreadingPattern: "e.g. Dono cheeks par symmetric jhaiyan, ya forehead/jawline par phail rahe hain...",
-    triggersAndClimate: "e.g. Hair oiling ke baad bumps, dhoop mein darkening, ya periods se pehle...",
+    duration: "e.g., 3 weeks on forehead and cheeks",
+    sensation: "e.g., itchy with sweat or painful bumps",
+    texture: "e.g., blackheads or small uniform bumps",
+    spreadingPattern: "e.g., both cheeks, forehead, or jawline",
+    triggersAndClimate: "e.g., after hair oiling, sun, or periods",
   },
   "Under-Eyes": {
-    duration: "e.g. 6 months se dark circles aur subah puffiness rehti hai...",
-    sensation: "e.g. Subah soojan/thakan feel hoti hai, ya cream lagane par halka stinging...",
-    texture: "e.g. Jild patli aur creased lagti hai, chhote white milia bumps, ya dryness...",
-    spreadingPattern: "e.g. Dono aankhon ke neeche symmetric dark hollowness ya outer corner par...",
-    triggersAndClimate: "e.g. Neend ki kami, screen fatigue, aankhein malna (rubbing), ya dhoop...",
+    duration: "e.g., 6 months, worse in the morning",
+    sensation: "e.g., tired feeling or mild stinging",
+    texture: "e.g., thin creased skin, bags, or milia",
+    spreadingPattern: "e.g., under both eyes or outer corners",
+    triggersAndClimate: "e.g., poor sleep, screens, or eye rubbing",
   },
   Lips: {
-    duration: "e.g. 3 months se hont phat rahe hain ya honton ka rang dark ho gaya hai...",
-    sensation: "e.g. Honton par khushki aur jalan, ya corners par dard walay cracks...",
-    texture: "e.g. Chilka utarna (peeling), dark border pigmentation, ya chhotay blisters...",
-    spreadingPattern: "e.g. Sirf nichlay hont par, dono konon (corners) par, ya poori lip border par...",
-    triggersAndClimate: "e.g. Baar baar zubaan pherna (lip licking), chai/coffee, dhoop, ya lipstick...",
+    duration: "e.g., 3 months of dry or dark lips",
+    sensation: "e.g., dryness, burning, or cracked corners",
+    texture: "e.g., peeling skin or dark outer border",
+    spreadingPattern: "e.g., lower lip, corners, or full border",
+    triggersAndClimate: "e.g., lip licking, tea/coffee, or sun",
   },
   "Neck & Underarms": {
-    duration: "e.g. 1 year se gardan ya underarms ka rang dark aur rough hai...",
-    sensation: "e.g. Paseene ke baad jalan aur kharish, ya kapron ki ragad se irritation...",
-    texture: "e.g. Makhmal jaisi moti kaali jild (velvety thick), ya shaving bumps...",
-    spreadingPattern: "e.g. Gardan aur baghal ki creases mein lines, ya gol ring jaisa daag...",
-    triggersAndClimate: "e.g. Waxing/shaving ke baad, tez perfume deo, ya garmi ke paseene se...",
+    duration: "e.g., 1 year of dark rough folds",
+    sensation: "e.g., itching after sweat or friction",
+    texture: "e.g., thick velvety skin or razor bumps",
+    spreadingPattern: "e.g., neck creases or underarm folds",
+    triggersAndClimate: "e.g., waxing, shaving, or scented deo",
   },
   "Back & Chest": {
-    duration: "e.g. 4 weeks se garmi ke baad peeth aur seene par dane / spots hain...",
-    sensation: "e.g. Throbbing dard walay bade dane, ya paseene ke baad shadeed kharish...",
-    texture: "e.g. Deep painful cysts, blackheads, ya chhote uniform fungal bumps...",
-    spreadingPattern: "e.g. Kandhon aur upper back par symmetric, ya gol halke/dark patches...",
-    triggersAndClimate: "e.g. Gym/garmi ka paseena, tight kapray, ya baalon ka tel peeth par lagne se...",
+    duration: "e.g., 4 weeks since hot weather",
+    sensation: "e.g., painful bumps or sweat itching",
+    texture: "e.g., deep cysts or tiny uniform bumps",
+    spreadingPattern: "e.g., shoulders, upper back, or chest",
+    triggersAndClimate: "e.g., gym sweat, tight shirts, hair oil",
   },
   "Arms & Legs": {
-    duration: "e.g. 2 months se baazu ya taangon par rough spots / kharish hai...",
-    sensation: "e.g. Raat ko tez kharish (worse at night), ya bilkul flat with no feeling...",
-    texture: "e.g. Rough strawberry skin bumps, khushk scaly patches, ya fluid blisters...",
-    spreadingPattern: "e.g. Gol ring-shaped border phail raha hai, ya dono baazuon par barabar...",
-    triggersAndClimate: "e.g. Waxing/shaving ke baad, hard/bore water se khushki, ya dhoop se tan...",
+    duration: "e.g., 2 months of rough spots",
+    sensation: "e.g., worse itching at night or flat",
+    texture: "e.g., strawberry bumps or dry patches",
+    spreadingPattern: "e.g., ring-shaped patches or both arms",
+    triggersAndClimate: "e.g., waxing, bore water, or sun tan",
   },
   "Hands & Nails": {
-    duration: "e.g. 3 weeks se haathon mein khushki/cracks ya nakhun peele hain...",
-    sensation: "e.g. Raat ko ungliyon mein tez kharish, ya soap lagane par jalan aur dard...",
-    texture: "e.g. Phati khushk skin, chhote pani walay daane, ya motay brittle nails...",
-    spreadingPattern: "e.g. Ungliyon ke darmiyan (finger webs), palms par, ya 1–2 nakhun par...",
-    triggersAndClimate: "e.g. Bartan dhone ka detergent, handwash, hard bore water, ya sardi...",
+    duration: "e.g., 3 weeks of dry cracks or yellow nails",
+    sensation: "e.g., soap stinging or itchy fingers",
+    texture: "e.g., cracked palms or thick brittle nails",
+    spreadingPattern: "e.g., between fingers, palms, or 2 nails",
+    triggersAndClimate: "e.g., dish soap, detergent, bore water",
   },
   "Feet & Heels": {
-    duration: "e.g. 6 months se heels phati aur hard hain, ya ungliyon mein kharish hai...",
-    sensation: "e.g. Chalne par eriyon mein dard/jalan, ya pairon mein sunn-pan (numbness)...",
-    texture: "e.g. Sakht moti skin aur gehri phati cracks (calluses), ya geeli white peeling...",
-    spreadingPattern: "e.g. Paon ki ungliyon ke beech (toe webs), dono heels par, ya talway par...",
-    triggersAndClimate: "e.g. Barefoot chalna, tight band jootay, paseena, ya sardi ki khushki...",
+    duration: "e.g., 6 months of cracked heels",
+    sensation: "e.g., painful heel cracks or toe itching",
+    texture: "e.g., hard thick heels or soggy toe webs",
+    spreadingPattern: "e.g., both heels, sole, or between toes",
+    triggersAndClimate: "e.g., barefoot walking or sweaty shoes",
   },
   "Other Body Area": {
-    duration: "e.g. 2 weeks se is jagah par daag, dane ya kharish shuru hui hai...",
-    sensation: "e.g. Shadeed kharish, jalan, garam soojan (hot swelling), ya dard...",
-    texture: "e.g. Rough scaly patch, pus/fluid blisters, ya smooth flat daag...",
-    spreadingPattern: "e.g. Ek spot par ruka hai, rings mein phail raha hai, ya folds/creases mein...",
-    triggersAndClimate: "e.g. Garmi ka paseena, bore water, kapron ki ragad, ya naya product...",
+    duration: "e.g., 2 weeks on back or shoulder",
+    sensation: "e.g., itching, burning, or swelling",
+    texture: "e.g., rough scaly patch or flat mark",
+    spreadingPattern: "e.g., one spot, rings, or skin folds",
+    triggersAndClimate: "e.g., heat sweat, friction, new soap",
   },
 };
 
@@ -275,8 +275,7 @@ function getSevenBoxConfig(
             "Sudden (Few Days)",
             "Worse in Morning",
           ],
-          placeholder:
-            "e.g. Bachpan se dark circles hain, ya 2 months se screen time ke baad barh gaye hain...",
+          placeholder: "e.g., since childhood or last 2 months",
         },
         {
           id: "skin-box-sensation",
@@ -288,8 +287,7 @@ function getSevenBoxConfig(
             "Painful / Swollen Lid",
             "No Sensation",
           ],
-          placeholder:
-            "e.g. Koi dard ya kharish nahi, bas dry aur tired feel hota hai...",
+          placeholder: "e.g., dry and tired, no pain or itching",
         },
         {
           id: "skin-box-texture",
@@ -302,8 +300,7 @@ function getSevenBoxConfig(
             "Dry / Crepey Fine Lines",
             "Tiny White Bumps (Milia)",
           ],
-          placeholder:
-            "e.g. Brownish pigment aur dry fine lines hain, ya puffy bags hain...",
+          placeholder: "e.g., brown pigment, lines, or puffy bags",
         },
         {
           id: "skin-box-spreading",
@@ -314,7 +311,7 @@ function getSevenBoxConfig(
             "Upper + Lower Eyelids",
             "Inner Corner Only",
           ],
-          placeholder: "e.g. Dono aankhon ke neeche equally dark aur hollow hai...",
+          placeholder: "e.g., equally dark under both eyes",
         },
         {
           id: "skin-box-triggers",
@@ -326,8 +323,7 @@ function getSevenBoxConfig(
             "Dust / Sinus Allergies",
             "Sun Without Sunglasses",
           ],
-          placeholder:
-            "e.g. Raat ko der se sona, zyada mobile use, aur aankhein malne ki aadat hai...",
+          placeholder: "e.g., late nights, screen use, rubbing eyes",
         },
         {
           id: "skin-box-routine",
@@ -338,8 +334,7 @@ function getSevenBoxConfig(
             "Heavy Oil / Cream (Milia Risk)",
             "Nothing Applied Yet",
           ],
-          placeholder:
-            "e.g. Koi eye cream use nahi kar raha/rahi, ya face serum aankhon ke qareeb lagaya tha...",
+          placeholder: "e.g., no eye cream yet, or used face serum",
         },
         {
           id: "skin-box-family",
@@ -351,8 +346,7 @@ function getSevenBoxConfig(
             "Thyroid / PCOS",
             "None",
           ],
-          placeholder:
-            "e.g. Family mein genetic dark circles hain, ya sinus allergy / iron deficiency hai...",
+          placeholder: "e.g., runs in family, sinus, or low iron",
           fullWidth: true,
         },
       ],
@@ -433,8 +427,7 @@ function getSevenBoxConfig(
             "Used Whitening / Steroid Cream on Lips",
             "Nothing Applied Yet",
           ],
-          placeholder:
-            "e.g. Vaseline ya flavored lip balm use kiya, ya lemon/sugar scrub lagaya tha...",
+          placeholder: "e.g., Vaseline, lip balm, or lemon scrub",
         },
         {
           id: "skin-box-family",
@@ -446,8 +439,7 @@ function getSevenBoxConfig(
             "History of Cold Sores / Fever Blisters",
             "None",
           ],
-          placeholder:
-            "e.g. Paani kam peena, iron/B12 deficiency, ya acne capsule (Isotretinoin) chal rahi hai...",
+          placeholder: "e.g., low water intake, low B12, or acne meds",
           fullWidth: true,
         },
       ],
@@ -463,8 +455,7 @@ function getSevenBoxConfig(
           id: "skin-box-duration",
           label: "How long has it been there?",
           chips: ["Few Days", "2–6 Weeks", "Months / Years", "Worse in Winter"],
-          placeholder:
-            "e.g. 2 months se haathon ki skin dry aur phati hui hai, ya nails peele aur kamzor hain...",
+          placeholder: "e.g., 2 months dry palms or yellow nails",
         },
         {
           id: "skin-box-sensation",
@@ -475,8 +466,7 @@ function getSevenBoxConfig(
             "Throbbing Around Nail Fold",
             "No Pain / Just Rough",
           ],
-          placeholder:
-            "e.g. Sabun lagane par jalan hoti hai, ya ungliyon ke beech raat ko kharish hoti hai...",
+          placeholder: "e.g., soap stinging or night itching",
         },
         {
           id: "skin-box-texture",
@@ -488,8 +478,7 @@ function getSevenBoxConfig(
             "Thick / Yellow / Crumbly Nails",
             "Brittle / Splitting Nails",
           ],
-          placeholder:
-            "e.g. Ungliyon ke sides par chotay pani wale daane hain, ya nails motay aur yellow ho rahe hain...",
+          placeholder: "e.g., side-finger blisters or thick nails",
         },
         {
           id: "skin-box-spreading",
@@ -501,8 +490,7 @@ function getSevenBoxConfig(
             "1–2 Nails Only",
             "All Nails",
           ],
-          placeholder:
-            "e.g. Ungliyon ke beech aur kalai par hai, ya sirf pairon/haathon ke 2 nails kharab hain...",
+          placeholder: "e.g., finger webs, knuckles, or 2 nails",
         },
         {
           id: "skin-box-triggers",
@@ -514,8 +502,7 @@ function getSevenBoxConfig(
             "Gel / Acrylic Nails / Acetone",
             "Sun Exposure (Driving/Bike)",
           ],
-          placeholder:
-            "e.g. Bartan dhone aur kapray dhone ke detergent se zyada kharab hota hai...",
+          placeholder: "e.g., dishwashing soap or bore water",
         },
         {
           id: "skin-box-routine",
@@ -526,8 +513,7 @@ function getSevenBoxConfig(
             "Applied Cuticle Oil",
             "Nothing Applied Yet",
           ],
-          placeholder:
-            "e.g. Koi bhi hand cream ya antifungal lagaya ho toh likhein...",
+          placeholder: "e.g., regular hand cream or antifungal",
         },
         {
           id: "skin-box-family",
@@ -539,8 +525,7 @@ function getSevenBoxConfig(
             "Diabetes",
             "None",
           ],
-          placeholder:
-            "e.g. Ghar mein kisi aur ko bhi haathon par kharish hai, ya eczema/iron deficiency hai...",
+          placeholder: "e.g., family itching, eczema, or low iron",
           fullWidth: true,
         },
       ],
@@ -561,8 +546,7 @@ function getSevenBoxConfig(
             "Worse in Summer / Sweat",
             "Worse in Winter",
           ],
-          placeholder:
-            "e.g. 1 saal se heels sakht aur phati hui hain, ya 3 weeks se toes ke beech kharish hai...",
+          placeholder: "e.g., 1 year hard heels or toe itch",
         },
         {
           id: "skin-box-sensation",
@@ -574,8 +558,7 @@ function getSevenBoxConfig(
             "Hot / Swollen / Red",
             "Hard & Numb / Rough",
           ],
-          placeholder:
-            "e.g. Chalne par heel cracks mein dard hota hai, ya toes ke beech bohat kharish hai...",
+          placeholder: "e.g., painful cracks or itchy toes",
         },
         {
           id: "skin-box-texture",
@@ -587,8 +570,7 @@ function getSevenBoxConfig(
             "Soggy White Skin Between Toes",
             "Hard Grainy Bump (Wart / Corn)",
           ],
-          placeholder:
-            "e.g. Edi (heel) ki skin bohat sakht aur moti ho gayi hai, ya poora talwa khushk aur chilka utar raha hai...",
+          placeholder: "e.g., thick cracked heels or peeling sole",
         },
         {
           id: "skin-box-spreading",
@@ -600,8 +582,7 @@ function getSevenBoxConfig(
             "Entire Sole (Moccasin Pattern)",
             "Sandal Strap Marks",
           ],
-          placeholder:
-            "e.g. Dono heels par cracks hain, ya choti ungliyon ke darmiyan phata hua hai...",
+          placeholder: "e.g., both heels or between small toes",
         },
         {
           id: "skin-box-triggers",
@@ -613,8 +594,7 @@ function getSevenBoxConfig(
             "Wudu / Frequent Wet Feet",
             "Hard / Bore Water",
           ],
-          placeholder:
-            "e.g. Ghar mein nange paon chalna, tight shoes pehnna, ya wudu ke baad paon geelay rehna...",
+          placeholder: "e.g., barefoot at home or wet feet",
         },
         {
           id: "skin-box-routine",
@@ -625,8 +605,7 @@ function getSevenBoxConfig(
             "Used Steroid Cream",
             "Nothing Applied Yet",
           ],
-          placeholder:
-            "e.g. Pehle koi foot cream, antifungal powder, ya blade/pumice stone use kiya ho toh likhein...",
+          placeholder: "e.g., Vaseline, foot cream, or pumice",
         },
         {
           id: "skin-box-family",
@@ -638,8 +617,7 @@ function getSevenBoxConfig(
             "Fungal Nails Too",
             "None",
           ],
-          placeholder:
-            "e.g. Agar diabetes hai ya paon sunn (numb) rehte hain toh zaroor likhein...",
+          placeholder: "e.g., note if diabetic or any numbness",
           fullWidth: true,
         },
       ],
@@ -655,8 +633,7 @@ function getSevenBoxConfig(
           id: "skin-box-duration",
           label: "How long has it been there?",
           chips: ["Few Days", "2–6 Weeks", "Months / Years", "Comes & Goes"],
-          placeholder:
-            "e.g. Kaan ke peeche / kamar / shoulder par 2 weeks se hai...",
+          placeholder: "e.g., 2 weeks behind ear or shoulder",
         },
         {
           id: "skin-box-sensation",
@@ -668,8 +645,7 @@ function getSevenBoxConfig(
             "Hot / Swollen",
             "No Feeling",
           ],
-          placeholder:
-            "e.g. Shadeed kharish hai, ya dard / jalan / garam soojan mehsoos hoti hai...",
+          placeholder: "e.g., itching, burning, or swelling",
         },
         {
           id: "skin-box-texture",
@@ -681,8 +657,7 @@ function getSevenBoxConfig(
             "Blisters / Pus",
             "Thick / Hard",
           ],
-          placeholder:
-            "e.g. Rough chilke jaisa patch, ubhre hue daane, ya bilkul flat daag hai...",
+          placeholder: "e.g., rough scaly patch or flat spot",
         },
         {
           id: "skin-box-spreading",
@@ -693,8 +668,7 @@ function getSevenBoxConfig(
             "Multiple Patches",
             "Symmetric (Both Sides)",
           ],
-          placeholder:
-            "e.g. Ek chhota spot hai, baahar ki taraf phail raha hai, ya dono taraf barabar...",
+          placeholder: "e.g., small spot or spreading outward",
         },
         {
           id: "skin-box-triggers",
@@ -706,8 +680,7 @@ function getSevenBoxConfig(
             "Sun Exposure",
             "Not Sure",
           ],
-          placeholder:
-            "e.g. Paseena, tight kapron ki ragad, naya soap/perfume, ya dhoop se barhta hai...",
+          placeholder: "e.g., sweat, friction, or new soap",
         },
         {
           id: "skin-box-routine",
@@ -718,8 +691,7 @@ function getSevenBoxConfig(
             "Used Home Remedy",
             "Nothing Applied Yet",
           ],
-          placeholder:
-            "List any cream, ointment, soap, or home remedy already applied to this area...",
+          placeholder: "e.g., any cream, ointment, or remedy",
         },
         {
           id: "skin-box-family",
@@ -730,8 +702,7 @@ function getSevenBoxConfig(
             "Diabetes / PCOS",
             "None",
           ],
-          placeholder:
-            "e.g. Family mein eczema/psoriasis, ya ghar mein kisi aur ko bhi aisi rash hai...",
+          placeholder: "e.g., family eczema or household rash",
           fullWidth: true,
         },
       ],
@@ -807,8 +778,8 @@ function getSevenBoxConfig(
           "Using Nothing Right Now",
         ],
         placeholder: ur
-          ? "Pehle jo formula/steroid creams lagayein aur abhi jo face/body wash, serum, moisturizer, ya sunscreen use karte hain woh likhein..."
-          : "List any formula/steroid creams used in the past AND the face/body wash, serum, moisturizer, or sunscreen you currently use...",
+          ? "e.g., facewash, serum, ya formula cream"
+          : "e.g., facewash, serum, sunscreen, or cream",
       },
       {
         id: "skin-box-family",
@@ -820,8 +791,7 @@ function getSevenBoxConfig(
           "PCOS / Hormonal",
           "None",
         ],
-        placeholder:
-          "e.g. Ghar mein kisi aur ko bhi kharish hai, ya family mein eczema, psoriasis, diabetes, ya PCOS hai...",
+        placeholder: "e.g., family eczema, household itch, or PCOS",
         fullWidth: true,
       },
     ],
@@ -856,7 +826,16 @@ function ClinicalInputRow({
   onChange: (val: string) => void;
   placeholder: string;
 }) {
-  const isLongText = value.length > 68 || value.includes("\n");
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    if (value) {
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [value]);
 
   return (
     <div className="min-w-0 space-y-3 py-5 first:pt-0 last:pb-0">
@@ -879,10 +858,10 @@ function ClinicalInputRow({
               key={chip}
               type="button"
               onClick={() => onChange(appendChipValue(value, chip))}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
                 isSelected
-                  ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
-                  : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                  ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                  : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#8F4556] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
               }`}
             >
               + {chip}
@@ -892,14 +871,13 @@ function ClinicalInputRow({
       </div>
 
       <textarea
+        ref={textareaRef}
         id={id}
-        rows={1}
+        rows={2}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
-          isLongText ? "h-20 overflow-y-auto" : "h-11 overflow-hidden"
-        }`}
+        className="w-full resize-none overflow-hidden rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-colors duration-200 focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
       />
     </div>
   );
@@ -1081,12 +1059,17 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
     <div className="min-w-0 space-y-8">
       <TabHeaderIllustration variant="skin" language={language} />
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
         <div>
           <div className="mb-4 flex min-w-0 items-baseline justify-between gap-2">
-            <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-              {language === "ur" ? "Hissa Chunein" : "Select Area"}
-            </h3>
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
+                01
+              </span>
+              <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                {language === "ur" ? "Hissa Chunein" : "Select Area"}
+              </h3>
+            </div>
             <span className="shrink-0 text-xs font-medium text-[#B56576] dark:text-[#D48395]">
               {bodyArea}
             </span>
@@ -1100,10 +1083,10 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
                   key={area}
                   type="button"
                   onClick={() => handleBodyAreaChange(area)}
-                  className={`inline-flex min-h-[36px] shrink-0 items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 ${
+                  className={`inline-flex min-h-[36px] shrink-0 items-center justify-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-200 active:scale-95 ${
                     active
-                      ? "bg-[#B56576] font-semibold text-white dark:bg-[#D48395] dark:text-[#140F11]"
-                      : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#1E181A] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
+                      ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                      : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#1E181A] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
                   }`}
                 >
                   {area === "Lips" && <LipIcon className="h-3.5 w-3.5 shrink-0" />}
@@ -1115,11 +1098,16 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         </div>
 
         <div className="border-t border-[#F0E4E7] pt-6 dark:border-[#2D2125]">
-          <p className="mb-4 font-editorial text-xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-            {language === "ur"
-              ? sevenBoxConfig.headingUr
-              : sevenBoxConfig.headingEn}
-          </p>
+          <div className="mb-4 flex items-baseline gap-2.5">
+            <span className="font-editorial text-lg font-semibold italic text-[#B56576] dark:text-[#D48395]">
+              02
+            </span>
+            <p className="font-editorial text-xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+              {language === "ur"
+                ? sevenBoxConfig.headingUr
+                : sevenBoxConfig.headingEn}
+            </p>
+          </div>
 
           <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
             {sevenBoxConfig.boxes.map((box, index) => (
@@ -1137,12 +1125,17 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         </div>
       </div>
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
         <div className="mb-5 flex min-w-0 items-baseline justify-between gap-2">
           <div className="min-w-0 space-y-1">
-            <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-              {language === "ur" ? "Photos Add Karein" : "Add Photos"}
-            </h3>
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-editorial text-xl font-semibold italic text-[#B56576] dark:text-[#D48395]">
+                03
+              </span>
+              <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                {language === "ur" ? "Photos Add Karein" : "Add Photos"}
+              </h3>
+            </div>
             <p className="text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
               {language === "ur"
                 ? `1 se ${slots.length} saaf photos add karein.`
@@ -1174,7 +1167,7 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
         />
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
         <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
           {language === "ur" ? "Skin Aur Mausam" : "Skin & Weather"}
         </h3>
@@ -1218,7 +1211,7 @@ export function SkinBodyTab({ language, healthProfile }: SkinBodyTabProps) {
           disabled={isScanning}
           aria-busy={isScanning}
           onClick={handleRunScan}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#B56576] to-[#9E4E5F] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_-6px_rgba(181,101,118,0.45)] transition-all duration-200 hover:brightness-105 active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:from-[#D48395] dark:to-[#B56576] dark:text-[#140F11]"
         >
           <ScanFace className="h-4 w-4 shrink-0" />
           <span>

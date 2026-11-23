@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ShieldCheck,
   Store,
@@ -92,6 +92,16 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
   const [productName, setProductName] = useState("");
   const [userProfileType, setUserProfileType] = useState("");
   const [suspiciousSigns, setSuspiciousSigns] = useState("");
+  const suspiciousSignsRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const el = suspiciousSignsRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    if (suspiciousSigns) {
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [suspiciousSigns]);
   const [imagesBySlot, setImagesBySlot] = useState<Record<string, UploadedImage>>(
     {}
   );
@@ -188,7 +198,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     <div className="min-w-0 space-y-8">
       <TabHeaderIllustration variant="verify" language={language} />
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#EAD6DB] bg-gradient-to-b from-[#FFF9FA] via-white to-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.16)] transition-colors duration-300 dark:border-[#34262B] dark:from-[#23181C] dark:via-[#1C1417] dark:to-[#1C1417] dark:shadow-[0_14px_38px_-14px_rgba(0,0,0,0.45)] sm:p-8">
         <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
           <div className="grid grid-cols-1 gap-5 pb-5 md:grid-cols-2">
             <div className="min-w-0 space-y-2">
@@ -204,7 +214,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
                 placeholder="Or type product name / brand if label is blurry"
-                className="w-full rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B]"
+                className="w-full rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-colors focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
               />
             </div>
 
@@ -219,7 +229,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                 id="verify-profile-type"
                 value={userProfileType}
                 onChange={(e) => setUserProfileType(e.target.value)}
-                className="w-full rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] transition-all focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF]"
+                className="w-full rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] transition-colors focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:focus:border-[#D48395]"
               >
                 <option value="">
                   {language === "ur"
@@ -248,7 +258,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={storeInput}
               onChange={(e) => setStoreInput(e.target.value)}
               placeholder="e.g., dvago.pk, naheed.pk, theordinary.com, or Instagram seller..."
-              className="w-full rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B]"
+              className="w-full rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-colors focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
             />
           </div>
 
@@ -273,10 +283,10 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                     onClick={() =>
                       setSuspiciousSigns((prev) => appendVerifyChip(prev, chip))
                     }
-                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
                       selected
-                        ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
-                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                        ? "border-[#B56576] bg-[#B56576]/12 text-[#8F4556] dark:border-[#D48395] dark:bg-[#D48395]/20 dark:text-[#F0B2C0]"
+                        : "border-transparent bg-[#FAF4F5] text-[#5E5055] hover:border-[#EAD6DB] hover:bg-[#F3E7EA]/70 hover:text-[#8F4556] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
                     }`}
                   >
                     + {chip}
@@ -285,16 +295,13 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               })}
             </div>
             <textarea
+              ref={suspiciousSignsRef}
               id="verify-suspicious-signs"
-              rows={1}
+              rows={2}
               value={suspiciousSigns}
               onChange={(e) => setSuspiciousSigns(e.target.value)}
-              placeholder="e.g. Price market se aadhi hai, smell ajeeb/tezi wali hai, ya bottom par batch code nahi hai..."
-              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
-                suspiciousSigns.length > 72 || suspiciousSigns.includes("\n")
-                  ? "h-20 overflow-y-auto"
-                  : "h-11 overflow-hidden"
-              }`}
+              placeholder="e.g., half price, odd smell, or missing batch code"
+              className="w-full resize-none overflow-hidden rounded-xl border border-[#EAD6DB] bg-[#FAF4F5] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-colors duration-200 focus:border-[#B56576] focus:outline-none focus:ring-1 focus:ring-[#B56576]/30 dark:border-[#34262B] dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
             />
           </div>
 
@@ -327,7 +334,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
           disabled={isVerifying}
           aria-busy={isVerifying}
           onClick={handleVerifyProduct}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#B56576] to-[#9E4E5F] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_-6px_rgba(181,101,118,0.45)] transition-all duration-200 hover:brightness-105 active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:from-[#D48395] dark:to-[#B56576] dark:text-[#140F11]"
         >
           <Search className="h-4 w-4 shrink-0" />
           <span>

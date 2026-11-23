@@ -8,7 +8,7 @@
 }
 
 body {
-  background-color: #F8F2F3;
+  background-color: #F7EEF0;
   color: #1E181A;
   font-family: var(--font-sans);
   line-height: 1.625;
@@ -17,7 +17,7 @@ body {
 }
 
 html.dark body {
-  background-color: #140F11;
+  background-color: #140E10;
   color: #F7EFEF;
 }
 
@@ -587,6 +587,7 @@ html.dark body {
   }
 
   :where(html.dark) .bg-\[\#FAF6F7\],
+  :where(html.dark) .bg-\[\#FAF4F5\],
   :where(html.dark) .bg-\[\#FAF8F8\] {
     background-color: #171113;
   }
@@ -627,6 +628,7 @@ html.dark body {
   }
 
   :where(html.dark) .border-\[\#EAD8DC\],
+  :where(html.dark) .border-\[\#EAD6DB\],
   :where(html.dark) .border-\[\#ECE0E3\],
   :where(html.dark) .border-\[\#F0E4E7\],
   :where(html.dark) .border-\[\#E8D8DC\],
