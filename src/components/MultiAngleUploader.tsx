@@ -1,5 +1,10 @@
-import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
-import { Camera, X, CheckCircle2 } from "lucide-react";
+import {
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+} from "react";
+import { Camera, CheckCircle2, Upload, X } from "lucide-react";
 import { compressImageFile } from "../utils/imageCompressor.ts";
 import {
   LiveCameraModal,
@@ -30,51 +35,17 @@ export function MultiAngleUploader({
   highlightSlots = [],
   language,
 }: MultiAngleUploaderProps) {
-  const [selectedSlotId, setSelectedSlotId] = useState<string>(
-    slots[0]?.slotId || ""
-  );
   const [compressingSlot, setCompressingSlot] = useState<string | null>(null);
+  const [draggingSlotId, setDraggingSlotId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [activeCameraSession, setActiveCameraSession] = useState<{
     slot: AngleSlotConfig;
     streamPromise: Promise<MediaStream>;
   } | null>(null);
 
+  const pendingFileSlotRef = useRef<AngleSlotConfig | null>(null);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    const firstEmpty = slots.find((s) => !imagesBySlot[s.slotId]);
-    if (!slots.some((s) => s.slotId === selectedSlotId)) {
-      setSelectedSlotId(firstEmpty?.slotId || slots[0]?.slotId || "");
-    } else if (imagesBySlot[selectedSlotId] && firstEmpty) {
-      setSelectedSlotId(firstEmpty.slotId);
-    }
-  }, [slots, imagesBySlot, selectedSlotId]);
-
-  const activeSlot =
-    slots.find((s) => s.slotId === selectedSlotId) ||
-    slots.find((s) => !imagesBySlot[s.slotId]) ||
-    slots[0];
-
-  const uploadedEntries = slots
-    .map((slot) => ({
-      slot,
-      uploaded: imagesBySlot[slot.slotId],
-      needsRetake: highlightSlots.some(
-        (s) => s.toLowerCase() === slot.slotLabel.toLowerCase()
-      ),
-    }))
-    .filter(
-      (
-        entry
-      ): entry is {
-        slot: AngleSlotConfig;
-        uploaded: UploadedImage;
-        needsRetake: boolean;
-      } => Boolean(entry.uploaded)
-    );
 
   async function processFileForSlot(slot: AngleSlotConfig, file: File) {
     setUploadError(null);
@@ -100,20 +71,24 @@ export function MultiAngleUploader({
   async function handleFileSelect(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
-    if (!file || !activeSlot) return;
-    await processFileForSlot(activeSlot, file);
+    const targetSlot = pendingFileSlotRef.current || slots[0];
+    pendingFileSlotRef.current = null;
+    if (!file || !targetSlot) return;
+    await processFileForSlot(targetSlot, file);
   }
 
-  async function handleDrop(e: DragEvent<HTMLDivElement>) {
+  async function handleDropOnSlot(
+    e: DragEvent<HTMLDivElement>,
+    slot: AngleSlotConfig
+  ) {
     e.preventDefault();
-    setIsDragging(false);
+    setDraggingSlotId(null);
     const file = e.dataTransfer.files?.[0];
-    if (!file || !file.type.startsWith("image/") || !activeSlot) return;
-    await processFileForSlot(activeSlot, file);
+    if (!file || !file.type.startsWith("image/")) return;
+    await processFileForSlot(slot, file);
   }
 
-  function handleCameraButtonClick() {
-    if (!activeSlot) return;
+  function handleCameraButtonClick(slot: AngleSlotConfig) {
     setUploadError(null);
 
     if (
@@ -121,24 +96,31 @@ export function MultiAngleUploader({
       Boolean(navigator.mediaDevices?.getUserMedia)
     ) {
       const streamPromise = requestCameraMediaStream("environment");
-      setActiveCameraSession({ slot: activeSlot, streamPromise });
+      setActiveCameraSession({ slot, streamPromise });
       return;
     }
 
+    pendingFileSlotRef.current = slot;
     cameraInputRef.current?.click();
+  }
+
+  function handleUploadButtonClick(slot: AngleSlotConfig) {
+    setUploadError(null);
+    pendingFileSlotRef.current = slot;
+    galleryInputRef.current?.click();
   }
 
   const isUr = language === "ur";
 
   return (
-    <div className="min-w-0 space-y-5">
+    <div className="min-w-0 space-y-4">
       {uploadError && (
         <div className="rounded-2xl border border-[#E8C5CA] bg-[#FDF4F5] px-4 py-3 text-xs font-medium text-[#8C3B4A]">
           {uploadError}
         </div>
       )}
 
-      {/* Hidden inputs for camera fallback & gallery upload */}
+      {/* Hidden inputs for device camera fallback & gallery upload */}
       <input
         ref={cameraInputRef}
         type="file"
@@ -159,143 +141,131 @@ export function MultiAngleUploader({
         onChange={handleFileSelect}
       />
 
-      {/* Quiet Angle / Slot Selector */}
-      {slots.length > 1 && (
-        <div className="flex flex-wrap items-center gap-2">
-          {slots.map((slot) => {
-            const isSelected = activeSlot?.slotId === slot.slotId;
-            const hasPhoto = Boolean(imagesBySlot[slot.slotId]);
-            const needsRetake = highlightSlots.some(
-              (s) => s.toLowerCase() === slot.slotLabel.toLowerCase()
-            );
+      {/* Side-by-Side Responsive Multi-Photo Upload Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {slots.map((slot) => {
+          const uploaded = imagesBySlot[slot.slotId];
+          const isCompressing = compressingSlot === slot.slotId;
+          const isDragging = draggingSlotId === slot.slotId;
+          const needsRetake = highlightSlots.some(
+            (s) => s.toLowerCase() === slot.slotLabel.toLowerCase()
+          );
 
-            return (
-              <button
-                key={slot.slotId}
-                type="button"
-                onClick={() => setSelectedSlotId(slot.slotId)}
-                className={`inline-flex min-h-[34px] items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 ${
-                  needsRetake
-                    ? "bg-[#FDF4F5] text-[#8C3B4A] ring-1 ring-[#C96B78]"
-                    : isSelected
-                      ? "bg-[#B56576]/12 font-semibold text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
-                      : hasPhoto
-                        ? "bg-[#EFF7F2] text-[#2D6A4F] dark:bg-[#172B23] dark:text-[#7BD4AC]"
-                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] dark:bg-[#171113] dark:text-[#C9B6BC]"
-                }`}
-              >
-                {hasPhoto && <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />}
-                <span>{slot.slotLabel}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Calm Architectural Photo Dropzone */}
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragging(true);
-        }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={handleDrop}
-        className={`flex flex-col items-center justify-center rounded-2xl border bg-[#FAF6F7] p-8 text-center transition-colors duration-200 dark:bg-[#171113] ${
-          isDragging
-            ? "border-[#B56576] bg-[#F6ECEF] dark:border-[#D48395]"
-            : "border-[#E8D8DC] dark:border-[#34262B]"
-        }`}
-      >
-        {compressingSlot ? (
-          <p className="py-4 text-sm font-medium text-[#B56576] dark:text-[#D48395]">
-            {isUr ? "Photo tayyar ho rahi hai..." : "Preparing your photo..."}
-          </p>
-        ) : (
-          <div className="flex max-w-sm flex-col items-center space-y-4">
-            {activeSlot && (
-              <div className="space-y-1">
-                <p className="text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                  {activeSlot.slotLabel}
-                </p>
-                {activeSlot.hint && (
-                  <p className="text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
-                    {activeSlot.hint}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={handleCameraButtonClick}
-              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-[#B56576] px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-95 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-            >
-              <Camera className="h-4 w-4 shrink-0" />
-              <span>
-                {isUr ? "Camera Se Photo Lein" : "Take or Upload Photo"}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => galleryInputRef.current?.click()}
-              className="text-xs font-medium text-[#5E5055] underline decoration-[#D2BFC6] underline-offset-4 transition-colors hover:text-[#B56576] dark:text-[#C9B6BC] dark:hover:text-[#D48395]"
-            >
-              {isUr ? "Ya gallery se choose karein" : "or choose from gallery"}
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Uploaded Previews Strip */}
-      {uploadedEntries.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {uploadedEntries.map(({ slot, uploaded, needsRetake }) => (
+          return (
             <div
               key={slot.slotId}
-              className={`relative overflow-hidden rounded-2xl border bg-[#FAF6F7] p-3 dark:bg-[#171113] ${
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDraggingSlotId(slot.slotId);
+              }}
+              onDragLeave={() => {
+                setDraggingSlotId((prev) =>
+                  prev === slot.slotId ? null : prev
+                );
+              }}
+              onDrop={(e) => handleDropOnSlot(e, slot)}
+              className={`flex flex-col justify-between rounded-2xl border p-4 transition-colors duration-200 ${
                 needsRetake
-                  ? "border-[#C96B78] ring-1 ring-[#C96B78]"
-                  : "border-[#E8D8DC] dark:border-[#34262B]"
+                  ? "border-[#C96B78] bg-[#FDF4F5] ring-1 ring-[#C96B78] dark:bg-[#26181D]"
+                  : isDragging
+                    ? "border-[#B56576] bg-[#F6ECEF] dark:border-[#D48395] dark:bg-[#24191D]"
+                    : "border-[#E8D8DC] bg-[#FAF6F7] dark:border-[#34262B] dark:bg-[#171113]"
               }`}
             >
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <span className="truncate text-xs font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                  {slot.slotLabel}
-                </span>
-                <button
-                  type="button"
-                  aria-label={`Remove ${slot.slotLabel}`}
-                  onClick={() => onImageRemoved(slot.slotId)}
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#5E5055] transition-colors hover:text-[#8C3B4A] dark:bg-[#1E1619] dark:text-[#C9B6BC]"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
+              {/* Card Header */}
+              <div className="mb-3 flex items-start justify-between gap-2">
+                <div className="min-w-0 space-y-0.5">
+                  <div className="flex items-center gap-1.5">
+                    {uploaded && (
+                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#2D6A4F] dark:text-[#7BD4AC]" />
+                    )}
+                    <p className="truncate text-xs font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                      {slot.slotLabel}
+                    </p>
+                  </div>
+                  {slot.hint && !uploaded && (
+                    <p className="text-[11px] leading-snug text-[#7A686D] dark:text-[#C9B6BC]">
+                      {slot.hint}
+                    </p>
+                  )}
+                </div>
+
+                {uploaded && (
+                  <button
+                    type="button"
+                    aria-label={`Remove ${slot.slotLabel}`}
+                    onClick={() => onImageRemoved(slot.slotId)}
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#E8D8DC] bg-white text-[#5E5055] transition-colors hover:border-[#C96B78] hover:text-[#8C3B4A] active:scale-95 dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:text-[#F0A8B8]"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
               </div>
 
-              <div className="relative flex max-h-56 w-full items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-[#1E1619]">
-                <img
-                  src={uploaded.previewUrl}
-                  alt={`Uploaded ${slot.slotLabel} photo preview for DerméScan analysis`}
-                  referrerPolicy="no-referrer"
-                  className="max-h-56 w-full object-contain"
-                />
-                <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-medium tabular-nums text-[#2D6A4F] dark:bg-[#1E1619]/95 dark:text-[#7BD4AC]">
-                  {uploaded.compressedSizeKb} KB
-                </span>
-              </div>
+              {/* Card Body: Uploaded Preview or Direct Dropzone Actions */}
+              {uploaded ? (
+                <div className="space-y-2">
+                  <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-[#1E1619]">
+                    <img
+                      src={uploaded.previewUrl}
+                      alt={`Uploaded ${slot.slotLabel} photo preview for DerméScan analysis`}
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-contain"
+                    />
+                    <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-medium tabular-nums text-[#2D6A4F] dark:bg-[#1E1619]/95 dark:text-[#7BD4AC]">
+                      {uploaded.compressedSizeKb} KB
+                    </span>
+                  </div>
 
-              {needsRetake && (
-                <p className="mt-2 text-xs font-medium text-[#8C3B4A]">
-                  {isUr
-                    ? "Is photo ko tez roshni mein dubara lein"
-                    : "Please retake this photo in brighter, clearer light"}
-                </p>
+                  {needsRetake && (
+                    <p className="text-[11px] font-medium text-[#8C3B4A] dark:text-[#F0A8B8]">
+                      {isUr
+                        ? "Is photo ko tez roshni mein dubara lein"
+                        : "Please retake this photo in brighter, clearer light"}
+                    </p>
+                  )}
+                </div>
+              ) : isCompressing ? (
+                <div className="flex min-h-[124px] items-center justify-center rounded-xl border border-dashed border-[#E8D8DC] bg-white/70 px-3 text-center dark:border-[#34262B] dark:bg-[#1E1619]/60">
+                  <p className="text-xs font-medium text-[#B56576] dark:text-[#D48395]">
+                    {isUr
+                      ? "Photo tayyar ho rahi hai..."
+                      : "Preparing your photo..."}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex min-h-[124px] flex-col items-center justify-center gap-2.5 rounded-xl border border-dashed border-[#E2CED3] bg-white/80 p-3.5 text-center transition-colors dark:border-[#3A2B30] dark:bg-[#1E1619]/75">
+                  <div className="flex w-full flex-wrap items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleCameraButtonClick(slot)}
+                      className="inline-flex min-h-[38px] flex-1 items-center justify-center gap-1.5 rounded-full bg-[#B56576] px-3.5 py-2 text-xs font-semibold whitespace-nowrap text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-95 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                    >
+                      <Camera className="h-3.5 w-3.5 shrink-0" />
+                      <span>{isUr ? "Camera" : "Take Photo"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleUploadButtonClick(slot)}
+                      className="inline-flex min-h-[38px] flex-1 items-center justify-center gap-1.5 rounded-full border border-[#E8D8DC] bg-[#FAF6F7] px-3.5 py-2 text-xs font-semibold whitespace-nowrap text-[#5E5055] transition-colors duration-200 hover:border-[#B56576] hover:text-[#B56576] active:scale-95 dark:border-[#34262B] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+                    >
+                      <Upload className="h-3.5 w-3.5 shrink-0" />
+                      <span>{isUr ? "Upload" : "Upload"}</span>
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] text-[#7A686D] dark:text-[#C9B6BC]">
+                    {isUr
+                      ? "Ya photo yahan drop karein"
+                      : "or drag & drop image"}
+                  </p>
+                </div>
               )}
             </div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
 
       {activeCameraSession && (
         <LiveCameraModal
@@ -306,6 +276,7 @@ export function MultiAngleUploader({
           initialStreamPromise={activeCameraSession.streamPromise}
           onCapture={(img) => onImageAdded(img)}
           onFallbackToDeviceCamera={() => {
+            pendingFileSlotRef.current = activeCameraSession.slot;
             cameraInputRef.current?.click();
           }}
           onClose={() => setActiveCameraSession(null)}
