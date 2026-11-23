@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
+  ArrowLeft,
   BookOpen,
   CheckCircle2,
   Clock,
@@ -288,74 +289,74 @@ function ProductMonographCard({
   product: JenpharmProductMonograph;
 }) {
   return (
-    <article className="rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/80 p-4 transition-colors duration-300 sm:p-5 dark:border-[#38282D] dark:bg-[#1B1316]">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
+    <article className="rounded-2xl border border-[#ECE0E3] bg-white p-5 transition-colors duration-300 sm:p-6 dark:border-[#34262B] dark:bg-[#1E1619]">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
         <ProductPhotoFrame
           imagePath={product.imagePath}
           productName={product.name}
           bottleKind={product.bottleKind}
         />
 
-        <div className="min-w-0 flex-1 space-y-3">
+        <div className="min-w-0 flex-1 space-y-4">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-block rounded-full border border-[#EAD8DC] bg-white px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-[#B56576] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#D48395]">
+              <span className="inline-block rounded-full border border-[#ECE0E3] bg-[#FAF6F7] px-3 py-0.5 text-xs font-semibold tracking-wide text-[#B56576] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113] dark:text-[#D48395]">
                 #{product.order} · {product.monographSection}
               </span>
             </div>
-            <h4 className="font-editorial break-words text-xl font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-2xl dark:text-[#F7EFEF]">
+            <h4 className="font-editorial break-words text-lg font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-xl dark:text-[#F7EFEF]">
               {product.name}
             </h4>
           </div>
 
-          <dl className="space-y-2.5 text-xs leading-relaxed">
-            <div className="rounded-xl border border-[#EAD8DC]/70 bg-white/80 px-3 py-2.5 transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B]/75">
-              <dt className="mb-0.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8C3B4A] dark:text-[#F0B2C0]">
+          <dl className="space-y-3 text-[15px] leading-relaxed sm:text-base">
+            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-4 py-3 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
+              <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8C3B4A] dark:text-[#F0B2C0]">
                 <UserCheck className="h-3.5 w-3.5 shrink-0" />
                 <span>{product.suitsWhomLabel}</span>
               </dt>
-              <dd className="break-words text-[#42363A] dark:text-[#EADCE0]">
+              <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
                 {product.suitsWhom}
               </dd>
             </div>
 
-            <div className="rounded-xl border border-[#EAD8DC]/70 bg-white/80 px-3 py-2.5 transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B]/75">
-              <dt className="mb-0.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8C3B4A] dark:text-[#F0B2C0]">
+            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-4 py-3 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
+              <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8C3B4A] dark:text-[#F0B2C0]">
                 <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                 <span>Best For Which Condition</span>
               </dt>
-              <dd className="break-words text-[#42363A] dark:text-[#EADCE0]">
+              <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
                 {product.bestFor}
               </dd>
             </div>
 
-            <div className="rounded-xl border border-[#EAD8DC]/70 bg-white/80 px-3 py-2.5 transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B]/75">
-              <dt className="mb-0.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#B56576] dark:text-[#D48395]">
+            <div className="rounded-xl border border-[#F0E4E7] bg-[#FAF6F7]/85 px-4 py-3 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#171113]">
+              <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#B56576] dark:text-[#D48395]">
                 <Sparkles className="h-3.5 w-3.5 shrink-0" />
                 <span>Key Perks &amp; How It Works</span>
               </dt>
-              <dd className="break-words text-[#42363A] dark:text-[#EADCE0]">
+              <dd className="break-words text-[#3D3135] dark:text-[#EADCE0]">
                 {product.keyPerks}
               </dd>
             </div>
 
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              <div className="rounded-xl border border-[#E5C9CE] bg-[#FDF4F6] px-3 py-2.5 transition-colors duration-300 dark:border-[#4D3038] dark:bg-[#26181D]">
-                <dt className="mb-0.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#9E4558] dark:text-[#F0A8B8]">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div className="rounded-xl border border-[#E5C9CE] bg-[#FDF4F6] px-4 py-3 transition-colors duration-300 dark:border-[#4D3038] dark:bg-[#26181D]">
+                <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#9E4558] dark:text-[#F0A8B8]">
                   <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
                   <span>Who Should Avoid</span>
                 </dt>
-                <dd className="break-words text-[#523B41] dark:text-[#DFC9CF]">
+                <dd className="break-words text-[#4D363C] dark:text-[#DFC9CF]">
                   {product.whoShouldAvoid}
                 </dd>
               </div>
 
-              <div className="rounded-xl border border-[#E5D3C4] bg-[#FCF7F2] px-3 py-2.5 transition-colors duration-300 dark:border-[#4A3B30] dark:bg-[#241C17]">
-                <dt className="mb-0.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8E5B32] dark:text-[#E5BD99]">
+              <div className="rounded-xl border border-[#E5D3C4] bg-[#FCF7F2] px-4 py-3 transition-colors duration-300 dark:border-[#4A3B30] dark:bg-[#241C17]">
+                <dt className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8E5B32] dark:text-[#E5BD99]">
                   <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                   <span>Could Potentially Cause</span>
                 </dt>
-                <dd className="break-words text-[#524339] dark:text-[#DCCDC1]">
+                <dd className="break-words text-[#4F4036] dark:text-[#DCCDC1]">
                   {product.couldCause}
                 </dd>
               </div>
@@ -368,7 +369,7 @@ function ProductMonographCard({
                 href={product.affiliateUrl}
                 target="_blank"
                 rel="sponsored noopener noreferrer"
-                className="inline-flex min-h-[38px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+                className="inline-flex min-h-[42px] max-w-full items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 sm:text-sm dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
               >
                 Buy at the best price here →
               </a>
@@ -395,23 +396,32 @@ export function SkincareGuidesDrawer({
 }: SkincareGuidesDrawerProps) {
   const [activeTab, setActiveTab] = useState<DrawerTabId>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setActiveTab(initialCategory);
       setSearchQuery("");
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
     }
   }, [isOpen, initialCategory]);
 
   useEffect(() => {
     if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -458,22 +468,48 @@ export function SkincareGuidesDrawer({
 
   return (
     <div
+      ref={scrollContainerRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="skincare-guides-hub-title"
-      className="fixed inset-0 z-50 flex items-end justify-center bg-[#1E181A]/55 p-0 transition-colors duration-300 sm:items-center sm:p-4 dark:bg-black/70"
-      onClick={onClose}
+      className="fixed inset-0 z-50 h-dvh w-screen overflow-y-auto bg-[#FAF6F7] transition-colors duration-300 dark:bg-[#140F11]"
     >
-      <div
-        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-3xl border border-[#EAD8DC] bg-white shadow-2xl transition-colors duration-300 sm:rounded-3xl dark:border-[#38282D] dark:bg-[#21181B]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Top Drawer Header */}
-        <div className="flex items-start justify-between gap-3 border-b border-[#EAD8DC] bg-[#FDFBFC] px-5 py-4 transition-colors duration-300 sm:px-8 sm:py-5 dark:border-[#38282D] dark:bg-[#1B1316]">
-          <div className="min-w-0 space-y-1">
+      {/* Sticky Top Navigation Bar */}
+      <header className="sticky top-0 z-10 border-b border-[#ECE0E3] bg-[#FAF6F7]/95 backdrop-blur-md transition-colors duration-300 dark:border-[#34262B] dark:bg-[#140F11]/95">
+        <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-5 py-3.5 sm:px-8">
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex min-h-[38px] items-center gap-2 rounded-full border border-[#ECE0E3] bg-white px-4 py-1.5 text-xs font-semibold text-[#1E181A] transition-colors duration-200 hover:border-[#B56576] hover:text-[#B56576] active:scale-95 sm:text-sm dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F7EFEF] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+          >
+            <ArrowLeft className="h-4 w-4 shrink-0" />
+            <span>Back to Scanner</span>
+          </button>
+
+          <span className="hidden items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#B56576] sm:inline-flex dark:text-[#D48395]">
+            <BookOpen className="h-3.5 w-3.5 shrink-0" />
+            <span>DerméScan Product Guides</span>
+          </span>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close Skincare Guides"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ECE0E3] bg-white text-[#5E5055] transition-colors duration-200 hover:border-[#B56576] hover:text-[#B56576] active:scale-95 dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* Full-Screen Centered Editorial Column */}
+      <main className="mx-auto max-w-4xl space-y-8 px-5 py-6 pb-24 sm:px-8">
+        {/* Page Heading + Search + Category Filter Pills */}
+        <section className="space-y-5">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <BookOpen className="h-3.5 w-3.5 shrink-0 text-[#B56576] dark:text-[#D48395]" />
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#B56576] dark:text-[#D48395]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#B56576] dark:text-[#D48395]">
                 {language === "ur"
                   ? "DerméScan Editorial Hub · 22 Verified Monographs"
                   : "DerméScan Dermatology Journal · All 22 Jenpharm Monographs"}
@@ -481,7 +517,7 @@ export function SkincareGuidesDrawer({
             </div>
             <h2
               id="skincare-guides-hub-title"
-              className="font-editorial text-2xl font-semibold text-[#1E181A] transition-colors duration-300 sm:text-3xl dark:text-[#F7EFEF]"
+              className="font-editorial text-3xl font-semibold text-[#1E181A] transition-colors duration-300 sm:text-4xl dark:text-[#F7EFEF]"
             >
               {language === "ur"
                 ? "Pakistani Skin & Hair Product Encyclopedia"
@@ -489,265 +525,251 @@ export function SkincareGuidesDrawer({
             </h2>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close Skincare Guides"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#EAD8DC] bg-white text-[#5E5055] transition-colors duration-300 hover:border-[#B56576] hover:text-[#B56576] active:scale-95 dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+          <div className="space-y-3.5">
+            <div className="relative">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#B56576] dark:text-[#D48395]"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Search all 22 Jenpharm products, conditions, ingredients, or skin types"
+                placeholder={
+                  language === "ur"
+                    ? "Search karein: melasma, oily skin, dandruff, SPF, retinol, MandelAC..."
+                    : "Search all 22 products: melasma, oily skin, dandruff, SPF, retinol, post-steroid..."
+                }
+                className="w-full rounded-full border border-[#ECE0E3] bg-white py-3 pr-11 pl-11 text-[15px] text-[#1E181A] placeholder:text-[#7A686D] transition-colors duration-300 focus:border-[#B56576] focus:outline-none sm:text-base dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                  className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[#7A686D] transition-colors hover:bg-[#F3E7EA] hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2B1F24] dark:hover:text-[#F7EFEF]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
 
-        {/* Search Bar + Category Tabs */}
-        <div className="space-y-3 border-b border-[#EAD8DC] bg-[#FAF6F7] px-5 py-3.5 transition-colors duration-300 sm:px-8 dark:border-[#38282D] dark:bg-[#161012]">
-          <div className="relative">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#B56576] dark:text-[#D48395]"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Search all 22 Jenpharm products, conditions, ingredients, or skin types"
-              placeholder={
-                language === "ur"
-                  ? "Search karein: melasma, oily skin, dandruff, SPF, retinol, MandelAC..."
-                  : "Search all 22 products: melasma, oily skin, dandruff, SPF, retinol, post-steroid..."
-              }
-              className="w-full rounded-full border border-[#EAD8DC] bg-white py-2 pr-10 pl-10 text-xs text-[#1E181A] placeholder:text-[#7A686D] transition-colors duration-300 focus:border-[#B56576] focus:outline-none dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] dark:focus:border-[#D48395]"
-            />
-            {searchQuery && (
+            <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
+              {SKINCARE_GUIDE_ARTICLES.map((article) => {
+                const isActive = !isSearching && activeTab === article.id;
+                return (
+                  <button
+                    key={article.id}
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setActiveTab(article.id);
+                    }}
+                    className={`min-h-[38px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors duration-200 active:scale-95 sm:text-sm ${
+                      isActive
+                        ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                        : "border border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+                    }`}
+                  >
+                    {article.categoryLabel}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveTab("all");
+                }}
+                className={`min-h-[38px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors duration-200 active:scale-95 sm:text-sm ${
+                  !isSearching && activeTab === "all"
+                    ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                    : "border border-[#ECE0E3] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
+                }`}
+              >
+                All 22 Products
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Readable Magazine Article / Monograph Body */}
+        {isSearching ? (
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ECE0E3] pb-4 dark:border-[#34262B]">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B56576] dark:text-[#D48395]">
+                  Live Monograph Search
+                </p>
+                <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] sm:text-3xl dark:text-[#F7EFEF]">
+                  Showing {searchResults.length} of{" "}
+                  {JENPHARM_PRODUCTS_CATALOG.length} products
+                </h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-                className="absolute top-1/2 right-2.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-[#7A686D] transition-colors hover:bg-[#F3E7EA] hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2B1F24] dark:hover:text-[#F7EFEF]"
+                className="rounded-full border border-[#ECE0E3] bg-white px-4 py-2 text-xs font-semibold text-[#5E5055] transition-colors hover:border-[#B56576] hover:text-[#B56576] sm:text-sm dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
               >
-                <X className="h-3.5 w-3.5" />
+                Clear Search
               </button>
-            )}
-          </div>
+            </div>
 
-          <div className="no-scrollbar flex items-center gap-2 overflow-x-auto">
-            {SKINCARE_GUIDE_ARTICLES.map((article) => {
-              const isActive = !isSearching && activeTab === article.id;
-              return (
-                <button
-                  key={article.id}
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setActiveTab(article.id);
-                  }}
-                  className={`min-h-[36px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors duration-300 active:scale-95 ${
-                    isActive
-                      ? "bg-[#B56576] text-white shadow-xs dark:bg-[#D48395] dark:text-[#161012] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-                      : "border border-[#EAD8DC] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
-                  }`}
-                >
-                  {article.categoryLabel}
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setActiveTab("all");
-              }}
-              className={`min-h-[36px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors duration-300 active:scale-95 ${
-                !isSearching && activeTab === "all"
-                  ? "bg-[#B56576] text-white shadow-xs dark:bg-[#D48395] dark:text-[#161012] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-                  : "border border-[#EAD8DC] bg-white text-[#5E5055] hover:border-[#B56576] hover:text-[#B56576] dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
-              }`}
-            >
-              All 22 Products
-            </button>
-          </div>
-        </div>
-
-        {/* Readable Magazine Article / Monograph Body */}
-        <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-8 sm:py-8">
-          <div className="mx-auto max-w-2xl space-y-6">
-            {isSearching ? (
+            {searchResults.length > 0 ? (
               <div className="space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#EAD8DC] pb-4 dark:border-[#38282D]">
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B56576] dark:text-[#D48395]">
-                      Live Monograph Search
-                    </p>
-                    <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                      Showing {searchResults.length} of{" "}
-                      {JENPHARM_PRODUCTS_CATALOG.length} products
-                    </h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="rounded-full border border-[#EAD8DC] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#5E5055] transition-colors hover:border-[#B56576] hover:text-[#B56576] dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC] dark:hover:border-[#D48395] dark:hover:text-[#D48395]"
-                  >
-                    Clear Search
-                  </button>
-                </div>
-
-                {searchResults.length > 0 ? (
-                  <div className="space-y-4">
-                    {searchResults.map((product) => (
-                      <ProductMonographCard
-                        key={product.affiliateId}
-                        product={product}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] p-6 text-center dark:border-[#38282D] dark:bg-[#1B1316]">
-                    <Info className="mx-auto mb-2 h-6 w-6 text-[#B56576] dark:text-[#D48395]" />
-                    <p className="font-editorial text-xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                      No matching Jenpharm monograph found
-                    </p>
-                    <p className="mt-1 text-xs leading-relaxed text-[#5E5055] dark:text-[#C9B6BC]">
-                      Try searching for a skin concern like &ldquo;melasma&rdquo;,
-                      &ldquo;acne&rdquo;, &ldquo;dandruff&rdquo;, &ldquo;retinol&rdquo;,
-                      or &ldquo;oil-free&rdquo;.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery("")}
-                      className="mt-4 inline-flex min-h-[36px] items-center justify-center rounded-full bg-[#B56576] px-5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#9E5263] dark:bg-[#D48395] dark:text-[#161012]"
-                    >
-                      View All Categories
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : activeTab === "all" ? (
-              <div className="space-y-7">
-                <header className="space-y-2 border-b border-[#EAD8DC] pb-5 dark:border-[#38282D]">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[#EAD8DC] bg-[#F6ECEF] px-3 py-0.5 text-[11px] font-semibold text-[#8C3B4A] dark:border-[#59353F] dark:bg-[#2B1F24] dark:text-[#F0B2C0]">
-                      <Clock className="h-3 w-3 shrink-0" />
-                      <span>8 min full index</span>
-                    </span>
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
-                      Complete Clinical Encyclopedia (1–22)
-                    </span>
-                  </div>
-                  <h3 className="font-editorial text-2xl font-semibold leading-snug text-[#1E181A] sm:text-3xl dark:text-[#F7EFEF]">
-                    All 22 Verified Jenpharm Clinical Monographs
-                  </h3>
-                  <p className="text-sm leading-relaxed text-[#5E5055] dark:text-[#C9B6BC]">
-                    Browse every cleanser, moisturizer, sunscreen, targeted serum,
-                    and scalp treatment with skin-type suitability, active perks,
-                    contraindications, and potential side effects.
-                  </p>
-                </header>
-
-                {ALL_MONOGRAPH_SECTIONS.map((sectionLabel, idx) => {
-                  const sectionItems = JENPHARM_PRODUCTS_CATALOG.filter(
-                    (item) => item.monographSection === sectionLabel
-                  );
-                  return (
-                    <section key={sectionLabel} className="space-y-4">
-                      <h4 className="border-b border-[#EAD8DC] pb-2 text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] dark:border-[#38282D] dark:text-[#D48395]">
-                        {idx + 1}. {sectionLabel} ({sectionItems.length})
-                      </h4>
-                      <div className="space-y-4">
-                        {sectionItems.map((product) => (
-                          <ProductMonographCard
-                            key={product.affiliateId}
-                            product={product}
-                          />
-                        ))}
-                      </div>
-                    </section>
-                  );
-                })}
+                {searchResults.map((product) => (
+                  <ProductMonographCard
+                    key={product.affiliateId}
+                    product={product}
+                  />
+                ))}
               </div>
             ) : (
-              <>
-                <header className="space-y-3 border-b border-[#EAD8DC] pb-5 transition-colors duration-300 dark:border-[#38282D]">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[#EAD8DC] bg-[#F6ECEF] px-3 py-0.5 text-[11px] font-semibold text-[#8C3B4A] transition-colors duration-300 dark:border-[#59353F] dark:bg-[#2B1F24] dark:text-[#F0B2C0]">
-                      <Clock className="h-3 w-3 shrink-0" />
-                      <span>{activeArticle.readTime}</span>
-                    </span>
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
-                      {activeArticle.categoryLabel} · {categoryProducts.length}{" "}
-                      Monographs
-                    </span>
-                  </div>
+              <div className="rounded-2xl border border-[#ECE0E3] bg-white p-8 text-center dark:border-[#34262B] dark:bg-[#1E1619]">
+                <Info className="mx-auto mb-3 h-7 w-7 text-[#B56576] dark:text-[#D48395]" />
+                <p className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                  No matching Jenpharm monograph found
+                </p>
+                <p className="mt-2 text-[15px] leading-relaxed text-[#5E5055] sm:text-base dark:text-[#C9B6BC]">
+                  Try searching for a skin concern like &ldquo;melasma&rdquo;,
+                  &ldquo;acne&rdquo;, &ldquo;dandruff&rdquo;, &ldquo;retinol&rdquo;,
+                  or &ldquo;oil-free&rdquo;.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="mt-5 inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#B56576] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#9E5263] dark:bg-[#D48395] dark:text-[#140F11]"
+                >
+                  View All Categories
+                </button>
+              </div>
+            )}
+          </div>
+        ) : activeTab === "all" ? (
+          <div className="space-y-8">
+            <header className="space-y-3 border-b border-[#ECE0E3] pb-6 dark:border-[#34262B]">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ECE0E3] bg-white px-3 py-1 text-xs font-semibold text-[#8C3B4A] dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F0B2C0]">
+                  <Clock className="h-3.5 w-3.5 shrink-0" />
+                  <span>8 min full index</span>
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
+                  Complete Clinical Encyclopedia (1–22)
+                </span>
+              </div>
+              <h3 className="font-editorial text-2xl font-semibold leading-snug text-[#1E181A] sm:text-3xl dark:text-[#F7EFEF]">
+                All 22 Verified Jenpharm Clinical Monographs
+              </h3>
+              <p className="text-[15px] leading-relaxed text-[#5E5055] sm:text-base dark:text-[#C9B6BC]">
+                Browse every cleanser, moisturizer, sunscreen, targeted serum,
+                and scalp treatment with skin-type suitability, active perks,
+                contraindications, and potential side effects.
+              </p>
+            </header>
 
-                  <h3 className="font-editorial text-2xl font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-3xl dark:text-[#F7EFEF]">
-                    {activeArticle.title}
-                  </h3>
-
-                  <p className="text-sm leading-relaxed text-[#5E5055] transition-colors duration-300 dark:text-[#C9B6BC]">
-                    {activeArticle.intro}
-                  </p>
-                </header>
-
-                {activeTab === "creams-serums" ? (
-                  <div className="space-y-6">
-                    <section className="space-y-4">
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] dark:text-[#D48395]">
-                        Moisturizers &amp; Barrier Repair ({creamsMoisturizers.length})
-                      </p>
-                      <div className="space-y-4">
-                        {creamsMoisturizers.map((product) => (
-                          <ProductMonographCard
-                            key={product.affiliateId}
-                            product={product}
-                          />
-                        ))}
-                      </div>
-                    </section>
-
-                    <section className="space-y-4 pt-2">
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] dark:text-[#D48395]">
-                        Targeted Serums &amp; Creams ({creamsTargetedSerums.length})
-                      </p>
-                      <div className="space-y-4">
-                        {creamsTargetedSerums.map((product) => (
-                          <ProductMonographCard
-                            key={product.affiliateId}
-                            product={product}
-                          />
-                        ))}
-                      </div>
-                    </section>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {categoryProducts.map((product) => (
+            {ALL_MONOGRAPH_SECTIONS.map((sectionLabel, idx) => {
+              const sectionItems = JENPHARM_PRODUCTS_CATALOG.filter(
+                (item) => item.monographSection === sectionLabel
+              );
+              return (
+                <section key={sectionLabel} className="space-y-4">
+                  <h4 className="border-b border-[#ECE0E3] pb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:border-[#34262B] dark:text-[#D48395]">
+                    {idx + 1}. {sectionLabel} ({sectionItems.length})
+                  </h4>
+                  <div className="space-y-5">
+                    {sectionItems.map((product) => (
                       <ProductMonographCard
                         key={product.affiliateId}
                         product={product}
                       />
                     ))}
                   </div>
-                )}
-
-                {/* Editorial Takeaway Callout Box */}
-                <aside className="rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7] p-5 transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1B1316]">
-                  <div className="flex items-start gap-2.5">
-                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#B56576] dark:text-[#D48395]" />
-                    <div className="space-y-1">
-                      <p className="font-editorial text-lg font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
-                        {activeArticle.takeawayTitle}
-                      </p>
-                      <p className="text-xs leading-relaxed text-[#5E5055] dark:text-[#C9B6BC]">
-                        {activeArticle.takeawayBody}
-                      </p>
-                    </div>
-                  </div>
-                </aside>
-              </>
-            )}
+                </section>
+              );
+            })}
           </div>
-        </div>
-      </div>
+        ) : (
+          <div className="space-y-7">
+            <header className="space-y-3 border-b border-[#ECE0E3] pb-6 transition-colors duration-300 dark:border-[#34262B]">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ECE0E3] bg-white px-3 py-1 text-xs font-semibold text-[#8C3B4A] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#F0B2C0]">
+                  <Clock className="h-3.5 w-3.5 shrink-0" />
+                  <span>{activeArticle.readTime}</span>
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
+                  {activeArticle.categoryLabel} · {categoryProducts.length}{" "}
+                  Monographs
+                </span>
+              </div>
+
+              <h3 className="font-editorial text-2xl font-semibold leading-snug text-[#1E181A] transition-colors duration-300 sm:text-3xl dark:text-[#F7EFEF]">
+                {activeArticle.title}
+              </h3>
+
+              <p className="text-[15px] leading-relaxed text-[#5E5055] transition-colors duration-300 sm:text-base dark:text-[#C9B6BC]">
+                {activeArticle.intro}
+              </p>
+            </header>
+
+            {activeTab === "creams-serums" ? (
+              <div className="space-y-8">
+                <section className="space-y-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:text-[#D48395]">
+                    Moisturizers &amp; Barrier Repair ({creamsMoisturizers.length})
+                  </p>
+                  <div className="space-y-5">
+                    {creamsMoisturizers.map((product) => (
+                      <ProductMonographCard
+                        key={product.affiliateId}
+                        product={product}
+                      />
+                    ))}
+                  </div>
+                </section>
+
+                <section className="space-y-4 pt-2">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B56576] sm:text-sm dark:text-[#D48395]">
+                    Targeted Serums &amp; Creams ({creamsTargetedSerums.length})
+                  </p>
+                  <div className="space-y-5">
+                    {creamsTargetedSerums.map((product) => (
+                      <ProductMonographCard
+                        key={product.affiliateId}
+                        product={product}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                {categoryProducts.map((product) => (
+                  <ProductMonographCard
+                    key={product.affiliateId}
+                    product={product}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Editorial Takeaway Callout Box */}
+            <aside className="rounded-2xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619]">
+              <div className="flex items-start gap-3">
+                <Sparkles className="mt-1 h-4 w-4 shrink-0 text-[#B56576] dark:text-[#D48395]" />
+                <div className="space-y-1.5">
+                  <p className="font-editorial text-xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                    {activeArticle.takeawayTitle}
+                  </p>
+                  <p className="text-[15px] leading-relaxed text-[#5E5055] sm:text-base dark:text-[#C9B6BC]">
+                    {activeArticle.takeawayBody}
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
