@@ -10,7 +10,6 @@ import {
   Scissors,
   FlaskConical,
   ShieldCheck,
-  BookOpen,
 } from "lucide-react";
 import { Header } from "./components/Header.tsx";
 import { SkinBodyTab } from "./components/SkinBodyTab.tsx";
@@ -19,7 +18,6 @@ import { SteroidCheckTab } from "./components/SteroidCheckTab.tsx";
 import { FakeVsRealTab } from "./components/FakeVsRealTab.tsx";
 import {
   SkincareGuidesDrawer,
-  SKINCARE_GUIDE_ARTICLES,
   type GuideCategoryId,
 } from "./components/SkincareGuidesDrawer.tsx";
 import { HealthProfileModal } from "./components/HealthProfileModal.tsx";
@@ -344,98 +342,6 @@ export default function App() {
           <SteroidCheckTab language={language} healthProfile={healthProfile} />
         )}
         {activeTab === "verify" && <FakeVsRealTab language={language} />}
-
-        <section
-          aria-labelledby="popular-pk-checks-heading"
-          className="space-y-6 rounded-3xl border border-[#ECE0E3] bg-white p-6 text-xs text-[#5E5055] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] sm:p-8"
-        >
-          {/* Editorial Magazine Article Hub Quick-Launch */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
-                <BookOpen className="h-3.5 w-3.5 shrink-0" />
-                <span>
-                  {language === "ur"
-                    ? "DerméScan Editorial Hub"
-                    : "Editorial Magazine Guides"}
-                </span>
-              </div>
-              <p className="font-editorial text-xl font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]">
-                {language === "ur"
-                  ? "Sunblocks, Serums, Face Washes Aur Hair Guides"
-                  : "Sunblocks, Creams, Cleansers & Scalp Guides"}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                setGuideCategory("sunblocks");
-                setIsGuidesOpen(true);
-              }}
-              className="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-full bg-[#B56576] px-4 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-95 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-            >
-              Read Magazine Guides →
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {SKINCARE_GUIDE_ARTICLES.map((article) => (
-              <button
-                key={article.id}
-                type="button"
-                onClick={() => {
-                  setGuideCategory(article.id);
-                  setIsGuidesOpen(true);
-                }}
-                className="flex flex-col items-start justify-between gap-2 rounded-2xl bg-[#FAF6F7] p-4 text-left transition-colors duration-200 hover:bg-[#F3E7EA]/70 active:scale-[0.99] dark:bg-[#171113] dark:hover:bg-[#2A1F23]"
-              >
-                <div className="flex w-full items-center justify-between gap-2 text-[11px]">
-                  <span className="font-semibold uppercase tracking-[0.12em] text-[#B56576] dark:text-[#D48395]">
-                    {article.categoryLabel}
-                  </span>
-                  <span className="font-medium text-[#7A686D] dark:text-[#C9B6BC]">
-                    {article.readTime}
-                  </span>
-                </div>
-                <span className="line-clamp-2 font-editorial text-base font-semibold leading-snug text-[#1E181A] dark:text-[#F7EFEF]">
-                  {article.title}
-                </span>
-              </button>
-            ))}
-          </div>
-
-          <details className="group border-t border-[#F0E4E7] pt-5 dark:border-[#2D2125]">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-left font-medium text-[#5E5055] transition-colors duration-300 hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:text-[#F7EFEF]">
-              <h2
-                id="popular-pk-checks-heading"
-                className="font-editorial text-lg font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]"
-              >
-                {language === "ur"
-                  ? "Pakistan Mein Mashhoor Skin Aur Hair Checks"
-                  : "Popular Skin & Hair Checks in Pakistan"}
-              </h2>
-              <span className="text-[11px] font-semibold text-[#B56576] group-open:hidden dark:text-[#D48395]">
-                {language === "ur" ? "Mazeed dekhein +" : "Read more +"}
-              </span>
-              <span className="hidden text-[11px] font-semibold text-[#B56576] group-open:inline dark:text-[#D48395]">
-                {language === "ur" ? "Band karein −" : "Show less −"}
-              </span>
-            </summary>
-            <div className="mt-4 space-y-2.5 border-t border-[#F0E4E7] pt-4 text-xs leading-relaxed text-[#5E5055] transition-colors duration-300 dark:border-[#2D2125] dark:text-[#C9B6BC]">
-              <p>
-                {language === "ur"
-                  ? "DerméScan Pakistan ke mausam, dhoop aur bore (hard) paani ke mutabiq chehre, under-eyes, haathon, pairon aur baalon ke liye trusted pharmacy routines tayyar karta hai."
-                  : "DerméScan helps people across Pakistan build practical skincare routines for acne, fungal bumps, under-eye dark circles, cracked heels, and hard-water or bore-water hair fall using verified local and international pharmacy brands including Jenpharm, AccuFix Cosmetics, Primary Skin, Neue Derma, Physiogel, Skinoren, CeraVe, Bioderma, and La Roche-Posay."}
-              </p>
-              <p>
-                {language === "ur"
-                  ? "Steroid Check tab se whitening aur formula creams mein chhupay steroids aur mercury pehchanein, aur Fake vs. Real tab se store websites, batch codes aur bottle printing check karein."
-                  : "Run a free Steroid Check on local whitening or fairness creams to spot hidden corticosteroids and mercury, test your hair porosity for scalp-safe dual washing, and verify authentic Pakistani stores like Dvago, Naheed, and SkinStore Pakistan in Fake vs. Real."}
-              </p>
-            </div>
-          </details>
-        </section>
 
         <footer className="px-2 pt-2 text-center text-xs leading-relaxed text-[#7A686D] transition-colors duration-300 dark:text-[#C9B6BC]">
           <p>
