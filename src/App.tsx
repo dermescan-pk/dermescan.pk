@@ -277,7 +277,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#F7F0F1] transition-colors duration-300 dark:bg-[#140E10]">
+    <div className="min-h-screen overflow-x-hidden bg-[#F8F2F3] transition-colors duration-300 dark:bg-[#140F11]">
       {/* Top Curated Luxury Pharmacy & Jenpharm Bar */}
       <button
         type="button"
@@ -285,7 +285,7 @@ export default function App() {
           setGuideCategory("sunblocks");
           setIsGuidesOpen(true);
         }}
-        className="group relative flex min-h-9 w-full cursor-pointer items-center justify-center overflow-hidden bg-[#B56576] px-4 py-1.5 text-center text-[#FAF6F7] transition-colors duration-300 hover:bg-[#A65768] dark:border-b dark:border-[#3D2B31] dark:bg-[#2A1D21] dark:text-[#F7EFEF] dark:hover:bg-[#332328] dark:hover:text-[#F7EFEF] sm:h-9 sm:py-0"
+        className="group relative flex min-h-9 w-full cursor-pointer items-center justify-center overflow-hidden bg-[#B56576] px-4 py-1.5 text-center text-[#FAF6F7] transition-colors duration-300 hover:bg-[#A65768] dark:border-b dark:border-[#34262B] dark:bg-[#24191D] dark:text-[#F7EFEF] dark:hover:bg-[#2E2025] dark:hover:text-[#F7EFEF] sm:h-9 sm:py-0"
       >
         <span
           aria-hidden="true"
@@ -305,13 +305,13 @@ export default function App() {
         onToggleTheme={handleToggleTheme}
       />
 
-      <main className="mx-auto max-w-5xl px-4 pb-24 pt-7 sm:px-6">
+      <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 pb-24 sm:px-6">
         <nav
           aria-label="DerméScan Sections"
           onTouchStart={handleNavTouchStart}
           onTouchEnd={handleNavTouchEnd}
           onTouchCancel={handleNavTouchCancel}
-          className="mb-7 flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-[#E8D5D9]/80 bg-[#EFE4E6]/90 p-1.5 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1F1619] sm:flex-nowrap"
+          className="flex flex-wrap items-center justify-center gap-1 rounded-full border border-[#ECE0E3] bg-white p-1.5 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:flex-nowrap"
         >
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -321,10 +321,10 @@ export default function App() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex min-h-[42px] flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-300 active:scale-95 sm:gap-2 sm:px-4 ${
+                className={`flex min-h-[40px] flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-200 active:scale-95 sm:gap-2 sm:px-4 ${
                   isActive
-                    ? "bg-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)] dark:bg-[#D48395] dark:text-[#161012] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
-                    : "text-[#5E5055] hover:bg-white/75 hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2B1F24] dark:hover:text-[#F7EFEF]"
+                    ? "bg-[#B56576] text-white dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                    : "text-[#5E5055] hover:bg-[#FAF6F7] hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#F7EFEF]"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -347,12 +347,12 @@ export default function App() {
 
         <section
           aria-labelledby="popular-pk-checks-heading"
-          className="mt-10 space-y-4 rounded-3xl border border-[#E8D5D9]/80 bg-white px-6 py-5 text-xs text-[#5E5055] shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1F1619] dark:text-[#C9B6BC]"
+          className="space-y-6 rounded-3xl border border-[#ECE0E3] bg-white p-6 text-xs text-[#5E5055] transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] dark:text-[#C9B6BC] sm:p-8"
         >
           {/* Editorial Magazine Article Hub Quick-Launch */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#B56576] dark:text-[#D48395]">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-[#B56576] dark:text-[#D48395]">
                 <BookOpen className="h-3.5 w-3.5 shrink-0" />
                 <span>
                   {language === "ur"
@@ -360,7 +360,7 @@ export default function App() {
                     : "Editorial Magazine Guides"}
                 </span>
               </div>
-              <p className="font-editorial text-lg font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]">
+              <p className="font-editorial text-xl font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]">
                 {language === "ur"
                   ? "Sunblocks, Serums, Face Washes Aur Hair Guides"
                   : "Sunblocks, Creams, Cleansers & Scalp Guides"}
@@ -373,13 +373,13 @@ export default function App() {
                 setGuideCategory("sunblocks");
                 setIsGuidesOpen(true);
               }}
-              className="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-4 py-1.5 text-xs font-semibold text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+              className="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-full bg-[#B56576] px-4 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-95 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
             >
               Read Magazine Guides →
             </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {SKINCARE_GUIDE_ARTICLES.map((article) => (
               <button
                 key={article.id}
@@ -388,24 +388,24 @@ export default function App() {
                   setGuideCategory(article.id);
                   setIsGuidesOpen(true);
                 }}
-                className="flex flex-col items-start justify-between gap-1.5 rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/75 p-3.5 text-left transition-colors duration-300 hover:border-[#B56576] hover:bg-[#F6ECEF]/65 active:scale-[0.99] dark:border-[#38282D] dark:bg-[#1B1316] dark:hover:border-[#D48395] dark:hover:bg-[#2B1F24]"
+                className="flex flex-col items-start justify-between gap-2 rounded-2xl bg-[#FAF6F7] p-4 text-left transition-colors duration-200 hover:bg-[#F3E7EA]/70 active:scale-[0.99] dark:bg-[#171113] dark:hover:bg-[#2A1F23]"
               >
-                <div className="flex w-full items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#B56576] dark:text-[#D48395]">
+                <div className="flex w-full items-center justify-between gap-2 text-[11px]">
+                  <span className="font-semibold uppercase tracking-[0.12em] text-[#B56576] dark:text-[#D48395]">
                     {article.categoryLabel}
                   </span>
-                  <span className="text-[10px] font-medium text-[#7A686D] dark:text-[#C9B6BC]">
+                  <span className="font-medium text-[#7A686D] dark:text-[#C9B6BC]">
                     {article.readTime}
                   </span>
                 </div>
-                <span className="line-clamp-2 font-editorial text-sm font-semibold leading-snug text-[#1E181A] dark:text-[#F7EFEF]">
+                <span className="line-clamp-2 font-editorial text-base font-semibold leading-snug text-[#1E181A] dark:text-[#F7EFEF]">
                   {article.title}
                 </span>
               </button>
             ))}
           </div>
 
-          <details className="group border-t border-[#EAD8DC] pt-3.5 dark:border-[#38282D]">
+          <details className="group border-t border-[#F0E4E7] pt-5 dark:border-[#2D2125]">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-left font-medium text-[#5E5055] transition-colors duration-300 hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:text-[#F7EFEF]">
               <h2
                 id="popular-pk-checks-heading"
@@ -422,7 +422,7 @@ export default function App() {
                 {language === "ur" ? "Band karein −" : "Show less −"}
               </span>
             </summary>
-            <div className="mt-3 space-y-2 border-t border-[#EAD8DC] pt-3 text-xs leading-relaxed text-[#5E5055] transition-colors duration-300 dark:border-[#38282D] dark:text-[#C9B6BC]">
+            <div className="mt-4 space-y-2.5 border-t border-[#F0E4E7] pt-4 text-xs leading-relaxed text-[#5E5055] transition-colors duration-300 dark:border-[#2D2125] dark:text-[#C9B6BC]">
               <p>
                 {language === "ur"
                   ? "DerméScan Pakistan ke mausam, dhoop aur bore (hard) paani ke mutabiq chehre, under-eyes, haathon, pairon aur baalon ke liye trusted pharmacy routines tayyar karta hai."
@@ -437,17 +437,17 @@ export default function App() {
           </details>
         </section>
 
-        <footer className="mt-5 rounded-3xl border border-[#E8D5D9]/80 bg-white px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1F1619] dark:text-[#C9B6BC]">
+        <footer className="px-2 pt-2 text-center text-xs leading-relaxed text-[#7A686D] transition-colors duration-300 dark:text-[#C9B6BC]">
           <p>
             {language === "ur"
               ? "DerméScan sirf aam skin, hair aur cream ki rehnumai deta hai, yeh doctor ka checkup nahi hai. Agar shadeed dard, khoon ya tez rash ho toh fauran skin doctor ko dikhayein."
               : "DerméScan shares simple everyday skin, hair, and product tips. It is not a medical checkup. Please visit a skin doctor if you have severe pain, bleeding, or a spreading rash."}
           </p>
-          <div className="mt-2">
+          <div className="mt-3">
             <button
               type="button"
               onClick={handleReplayIntro}
-              className="text-[11px] font-medium tracking-widest uppercase text-[#B56576]/75 underline decoration-[#B56576]/35 underline-offset-4 transition-colors duration-300 hover:text-[#B56576] dark:text-[#D48395] dark:decoration-[#D48395]/40 dark:hover:text-[#B56576]"
+              className="text-[11px] font-medium tracking-widest uppercase text-[#B56576]/80 underline decoration-[#B56576]/35 underline-offset-4 transition-colors duration-300 hover:text-[#B56576] dark:text-[#D48395] dark:decoration-[#D48395]/40 dark:hover:text-[#B56576]"
             >
               Replay Intro
             </button>

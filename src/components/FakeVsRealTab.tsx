@@ -185,58 +185,60 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     : "";
 
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="min-w-0 space-y-8">
       <TabHeaderIllustration variant="verify" language={language} />
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="min-w-0 space-y-1.5">
-            <label
-              htmlFor="verify-product-name"
-              className="block text-xs font-bold text-[#1E181A]"
-            >
-              {language === "ur" ? "Product ka naam" : "Product name"}
-            </label>
-            <input
-              id="verify-product-name"
-              type="text"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              placeholder="Or type product name / brand if label is blurry"
-              className="h-11 w-full rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:bg-white focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
-            />
-          </div>
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+        <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
+          <div className="grid grid-cols-1 gap-5 pb-5 md:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <label
+                htmlFor="verify-product-name"
+                className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
+              >
+                {language === "ur" ? "Product ka naam" : "Product name"}
+              </label>
+              <input
+                id="verify-product-name"
+                type="text"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                placeholder="Or type product name / brand if label is blurry"
+                className="w-full rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B]"
+              />
+            </div>
 
-          <div className="min-w-0 space-y-1.5">
-            <label
-              htmlFor="verify-profile-type"
-              className="block text-xs font-bold text-[#1E181A]"
-            >
-              {language === "ur" ? "Skin ya hair type" : "Your skin or hair type"}
-            </label>
-            <select
-              id="verify-profile-type"
-              value={userProfileType}
-              onChange={(e) => setUserProfileType(e.target.value)}
-              className="h-11 w-full rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] transition-all focus:border-[#B56576] focus:bg-white focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
-            >
-              <option value="">
-                {language === "ur"
-                  ? "Munasibat check karne ke liye chunein"
-                  : "Select to check suitability"}
-              </option>
-              {USER_PROFILE_TYPES.map((typeOption) => (
-                <option key={typeOption} value={typeOption}>
-                  {typeOption}
+            <div className="min-w-0 space-y-2">
+              <label
+                htmlFor="verify-profile-type"
+                className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
+              >
+                {language === "ur" ? "Skin ya hair type" : "Your skin or hair type"}
+              </label>
+              <select
+                id="verify-profile-type"
+                value={userProfileType}
+                onChange={(e) => setUserProfileType(e.target.value)}
+                className="w-full rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] transition-all focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF]"
+              >
+                <option value="">
+                  {language === "ur"
+                    ? "Munasibat check karne ke liye chunein"
+                    : "Select to check suitability"}
                 </option>
-              ))}
-            </select>
+                {USER_PROFILE_TYPES.map((typeOption) => (
+                  <option key={typeOption} value={typeOption}>
+                    {typeOption}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="min-w-0 space-y-1.5 md:col-span-2">
+          <div className="space-y-2 py-5">
             <label
               htmlFor="verify-store-input"
-              className="block text-xs font-bold text-[#1E181A]"
+              className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
             >
               {language === "ur" ? "Website ya store link" : "Store or website"}
             </label>
@@ -246,45 +248,41 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={storeInput}
               onChange={(e) => setStoreInput(e.target.value)}
               placeholder="e.g., dvago.pk, naheed.pk, theordinary.com, or Instagram seller..."
-              className="h-11 w-full rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:bg-white focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className="w-full rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B]"
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)] md:col-span-2">
-            <div className="space-y-2">
-              <label
-                htmlFor="verify-suspicious-signs"
-                className="block text-xs font-bold text-[#1E181A]"
-              >
-                {language === "ur"
-                  ? "Shakk wali baatein"
-                  : "Anything look off?"}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {SUSPICIOUS_SIGNS_CHIPS.map((chip) => {
-                  const selected = suspiciousSigns
-                    .toLowerCase()
-                    .split(/[,;\n]+/)
-                    .map((s) => s.trim())
-                    .includes(chip.toLowerCase());
-                  return (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() =>
-                        setSuspiciousSigns((prev) => appendVerifyChip(prev, chip))
-                      }
-                      className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
-                        selected
-                          ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
-                      }`}
-                    >
-                      + {chip}
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="space-y-3 py-5">
+            <label
+              htmlFor="verify-suspicious-signs"
+              className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
+            >
+              {language === "ur" ? "Shakk wali baatein" : "Anything look off?"}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SUSPICIOUS_SIGNS_CHIPS.map((chip) => {
+                const selected = suspiciousSigns
+                  .toLowerCase()
+                  .split(/[,;\n]+/)
+                  .map((s) => s.trim())
+                  .includes(chip.toLowerCase());
+                return (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() =>
+                      setSuspiciousSigns((prev) => appendVerifyChip(prev, chip))
+                    }
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+                      selected
+                        ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
+                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                    }`}
+                  >
+                    + {chip}
+                  </button>
+                );
+              })}
             </div>
             <textarea
               id="verify-suspicious-signs"
@@ -292,36 +290,36 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={suspiciousSigns}
               onChange={(e) => setSuspiciousSigns(e.target.value)}
               placeholder="e.g. Price market se aadhi hai, smell ajeeb/tezi wali hai, ya bottom par batch code nahi hai..."
-              className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
+              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
                 suspiciousSigns.length > 72 || suspiciousSigns.includes("\n")
-                  ? "h-20 overflow-y-auto py-2.5"
-                  : "h-11 overflow-hidden py-3"
+                  ? "h-20 overflow-y-auto"
+                  : "h-11 overflow-hidden"
               }`}
             />
           </div>
-        </div>
 
-        <div>
-          <h3 className="mb-3 text-xs font-bold text-[#1E181A]">
-            {language === "ur"
-              ? "Packaging aur batch code photos"
-              : "Packaging & batch photos"}
-          </h3>
-          <MultiAngleUploader
-            slots={PACKAGING_SLOTS}
-            imagesBySlot={imagesBySlot}
-            onImageAdded={(img) =>
-              setImagesBySlot((prev) => ({ ...prev, [img.slotId]: img }))
-            }
-            onImageRemoved={(slotId) =>
-              setImagesBySlot((prev) => {
-                const next = { ...prev };
-                delete next[slotId];
-                return next;
-              })
-            }
-            language={language}
-          />
+          <div className="pt-5">
+            <h3 className="mb-4 font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+              {language === "ur"
+                ? "Packaging aur batch code photos"
+                : "Packaging & batch photos"}
+            </h3>
+            <MultiAngleUploader
+              slots={PACKAGING_SLOTS}
+              imagesBySlot={imagesBySlot}
+              onImageAdded={(img) =>
+                setImagesBySlot((prev) => ({ ...prev, [img.slotId]: img }))
+              }
+              onImageRemoved={(slotId) =>
+                setImagesBySlot((prev) => {
+                  const next = { ...prev };
+                  delete next[slotId];
+                  return next;
+                })
+              }
+              language={language}
+            />
+          </div>
         </div>
 
         <button
@@ -329,7 +327,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
           disabled={isVerifying}
           aria-busy={isVerifying}
           onClick={handleVerifyProduct}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(181,101,118,0.55)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
         >
           <Search className="h-4 w-4 shrink-0" />
           <span>

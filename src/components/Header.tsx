@@ -72,8 +72,8 @@ export function Header({
   onToggleTheme,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#E8D5D9]/80 bg-white/95 backdrop-blur-sm transition-colors duration-300 dark:border-[#38282D] dark:bg-[#1B1316]/95">
-      <div className="mx-auto flex max-w-5xl flex-col gap-3.5 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-[#ECE0E3] bg-white/95 backdrop-blur-sm transition-colors duration-300 dark:border-[#34262B] dark:bg-[#191215]/95">
+      <div className="mx-auto flex max-w-3xl flex-col gap-3.5 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
         {/* Row 1 (Mobile) / Left Side (Desktop) */}
         <div className="min-w-0">
           <div className="flex items-center gap-2 sm:gap-2.5">

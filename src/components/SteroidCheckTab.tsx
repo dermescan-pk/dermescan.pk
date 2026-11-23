@@ -169,18 +169,18 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
   }, [result]);
 
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="min-w-0 space-y-8">
       <TabHeaderIllustration variant="steroid" language={language} />
 
-      <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5] p-6">
+      <div className="min-w-0 overflow-x-hidden rounded-2xl border border-[#E8C5CA] bg-[#FDF4F5] p-5 dark:border-[#59353F] dark:bg-[#23161A]">
         <div className="flex min-w-0 items-start gap-3">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-[#8C3B4A]" />
           <div className="min-w-0 space-y-1">
-            <h2 className="font-editorial text-xl font-semibold text-[#8C3B4A]">
+            <h3 className="font-editorial text-xl font-semibold text-[#8C3B4A]">
               {language === "ur"
                 ? "Formula Creams Aur Chhupay Steroids Check Karein"
                 : "Check Creams for Hidden Steroids"}
-            </h2>
+            </h3>
             <p className="break-words text-xs leading-relaxed text-[#8C3B4A]">
               {language === "ur"
                 ? "Bohat si fairness aur '7-day formula creams' mein Dermovate/Clobevate ya Mercury hota hai jo jild ko patla aur kharab karta hai. Yahan check karein."
@@ -190,99 +190,97 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
         </div>
       </div>
 
-      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#E8D5D9]/80 bg-white p-6 shadow-[0_12px_36px_-14px_rgba(181,101,118,0.14)] sm:p-8">
-        <div>
-          <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
-            {language === "ur"
-              ? "Cream Ka Naam Aur Photos"
-              : "Cream Name & Photos"}
-          </h3>
-          <p className="mb-3 text-xs leading-relaxed text-[#5E5055]">
-            {language === "ur"
-              ? "Saaf roshni mein front aur peechay likhay ingredients ki photo lein."
-              : "Upload clear photos of the front tube and back ingredients."}
-          </p>
-          <MultiAngleUploader
-            slots={CREAM_SLOTS}
-            imagesBySlot={imagesBySlot}
-            onImageAdded={(img) =>
-              setImagesBySlot((prev) => ({ ...prev, [img.slotId]: img }))
-            }
-            onImageRemoved={(slotId) =>
-              setImagesBySlot((prev) => {
-                const next = { ...prev };
-                delete next[slotId];
-                return next;
-              })
-            }
-            language={language}
-          />
-        </div>
+      <div className="min-w-0 space-y-6 overflow-x-hidden rounded-3xl border border-[#ECE0E3] bg-white p-6 transition-colors duration-300 dark:border-[#34262B] dark:bg-[#1E1619] sm:p-8">
+        <div className="divide-y divide-[#F0E4E7] dark:divide-[#2D2125]">
+          <div className="pb-6">
+            <h3 className="font-editorial text-2xl font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+              {language === "ur"
+                ? "Cream Ka Naam Aur Photos"
+                : "Cream Name & Photos"}
+            </h3>
+            <p className="mb-4 mt-1 text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
+              {language === "ur"
+                ? "Saaf roshni mein front aur peechay likhay ingredients ki photo lein."
+                : "Upload clear photos of the front tube and back ingredients."}
+            </p>
+            <MultiAngleUploader
+              slots={CREAM_SLOTS}
+              imagesBySlot={imagesBySlot}
+              onImageAdded={(img) =>
+                setImagesBySlot((prev) => ({ ...prev, [img.slotId]: img }))
+              }
+              onImageRemoved={(slotId) =>
+                setImagesBySlot((prev) => {
+                  const next = { ...prev };
+                  delete next[slotId];
+                  return next;
+                })
+              }
+              language={language}
+            />
+          </div>
 
-        <div className="space-y-1.5">
-          <label
-            htmlFor="steroid-cream-name"
-            className="block text-xs font-bold text-[#1E181A]"
-          >
-            {language === "ur"
-              ? "Cream ka naam ya ingredients"
-              : "Cream name or ingredients"}
-          </label>
-          <textarea
-            id="steroid-cream-name"
-            rows={1}
-            value={productNameOrIngredients}
-            onChange={(e) => setProductNameOrIngredients(e.target.value)}
-            placeholder={
-              language === "ur"
-                ? "Maslan: Dermovate + Golden Pearl mix, Clobetasol, Betnovate-N, ya ingredients list likhein..."
-                : "e.g., Clobetasol, Dermovate, Betnovate-N, Golden Pearl, or paste ingredients here..."
-            }
-            className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
-              productNameOrIngredients.length > 72 ||
-              productNameOrIngredients.includes("\n")
-                ? "h-20 overflow-y-auto py-2.5"
-                : "h-11 overflow-hidden py-3"
-            }`}
-          />
-        </div>
+          <div className="space-y-3 py-5">
+            <label
+              htmlFor="steroid-cream-name"
+              className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
+            >
+              {language === "ur"
+                ? "Cream ka naam ya ingredients"
+                : "Cream name or ingredients"}
+            </label>
+            <textarea
+              id="steroid-cream-name"
+              rows={1}
+              value={productNameOrIngredients}
+              onChange={(e) => setProductNameOrIngredients(e.target.value)}
+              placeholder={
+                language === "ur"
+                  ? "Maslan: Dermovate + Golden Pearl mix, Clobetasol, Betnovate-N, ya ingredients list likhein..."
+                  : "e.g., Clobetasol, Dermovate, Betnovate-N, Golden Pearl, or paste ingredients here..."
+              }
+              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
+                productNameOrIngredients.length > 72 ||
+                productNameOrIngredients.includes("\n")
+                  ? "h-20 overflow-y-auto"
+                  : "h-11 overflow-hidden"
+              }`}
+            />
+          </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)]">
-            <div className="space-y-2">
-              <label
-                htmlFor="steroid-duration-reason"
-                className="block text-xs font-bold text-[#1E181A]"
-              >
-                {language === "ur"
-                  ? "Kitne time se use kar rahe hain?"
-                  : "How long have you used it?"}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {STEROID_DURATION_CHIPS.map((chip) => {
-                  const selected = durationAndReason
-                    .toLowerCase()
-                    .split(/[,;\n]+/)
-                    .map((s) => s.trim())
-                    .includes(chip.toLowerCase());
-                  return (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() =>
-                        setDurationAndReason((prev) => appendCreamChip(prev, chip))
-                      }
-                      className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
-                        selected
-                          ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
-                      }`}
-                    >
-                      + {chip}
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="space-y-3 py-5">
+            <label
+              htmlFor="steroid-duration-reason"
+              className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
+            >
+              {language === "ur"
+                ? "Kitne time se use kar rahe hain?"
+                : "How long have you used it?"}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {STEROID_DURATION_CHIPS.map((chip) => {
+                const selected = durationAndReason
+                  .toLowerCase()
+                  .split(/[,;\n]+/)
+                  .map((s) => s.trim())
+                  .includes(chip.toLowerCase());
+                return (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() =>
+                      setDurationAndReason((prev) => appendCreamChip(prev, chip))
+                    }
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+                      selected
+                        ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
+                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                    }`}
+                  >
+                    + {chip}
+                  </button>
+                );
+              })}
             </div>
             <textarea
               id="steroid-duration-reason"
@@ -290,49 +288,47 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
               value={durationAndReason}
               onChange={(e) => setDurationAndReason(e.target.value)}
               placeholder="e.g. 4 months se daily raat ko fairness ya melasma ke liye laga rahe hain..."
-              className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
-                durationAndReason.length > 62 || durationAndReason.includes("\n")
-                  ? "h-20 overflow-y-auto py-2.5"
-                  : "h-11 overflow-hidden py-3"
+              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
+                durationAndReason.length > 68 || durationAndReason.includes("\n")
+                  ? "h-20 overflow-y-auto"
+                  : "h-11 overflow-hidden"
               }`}
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-3 rounded-2xl border border-[#E8D5D9]/80 bg-[#FDFBFC]/90 p-4 shadow-[0_4px_16px_-10px_rgba(181,101,118,0.08)]">
-            <div className="space-y-2">
-              <label
-                htmlFor="steroid-side-effects"
-                className="block text-xs font-bold text-[#1E181A]"
-              >
-                {language === "ur"
-                  ? "Skin par kya asar dikha?"
-                  : "Any side effects noticed?"}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {STEROID_SIDE_EFFECT_CHIPS.map((chip) => {
-                  const selected = sideEffectsNoticed
-                    .toLowerCase()
-                    .split(/[,;\n]+/)
-                    .map((s) => s.trim())
-                    .includes(chip.toLowerCase());
-                  return (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() =>
-                        setSideEffectsNoticed((prev) => appendCreamChip(prev, chip))
-                      }
-                      className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
-                        selected
-                          ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E8D5D9]/80 bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
-                      }`}
-                    >
-                      + {chip}
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="space-y-3 pt-5">
+            <label
+              htmlFor="steroid-side-effects"
+              className="block text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]"
+            >
+              {language === "ur"
+                ? "Skin par kya asar dikha?"
+                : "Any side effects noticed?"}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {STEROID_SIDE_EFFECT_CHIPS.map((chip) => {
+                const selected = sideEffectsNoticed
+                  .toLowerCase()
+                  .split(/[,;\n]+/)
+                  .map((s) => s.trim())
+                  .includes(chip.toLowerCase());
+                return (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() =>
+                      setSideEffectsNoticed((prev) => appendCreamChip(prev, chip))
+                    }
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 ${
+                      selected
+                        ? "bg-[#F3E7EA] text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
+                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] hover:text-[#B56576] dark:bg-[#171113] dark:text-[#C9B6BC] dark:hover:bg-[#2A1F23] dark:hover:text-[#D48395]"
+                    }`}
+                  >
+                    + {chip}
+                  </button>
+                );
+              })}
             </div>
             <textarea
               id="steroid-side-effects"
@@ -340,11 +336,11 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
               value={sideEffectsNoticed}
               onChange={(e) => setSideEffectsNoticed(e.target.value)}
               placeholder="e.g. Chhorne par cheeks laal aur dark ho jate hain, veins dikh rahi hain, ya baal barh rahe hain..."
-              className={`w-full resize-none rounded-xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-3.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:border-[#B56576] focus:bg-white focus:py-2.5 focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none dark:border-[#38282D] dark:bg-[#181113] dark:text-[#F7EFEF] dark:focus:bg-[#21181B] ${
-                sideEffectsNoticed.length > 62 ||
+              className={`w-full resize-none rounded-xl border-0 bg-[#FAF6F7] px-3.5 py-2.5 text-sm leading-relaxed text-[#1E181A] placeholder:text-[#7A686D]/75 transition-all duration-200 focus:h-24 focus:overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#B56576]/40 dark:bg-[#151012] dark:text-[#F7EFEF] dark:placeholder:text-[#9A848B] ${
+                sideEffectsNoticed.length > 68 ||
                 sideEffectsNoticed.includes("\n")
-                  ? "h-20 overflow-y-auto py-2.5"
-                  : "h-11 overflow-hidden py-3"
+                  ? "h-20 overflow-y-auto"
+                  : "h-11 overflow-hidden"
               }`}
             />
           </div>
@@ -355,7 +351,7 @@ export function SteroidCheckTab({ language, healthProfile }: SteroidCheckTabProp
           disabled={isChecking}
           aria-busy={isChecking}
           onClick={handleInspectCream}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(181,101,118,0.55)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#B56576] px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-[0.99] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
         >
           <FlaskConical className="h-4 w-4 shrink-0" />
           <span>

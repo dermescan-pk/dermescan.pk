@@ -1,5 +1,5 @@
-import { useRef, useState, type ChangeEvent } from "react";
-import { Camera, Upload, X, CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
+import { Camera, X, CheckCircle2 } from "lucide-react";
 import { compressImageFile } from "../utils/imageCompressor.ts";
 import {
   LiveCameraModal,
@@ -30,24 +30,53 @@ export function MultiAngleUploader({
   highlightSlots = [],
   language,
 }: MultiAngleUploaderProps) {
+  const [selectedSlotId, setSelectedSlotId] = useState<string>(
+    slots[0]?.slotId || ""
+  );
   const [compressingSlot, setCompressingSlot] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [activeCameraSession, setActiveCameraSession] = useState<{
     slot: AngleSlotConfig;
     streamPromise: Promise<MediaStream>;
   } | null>(null);
 
-  const cameraInputsRef = useRef<Record<string, HTMLInputElement | null>>({});
-  const galleryInputsRef = useRef<Record<string, HTMLInputElement | null>>({});
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
 
-  async function handleFileSelect(
-    slot: AngleSlotConfig,
-    e: ChangeEvent<HTMLInputElement>
-  ) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
+  useEffect(() => {
+    const firstEmpty = slots.find((s) => !imagesBySlot[s.slotId]);
+    if (!slots.some((s) => s.slotId === selectedSlotId)) {
+      setSelectedSlotId(firstEmpty?.slotId || slots[0]?.slotId || "");
+    } else if (imagesBySlot[selectedSlotId] && firstEmpty) {
+      setSelectedSlotId(firstEmpty.slotId);
+    }
+  }, [slots, imagesBySlot, selectedSlotId]);
 
+  const activeSlot =
+    slots.find((s) => s.slotId === selectedSlotId) ||
+    slots.find((s) => !imagesBySlot[s.slotId]) ||
+    slots[0];
+
+  const uploadedEntries = slots
+    .map((slot) => ({
+      slot,
+      uploaded: imagesBySlot[slot.slotId],
+      needsRetake: highlightSlots.some(
+        (s) => s.toLowerCase() === slot.slotLabel.toLowerCase()
+      ),
+    }))
+    .filter(
+      (
+        entry
+      ): entry is {
+        slot: AngleSlotConfig;
+        uploaded: UploadedImage;
+        needsRetake: boolean;
+      } => Boolean(entry.uploaded)
+    );
+
+  async function processFileForSlot(slot: AngleSlotConfig, file: File) {
     setUploadError(null);
     setCompressingSlot(slot.slotId);
     try {
@@ -61,165 +90,212 @@ export function MultiAngleUploader({
       setUploadError(
         err instanceof Error
           ? err.message
-          : "Could not compress this photo. Please try retaking or selecting another image."
+          : "Could not prepare this photo. Please try retaking or selecting another image."
       );
     } finally {
       setCompressingSlot(null);
     }
   }
 
-  function handleCameraButtonClick(slot: AngleSlotConfig) {
+  async function handleFileSelect(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !activeSlot) return;
+    await processFileForSlot(activeSlot, file);
+  }
+
+  async function handleDrop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !file.type.startsWith("image/") || !activeSlot) return;
+    await processFileForSlot(activeSlot, file);
+  }
+
+  function handleCameraButtonClick() {
+    if (!activeSlot) return;
     setUploadError(null);
 
     if (
       typeof navigator !== "undefined" &&
       Boolean(navigator.mediaDevices?.getUserMedia)
     ) {
-      // Request camera permission synchronously inside the tap/click event so
-      // both mobile browsers (iOS Safari / Android Chrome) and laptops prompt cleanly.
       const streamPromise = requestCameraMediaStream("environment");
-      setActiveCameraSession({ slot, streamPromise });
+      setActiveCameraSession({ slot: activeSlot, streamPromise });
       return;
     }
 
-    // Fallback when MediaDevices API is unavailable
-    cameraInputsRef.current[slot.slotId]?.click();
+    cameraInputRef.current?.click();
   }
 
+  const isUr = language === "ur";
+
   return (
-    <div className="min-w-0 space-y-3">
+    <div className="min-w-0 space-y-5">
       {uploadError && (
         <div className="rounded-2xl border border-[#E8C5CA] bg-[#FDF4F5] px-4 py-3 text-xs font-medium text-[#8C3B4A]">
           {uploadError}
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {slots.map((slot) => {
-          const uploaded = imagesBySlot[slot.slotId];
-          const isCompressing = compressingSlot === slot.slotId;
-          const needsRetake = highlightSlots.some(
-            (s) => s.toLowerCase() === slot.slotLabel.toLowerCase()
-          );
+      {/* Hidden inputs for camera fallback & gallery upload */}
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="sr-only"
+        onChange={handleFileSelect}
+      />
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/*"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="sr-only"
+        onChange={handleFileSelect}
+      />
 
-          return (
-            <div
-              key={slot.slotId}
-              className={`relative flex min-w-0 flex-col justify-between overflow-x-hidden rounded-2xl border bg-[#FAF6F7]/70 p-4 transition-all ${
-                needsRetake
-                  ? "border-[#C96B78] ring-2 ring-[#E8C5CA]"
-                  : uploaded
-                    ? "border-[#B56576]/45 bg-white/95 shadow-xs"
-                    : "border-[#E6D2D6]"
-              }`}
-            >
-              {/* Dedicated Mobile Rear Camera Input */}
-              <input
-                ref={(el) => {
-                  cameraInputsRef.current[slot.slotId] = el;
-                }}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                tabIndex={-1}
-                aria-hidden="true"
-                className="sr-only"
-                onChange={(e) => handleFileSelect(slot, e)}
-              />
-              {/* Standard Gallery / File Upload Input */}
-              <input
-                ref={(el) => {
-                  galleryInputsRef.current[slot.slotId] = el;
-                }}
-                type="file"
-                accept="image/*"
-                tabIndex={-1}
-                aria-hidden="true"
-                className="sr-only"
-                onChange={(e) => handleFileSelect(slot, e)}
-              />
+      {/* Quiet Angle / Slot Selector */}
+      {slots.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {slots.map((slot) => {
+            const isSelected = activeSlot?.slotId === slot.slotId;
+            const hasPhoto = Boolean(imagesBySlot[slot.slotId]);
+            const needsRetake = highlightSlots.some(
+              (s) => s.toLowerCase() === slot.slotLabel.toLowerCase()
+            );
 
-              <div className="mb-3 flex min-w-0 items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="break-words text-xs font-bold text-[#1E181A]">
-                    {slot.slotLabel}
+            return (
+              <button
+                key={slot.slotId}
+                type="button"
+                onClick={() => setSelectedSlotId(slot.slotId)}
+                className={`inline-flex min-h-[34px] items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 ${
+                  needsRetake
+                    ? "bg-[#FDF4F5] text-[#8C3B4A] ring-1 ring-[#C96B78]"
+                    : isSelected
+                      ? "bg-[#B56576]/12 font-semibold text-[#B56576] dark:bg-[#D48395]/20 dark:text-[#D48395]"
+                      : hasPhoto
+                        ? "bg-[#EFF7F2] text-[#2D6A4F] dark:bg-[#172B23] dark:text-[#7BD4AC]"
+                        : "bg-[#FAF6F7] text-[#5E5055] hover:bg-[#F3E7EA] dark:bg-[#171113] dark:text-[#C9B6BC]"
+                }`}
+              >
+                {hasPhoto && <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />}
+                <span>{slot.slotLabel}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Calm Architectural Photo Dropzone */}
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={handleDrop}
+        className={`flex flex-col items-center justify-center rounded-2xl border bg-[#FAF6F7] p-8 text-center transition-colors duration-200 dark:bg-[#171113] ${
+          isDragging
+            ? "border-[#B56576] bg-[#F6ECEF] dark:border-[#D48395]"
+            : "border-[#E8D8DC] dark:border-[#34262B]"
+        }`}
+      >
+        {compressingSlot ? (
+          <p className="py-4 text-sm font-medium text-[#B56576] dark:text-[#D48395]">
+            {isUr ? "Photo tayyar ho rahi hai..." : "Preparing your photo..."}
+          </p>
+        ) : (
+          <div className="flex max-w-sm flex-col items-center space-y-4">
+            {activeSlot && (
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                  {activeSlot.slotLabel}
+                </p>
+                {activeSlot.hint && (
+                  <p className="text-xs leading-relaxed text-[#7A686D] dark:text-[#C9B6BC]">
+                    {activeSlot.hint}
                   </p>
-                  {slot.hint && (
-                    <p className="mt-0.5 break-words text-[11px] leading-relaxed text-[#5E5055]">
-                      {slot.hint}
-                    </p>
-                  )}
-                </div>
-
-                {uploaded && (
-                  <button
-                    type="button"
-                    aria-label={`Remove ${slot.slotLabel}`}
-                    onClick={() => onImageRemoved(slot.slotId)}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#EAD8DC] bg-[#FAF6F7] text-[#B56576] transition-all hover:bg-[#F3E7EA] active:scale-90"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
                 )}
               </div>
+            )}
 
-              {uploaded ? (
-                <div className="relative flex max-h-72 w-full items-center justify-center overflow-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]">
-                  <img
-                    src={uploaded.previewUrl}
-                    alt={`Uploaded ${slot.slotLabel} photo preview for DerméScan analysis`}
-                    referrerPolicy="no-referrer"
-                    className="max-h-72 w-full object-contain"
-                  />
-                  <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-[#EFF7F2]/95 px-2.5 py-0.5 text-[10px] font-semibold tabular-nums text-[#2D6A4F] shadow-xs">
-                    <CheckCircle2 className="h-3 w-3" />
-                    {uploaded.compressedSizeKb} KB
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#E6D2D6] bg-white/85 px-3 py-5 text-center transition-colors hover:border-[#B56576]/45">
-                  {isCompressing ? (
-                    <span className="text-xs font-semibold text-[#B56576]">
-                      {language === "ur"
-                        ? "Photo tayyar ho rahi hai..."
-                        : "Getting photo ready..."}
-                    </span>
-                  ) : (
-                    <div className="flex w-full gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleCameraButtonClick(slot)}
-                        className="flex min-h-[42px] flex-1 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-3 py-2 text-xs font-semibold text-white shadow-[0_8px_18px_-6px_rgba(181,101,118,0.45)] transition-all hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95"
-                      >
-                        <Camera className="h-3.5 w-3.5 shrink-0" />
-                        <span>Camera</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          galleryInputsRef.current[slot.slotId]?.click()
-                        }
-                        className="flex min-h-[42px] flex-1 items-center justify-center gap-1.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/80 px-3 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576]/50 hover:bg-[#F6ECEF] active:scale-95"
-                      >
-                        <Upload className="h-3.5 w-3.5 shrink-0 text-[#B56576]" />
-                        <span>Gallery</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+            <button
+              type="button"
+              onClick={handleCameraButtonClick}
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-[#B56576] px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#9E5263] active:scale-95 dark:bg-[#D48395] dark:text-[#140F11] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+            >
+              <Camera className="h-4 w-4 shrink-0" />
+              <span>
+                {isUr ? "Camera Se Photo Lein" : "Take or Upload Photo"}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => galleryInputRef.current?.click()}
+              className="text-xs font-medium text-[#5E5055] underline decoration-[#D2BFC6] underline-offset-4 transition-colors hover:text-[#B56576] dark:text-[#C9B6BC] dark:hover:text-[#D48395]"
+            >
+              {isUr ? "Ya gallery se choose karein" : "or choose from gallery"}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Uploaded Previews Strip */}
+      {uploadedEntries.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {uploadedEntries.map(({ slot, uploaded, needsRetake }) => (
+            <div
+              key={slot.slotId}
+              className={`relative overflow-hidden rounded-2xl border bg-[#FAF6F7] p-3 dark:bg-[#171113] ${
+                needsRetake
+                  ? "border-[#C96B78] ring-1 ring-[#C96B78]"
+                  : "border-[#E8D8DC] dark:border-[#34262B]"
+              }`}
+            >
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <span className="truncate text-xs font-semibold text-[#1E181A] dark:text-[#F7EFEF]">
+                  {slot.slotLabel}
+                </span>
+                <button
+                  type="button"
+                  aria-label={`Remove ${slot.slotLabel}`}
+                  onClick={() => onImageRemoved(slot.slotId)}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#5E5055] transition-colors hover:text-[#8C3B4A] dark:bg-[#1E1619] dark:text-[#C9B6BC]"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              <div className="relative flex max-h-56 w-full items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-[#1E1619]">
+                <img
+                  src={uploaded.previewUrl}
+                  alt={`Uploaded ${slot.slotLabel} photo preview for DerméScan analysis`}
+                  referrerPolicy="no-referrer"
+                  className="max-h-56 w-full object-contain"
+                />
+                <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-medium tabular-nums text-[#2D6A4F] dark:bg-[#1E1619]/95 dark:text-[#7BD4AC]">
+                  {uploaded.compressedSizeKb} KB
+                </span>
+              </div>
 
               {needsRetake && (
-                <p className="mt-2 rounded-xl bg-[#FDF4F5] px-2.5 py-1.5 text-[11px] font-semibold text-[#8C3B4A]">
-                  {language === "ur"
+                <p className="mt-2 text-xs font-medium text-[#8C3B4A]">
+                  {isUr
                     ? "Is photo ko tez roshni mein dubara lein"
                     : "Please retake this photo in brighter, clearer light"}
                 </p>
               )}
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {activeCameraSession && (
         <LiveCameraModal
@@ -230,8 +306,7 @@ export function MultiAngleUploader({
           initialStreamPromise={activeCameraSession.streamPromise}
           onCapture={(img) => onImageAdded(img)}
           onFallbackToDeviceCamera={() => {
-            const slotId = activeCameraSession.slot.slotId;
-            cameraInputsRef.current[slotId]?.click();
+            cameraInputRef.current?.click();
           }}
           onClose={() => setActiveCameraSession(null)}
         />
