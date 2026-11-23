@@ -589,7 +589,7 @@ export function SkincareGuidesDrawer({
       ref={scrollContainerRef}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="skincare-guides-hub-title"
+      aria-label="Pakistani Skin & Haircare Guides"
       className="fixed inset-0 z-50 h-dvh w-screen overflow-y-auto bg-[#FAF6F7] transition-colors duration-300 dark:bg-[#140F11]"
     >
       {/* Sticky Top Navigation Bar */}
@@ -613,24 +613,13 @@ export function SkincareGuidesDrawer({
 
       {/* Full-Screen Centered Editorial Column */}
       <main className="mx-auto max-w-5xl space-y-8 px-5 pt-8 pb-24 sm:px-8 sm:pt-10">
-        {/* Page Heading + Search + Brand & Category Filters */}
-        <section className="space-y-5">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-3.5 w-3.5 shrink-0 text-[#B56576] dark:text-[#D48395]" />
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#B56576] dark:text-[#D48395]">
-                DerméScan Dermatology Journal · Trusted Pakistani Brands
-              </p>
-            </div>
-            <h2
-              id="skincare-guides-hub-title"
-              className="font-editorial text-3xl font-semibold text-[#1E181A] transition-colors duration-300 sm:text-4xl dark:text-[#F7EFEF]"
-            >
-              {language === "ur"
-                ? "Pakistani Skin & Hair Product Encyclopedia"
-                : "Pakistani Skin & Haircare Guides"}
-            </h2>
-          </div>
+        {/* Banner + Search + Brand & Category Filters */}
+        <section>
+          <img
+            src="/guides-banner.png"
+            alt="Pakistani Skin & Haircare Guides - Buy from Trusted Brands"
+            className="w-full h-auto rounded-2xl border border-rose-200/60 shadow-sm mb-5 block"
+          />
 
           <div className="space-y-3.5">
             <div className="relative">
