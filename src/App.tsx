@@ -5,12 +5,23 @@ import {
   type ComponentType,
   type TouchEvent,
 } from "react";
-import { ScanFace, Scissors, FlaskConical, ShieldCheck } from "lucide-react";
+import {
+  ScanFace,
+  Scissors,
+  FlaskConical,
+  ShieldCheck,
+  BookOpen,
+} from "lucide-react";
 import { Header } from "./components/Header.tsx";
 import { SkinBodyTab } from "./components/SkinBodyTab.tsx";
 import { HairStudioTab } from "./components/HairStudioTab.tsx";
 import { SteroidCheckTab } from "./components/SteroidCheckTab.tsx";
 import { FakeVsRealTab } from "./components/FakeVsRealTab.tsx";
+import {
+  SkincareGuidesDrawer,
+  SKINCARE_GUIDE_ARTICLES,
+  type GuideCategoryId,
+} from "./components/SkincareGuidesDrawer.tsx";
 import { HealthProfileModal } from "./components/HealthProfileModal.tsx";
 import { CameraPermissionModal } from "./components/CameraPermissionModal.tsx";
 import {
@@ -31,6 +42,12 @@ import {
   markWelcomeIntakeSeen,
   saveHealthProfile,
 } from "./utils/healthProfile.ts";
+import {
+  applyThemeToDocument,
+  loadSavedTheme,
+  saveTheme,
+  type ThemeMode,
+} from "./utils/theme.ts";
 import type { HealthProfile, Language, TabId } from "./types/dermascan.ts";
 
 const NAV_TABS: {
@@ -41,7 +58,7 @@ const NAV_TABS: {
   { id: "skin", label: "Skin & Body", icon: ScanFace },
   { id: "hair", label: "Hair Studio", icon: Scissors },
   { id: "steroid", label: "Steroid Check", icon: FlaskConical },
-  { id: "verify", label: "Fake vs. Real", icon: ShieldCheck },
+  { id: "verify", label: "Product Decoder", icon: ShieldCheck },
 ];
 
 const SWIPE_MIN_DISTANCE_PX = 40;
@@ -63,12 +80,16 @@ function isLikelyMobileDevice(): boolean {
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("skin");
   const [language, setLanguage] = useState<Language>("en");
+  const [theme, setTheme] = useState<ThemeMode>(() => loadSavedTheme());
   const [healthProfile, setHealthProfile] = useState<HealthProfile>(() =>
     loadHealthProfile()
   );
   const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(
     () => !hasSeenWelcomeIntake()
   );
+  const [isGuidesOpen, setIsGuidesOpen] = useState<boolean>(false);
+  const [guideCategory, setGuideCategory] =
+    useState<GuideCategoryId>("sunblocks");
   const [instagramEnv] = useState(() => detectInstagramBrowser());
   const [isInstagramModalOpen, setIsInstagramModalOpen] = useState<boolean>(
     () => detectInstagramBrowser().isInstagram
@@ -243,13 +264,45 @@ export default function App() {
     setShowIntro(true);
   }
 
+  useEffect(() => {
+    applyThemeToDocument(theme);
+  }, [theme]);
+
+  function handleToggleTheme() {
+    setTheme((prev) => {
+      const next: ThemeMode = prev === "dark" ? "light" : "dark";
+      saveTheme(next);
+      return next;
+    });
+  }
+
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-[#FDFBFC] via-[#FAF6F7] to-[#F5ECEE]">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-[#FDFBFC] via-[#FAF6F7] to-[#F5ECEE] transition-colors duration-300 dark:bg-[#161012] dark:from-[#161012] dark:via-[#161012] dark:to-[#1E1518]">
+      {/* Top Curated Luxury Pharmacy & Jenpharm Bar */}
+      <button
+        type="button"
+        onClick={() => {
+          setGuideCategory("sunblocks");
+          setIsGuidesOpen(true);
+        }}
+        className="group relative flex min-h-9 w-full cursor-pointer items-center justify-center overflow-hidden bg-[#B56576] px-4 py-1.5 text-center text-[#FAF6F7] transition-colors duration-300 hover:bg-[#A65768] dark:border-b dark:border-[#3D2B31] dark:bg-[#2A1D21] dark:text-[#F7EFEF] dark:hover:bg-[#332328] dark:hover:text-[#F7EFEF] sm:h-9 sm:py-0"
+      >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[420%]"
+        />
+        <span className="relative text-[11px] font-medium uppercase tracking-[0.14em] decoration-[#FAF6F7]/65 underline-offset-4 transition-all duration-300 group-hover:underline sm:text-xs dark:decoration-[#D48395]/75">
+          Read more about products · Explore ingredients, skin types &amp; best prices →
+        </span>
+      </button>
+
       <Header
         language={language}
         onLanguageChange={setLanguage}
         hasHealthProfile={hasCustomHealthProfile(healthProfile)}
         onOpenHealthProfile={() => setIsHealthModalOpen(true)}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       <main className="mx-auto max-w-5xl px-4 pb-24 pt-7 sm:px-6">
@@ -258,7 +311,7 @@ export default function App() {
           onTouchStart={handleNavTouchStart}
           onTouchEnd={handleNavTouchEnd}
           onTouchCancel={handleNavTouchCancel}
-          className="mb-7 grid touch-pan-y grid-cols-2 gap-1.5 rounded-3xl border border-[#EAD8DC] bg-[#F3E7EA] p-1.5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:flex sm:justify-center sm:rounded-full"
+          className="mb-7 flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-[#EAD8DC] bg-[#F3E7EA] p-1.5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] sm:flex-nowrap"
         >
           {NAV_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -268,10 +321,10 @@ export default function App() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex min-h-[42px] w-full items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap transition-all active:scale-95 sm:flex-1 sm:px-4 ${
+                className={`flex min-h-[42px] flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-300 active:scale-95 sm:gap-2 sm:px-4 ${
                   isActive
-                    ? "bg-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)]"
-                    : "text-[#5E5055] hover:bg-white/75 hover:text-[#1E181A]"
+                    ? "bg-[#B56576] text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)] dark:bg-[#D48395] dark:text-[#161012] dark:hover:bg-[#B56576] dark:hover:text-[#F7EFEF]"
+                    : "text-[#5E5055] hover:bg-white/75 hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:bg-[#2B1F24] dark:hover:text-[#F7EFEF]"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -294,26 +347,82 @@ export default function App() {
 
         <section
           aria-labelledby="popular-pk-checks-heading"
-          className="mt-10 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-4 text-xs text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)]"
+          className="mt-10 space-y-4 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 text-xs text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC]"
         >
-          <details className="group">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-left font-medium text-[#5E5055] transition-colors hover:text-[#1E181A]">
+          {/* Editorial Magazine Article Hub Quick-Launch */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#B56576] dark:text-[#D48395]">
+                <BookOpen className="h-3.5 w-3.5 shrink-0" />
+                <span>
+                  {language === "ur"
+                    ? "DerméScan Editorial Hub"
+                    : "Editorial Magazine Guides"}
+                </span>
+              </div>
+              <p className="font-editorial text-lg font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]">
+                {language === "ur"
+                  ? "Sunblocks, Serums, Face Washes Aur Hair Guides"
+                  : "Dermatology Reading Hub — Sunblocks, Creams, Cleansers & Scalp"}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setGuideCategory("sunblocks");
+                setIsGuidesOpen(true);
+              }}
+              className="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-4 py-1.5 text-xs font-semibold text-white shadow-[0_6px_16px_-4px_rgba(181,101,118,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+            >
+              Read Magazine Guides →
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {SKINCARE_GUIDE_ARTICLES.map((article) => (
+              <button
+                key={article.id}
+                type="button"
+                onClick={() => {
+                  setGuideCategory(article.id);
+                  setIsGuidesOpen(true);
+                }}
+                className="flex flex-col items-start justify-between gap-1.5 rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/75 p-3.5 text-left transition-colors duration-300 hover:border-[#B56576] hover:bg-[#F6ECEF]/65 active:scale-[0.99] dark:border-[#38282D] dark:bg-[#1B1316] dark:hover:border-[#D48395] dark:hover:bg-[#2B1F24]"
+              >
+                <div className="flex w-full items-center justify-between gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#B56576] dark:text-[#D48395]">
+                    {article.categoryLabel}
+                  </span>
+                  <span className="text-[10px] font-medium text-[#7A686D] dark:text-[#C9B6BC]">
+                    {article.readTime}
+                  </span>
+                </div>
+                <span className="line-clamp-2 font-editorial text-sm font-semibold leading-snug text-[#1E181A] dark:text-[#F7EFEF]">
+                  {article.title}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <details className="group border-t border-[#EAD8DC] pt-3.5 dark:border-[#38282D]">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-left font-medium text-[#5E5055] transition-colors duration-300 hover:text-[#1E181A] dark:text-[#C9B6BC] dark:hover:text-[#F7EFEF]">
               <h2
                 id="popular-pk-checks-heading"
-                className="font-editorial text-lg font-semibold text-[#1E181A]"
+                className="font-editorial text-lg font-semibold text-[#1E181A] transition-colors duration-300 dark:text-[#F7EFEF]"
               >
                 {language === "ur"
                   ? "Pakistan Mein Mashhoor Skin Aur Hair Checks"
                   : "Popular Skin & Hair Checks in Pakistan"}
               </h2>
-              <span className="text-[11px] font-semibold text-[#B56576] group-open:hidden">
+              <span className="text-[11px] font-semibold text-[#B56576] group-open:hidden dark:text-[#D48395]">
                 {language === "ur" ? "Mazeed dekhein +" : "Read more +"}
               </span>
-              <span className="hidden text-[11px] font-semibold text-[#B56576] group-open:inline">
+              <span className="hidden text-[11px] font-semibold text-[#B56576] group-open:inline dark:text-[#D48395]">
                 {language === "ur" ? "Band karein −" : "Show less −"}
               </span>
             </summary>
-            <div className="mt-3 space-y-2 border-t border-[#EAD8DC] pt-3 text-xs leading-relaxed text-[#5E5055]">
+            <div className="mt-3 space-y-2 border-t border-[#EAD8DC] pt-3 text-xs leading-relaxed text-[#5E5055] transition-colors duration-300 dark:border-[#38282D] dark:text-[#C9B6BC]">
               <p>
                 {language === "ur"
                   ? "DerméScan Pakistan ke mausam, dhoop aur bore (hard) paani ke mutabiq chehre, under-eyes, haathon, pairon aur baalon ke liye trusted pharmacy routines tayyar karta hai."
@@ -328,7 +437,7 @@ export default function App() {
           </details>
         </section>
 
-        <footer className="mt-5 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.08)]">
+        <footer className="mt-5 rounded-3xl border border-[#EAD8DC] bg-white px-6 py-4 text-center text-xs leading-relaxed text-[#5E5055] shadow-[0_8px_24px_-12px_rgba(181,101,118,0.08)] transition-colors duration-300 dark:border-[#38282D] dark:bg-[#21181B] dark:text-[#C9B6BC]">
           <p>
             {language === "ur"
               ? "DerméScan sirf aam skin, hair aur cream ki rehnumai deta hai, yeh doctor ka checkup nahi hai. Agar shadeed dard, khoon ya tez rash ho toh fauran skin doctor ko dikhayein."
@@ -338,7 +447,7 @@ export default function App() {
             <button
               type="button"
               onClick={handleReplayIntro}
-              className="text-[11px] font-medium tracking-widest uppercase text-[#B56576]/75 underline decoration-[#B56576]/35 underline-offset-4 transition-colors hover:text-[#B56576]"
+              className="text-[11px] font-medium tracking-widest uppercase text-[#B56576]/75 underline decoration-[#B56576]/35 underline-offset-4 transition-colors duration-300 hover:text-[#B56576] dark:text-[#D48395] dark:decoration-[#D48395]/40 dark:hover:text-[#B56576]"
             >
               Replay Intro
             </button>
@@ -379,6 +488,13 @@ export default function App() {
         isOpen={isInstagramModalOpen}
         language={language}
         onContinueInsideInstagram={() => setIsInstagramModalOpen(false)}
+      />
+
+      <SkincareGuidesDrawer
+        isOpen={isGuidesOpen}
+        initialCategory={guideCategory}
+        language={language}
+        onClose={() => setIsGuidesOpen(false)}
       />
     </div>
   );

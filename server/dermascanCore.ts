@@ -324,6 +324,8 @@ export const steroidResponseSchema: Schema = {
 export const verifyPackagingSchema: Schema = {
   type: Type.OBJECT,
   properties: {
+    identifiedProductName: { type: Type.STRING },
+    identifiedBrand: { type: Type.STRING },
     packagingVerdict: {
       type: Type.STRING,
       enum: ["likely_authentic", "suspicious_red_flags", "inconclusive"],
@@ -347,14 +349,82 @@ export const verifyPackagingSchema: Schema = {
     },
     pakistanCounterfeitTips: bilingualListSchema,
     nextStepBullets: bilingualListSchema,
+    bestForSummary: bilingualStringSchema,
+    bestForTags: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+    },
+    profileMatchVerdict: {
+      type: Type.OBJECT,
+      properties: {
+        status: {
+          type: Type.STRING,
+          enum: [
+            "great_match",
+            "use_with_caution",
+            "not_recommended",
+            "general_info",
+          ],
+        },
+        badge: bilingualStringSchema,
+        explanation: bilingualStringSchema,
+      },
+      required: ["status", "badge", "explanation"],
+    },
+    keyActives: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          ingredient: { type: Type.STRING },
+          roleBadge: bilingualStringSchema,
+          howItWorks: bilingualStringSchema,
+        },
+        required: ["ingredient", "roleBadge", "howItWorks"],
+      },
+    },
+    whoShouldAvoid: bilingualListSchema,
+    routineClashes: bilingualListSchema,
+    howToUse: {
+      type: Type.OBJECT,
+      properties: {
+        scheduleBadge: bilingualStringSchema,
+        steps: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              timing: {
+                type: Type.STRING,
+                enum: ["AM", "PM", "Weekly", "Anytime"],
+              },
+              timingBadge: bilingualStringSchema,
+              instruction: bilingualStringSchema,
+            },
+            required: ["timing", "timingBadge", "instruction"],
+          },
+        },
+      },
+      required: ["scheduleBadge", "steps"],
+    },
+    saferAlternative: recommendedProductSchema,
   },
   required: [
+    "identifiedProductName",
+    "identifiedBrand",
     "packagingVerdict",
     "verdictBadge",
     "summaryBullets",
     "packagingChecks",
     "pakistanCounterfeitTips",
     "nextStepBullets",
+    "bestForSummary",
+    "bestForTags",
+    "profileMatchVerdict",
+    "keyActives",
+    "whoShouldAvoid",
+    "routineClashes",
+    "howToUse",
   ],
 };
 
@@ -879,8 +949,30 @@ export function hydrateProductPicks(
 }
 
 export function safeParseGeminiJson<T>(rawText: string): T {
-  const cleaned = rawText
-    .trim()
+  const trimmed = rawText.trim();
+
+  try {
+    return JSON.parse(trimmed) as T;
+  } catch {
+    // Fall through to code-block and brace extraction (e.g. for Google Search grounded outputs)
+  }
+
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenceMatch?.[1]) {
+    try {
+      return JSON.parse(fenceMatch[1].trim()) as T;
+    } catch {
+      // Fall through to brace extraction
+    }
+  }
+
+  const firstBrace = trimmed.indexOf("{");
+  const lastBrace = trimmed.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1)) as T;
+  }
+
+  const cleaned = trimmed
     .replace(/^```json\s*/i, "")
     .replace(/^```\s*/i, "")
     .replace(/```\s*$/i, "")
@@ -1409,13 +1501,15 @@ export interface VerifyProductRequestBody {
   websiteOrSeller?: string;
   brandName?: string;
   productName?: string;
+  userProfileType?: string;
   suspiciousSigns?: string;
   images?: { slotLabel: string; base64: string; mimeType: string }[];
 }
 
 export function buildVerifyProductPrompt(
   body: VerifyProductRequestBody,
-  storeCheck: StoreCheckResult
+  storeCheck: StoreCheckResult,
+  isSearchGrounded = true
 ): string {
   const storeInput = (body?.websiteOrSeller ?? body?.storeInput ?? "").trim();
   const brandName = (body?.brandName || "").trim();
@@ -1426,34 +1520,95 @@ export function buildVerifyProductPrompt(
     !rawProductName.toLowerCase().includes(brandName.toLowerCase())
       ? `${brandName} ${rawProductName}`
       : rawProductName || brandName;
+  const userProfileType = (body?.userProfileType || "").trim();
   const suspiciousSigns = (body?.suspiciousSigns || "").trim();
   const images = Array.isArray(body?.images) ? body.images : [];
+  const jenpharmCatalogList = (VERIFIED_EXACT_PRODUCT_LINEUPS["Jenpharm"] || []).join(" | ");
 
-  return `You are DerméScan's strict Fake-vs-Real Product & Packaging Inspector for Pakistan.
-In Pakistan, fake copies of The Ordinary, CeraVe, La Roche-Posay, Garnier, L'Oreal, Sunplay, and even popular local Pakistani serums are sold on lookalike websites and random Instagram/WhatsApp pages.
-Write everything in simple, everyday English that anyone can follow easily.
-
-INPUT PROVIDED (STRUCTURED BOXES):
-- 1. Product Name / Brand: "${productName || "Read from uploaded packaging photos"}"
-- 2. Store / Seller Input: "${storeInput || "(Not typed)"}"
-- 3. Suspicious Signs Reported by User: "${suspiciousSigns || "(None reported)"}"
-- Verified Whitelist Result: ${storeCheck.status} (${storeCheck.matchedStoreName || storeInput || "Unverified"})
-${storeCheck.officialDomainSuggestion ? `- IMPORTANT LOOKALIKE WARNING: The user pasted a potential copycat URL instead of the real site "${storeCheck.officialDomainSuggestion}".` : ""}
-- 4. Packaging Photos Uploaded: ${images.length}
-
-ZERO-MISTAKE VERIFICATION RULES (FOLLOW STRICTLY):
-1. RULE A (Verified Brand / Official Store + User Suspicious Signs): Even if Store Check is "verified", ALWAYS inspect uploaded bottle/box photos AND any reported Suspicious Signs ("${suspiciousSigns}") carefully to make sure no counterfeit or tampered batch slipped through.
-2. RULE B (Unknown / Copycat / Social Seller & No Photos): If Store Check is "unverified" or "potential_copycat" AND ${images.length === 0 ? "NO photos are uploaded" : "photos are unclear"}:
-   - NEVER assume an unknown seller, unverified brand, or lookalike website is real!
-   - Set "packagingVerdict": "inconclusive" (or "suspicious_red_flags" if multiple fake signs like Too-Cheap Price + Missing Batch Code + Weird Smell are reported) and clearly tell the user in "verdictBadge", "summaryBullets", and "nextStepBullets" to upload clear Front Label, Back Barcode/Ingredients, and Batch-Code photos (and buy only from verified sites like ${storeCheck.officialDomainSuggestion || "naheed.pk, dvago.pk, skinstorepakistan.com, or reana.pk"}).
-3. RULE C (Pixel-Level Photo Inspection whenever ${images.length} > 0):
-   Inspect the ACTUAL pixels in every uploaded photo carefully for:
-   - Spelling mistakes, awkward grammar, or mismatched brand logos
-   - Blurry, smudged, off-center, or cheap inkjet font printing vs crisp factory typography
-   - Missing, rubbed-off, or sticker-covered batch codes & expiry dates
-   - Tampered, broken, or loose cap/dropper/foil tamper seals
-   - Suspicious "7-day whitening", "instant fairness", or unapproved formula/steroid claims
-   Report each visible detail cleanly in "packagingChecks" (using status "pass", "warning", "fail", or "not_visible") and give a clear bullet-point verdict in "summaryBullets".
-4. Keep every bullet short and easy to understand (max 10–12 words each, zero jargon).
-5. Provide BOTH simple English ("en") AND simple, natural Pakistani Roman Urdu in Latin letters ONLY ("ur" — NEVER Arabic/Urdu script) for ALL bilingual fields.`;
+  const jsonBlockInstruction = isSearchGrounded
+    ? `
+LIVE GOOGLE SEARCH GROUNDING & OUTPUT FORMAT (CRITICAL):
+- Use Google Search right now to look up the EXACT official product page, INCI ingredient list, authentic packaging/batch-code markers, and Pakistani dermatologist suitability for "${productName || "the product shown in the uploaded photos"}".
+- Wrap your ENTIRE structured JSON response cleanly inside ONE \`\`\`json ... \`\`\` code block matching the exact schema below (do NOT add extra text inside the JSON block; ensure valid double-quoted JSON):
+\`\`\`json
+{
+  "identifiedProductName": "Exact official product name",
+  "identifiedBrand": "Official brand name",
+  "packagingVerdict": "likely_authentic | suspicious_red_flags | inconclusive",
+  "verdictBadge": { "en": "Short verdict badge", "ur": "Short Roman Urdu badge" },
+  "summaryBullets": { "en": ["2-3 concise bullets"], "ur": ["2-3 concise Roman Urdu bullets"] },
+  "packagingChecks": [
+    {
+      "checkName": { "en": "Typography & Logo", "ur": "Printing Aur Logo" },
+      "status": "pass | warning | fail | not_visible",
+      "detail": { "en": "Specific visual observation", "ur": "Roman Urdu detail" }
+    }
+  ],
+  "pakistanCounterfeitTips": { "en": ["2-3 specific fake-spotting markers in Pakistan"], "ur": ["Roman Urdu tips"] },
+  "nextStepBullets": { "en": ["1-2 clear next steps"], "ur": ["Roman Urdu steps"] },
+  "bestForSummary": { "en": "1-2 short sentences on what this formula genuinely treats", "ur": "Roman Urdu summary" },
+  "bestForTags": ["Tag 1", "Tag 2", "Tag 3"],
+  "profileMatchVerdict": {
+    "status": "great_match | use_with_caution | not_recommended | general_info",
+    "badge": { "en": "Profile match badge", "ur": "Roman Urdu badge" },
+    "explanation": { "en": "Clear explanation tailored to user's selected skin/hair type", "ur": "Roman Urdu explanation" }
+  },
+  "keyActives": [
+    {
+      "ingredient": "Exact active ingredient name (with % if verified)",
+      "roleBadge": { "en": "2-3 word role e.g. Sebum & Pore Regulator", "ur": "Roman Urdu role" },
+      "howItWorks": { "en": "Plain-English explanation of how it works", "ur": "Roman Urdu explanation" }
+    }
+  ],
+  "whoShouldAvoid": { "en": ["Pregnancy, fungal acne, dandruff, or sensitivity warnings"], "ur": ["Roman Urdu warnings"] },
+  "routineClashes": { "en": ["Actives NOT to layer in the same routine e.g. Retinol, AHAs"], "ur": ["Roman Urdu clash warnings"] },
+  "howToUse": {
+    "scheduleBadge": { "en": "e.g. PM Only · 3x/Week or AM & PM Daily", "ur": "Roman Urdu schedule" },
+    "steps": [
+      {
+        "timing": "AM | PM | Weekly | Anytime",
+        "timingBadge": { "en": "PM · NIGHT", "ur": "RAAT KO" },
+        "instruction": { "en": "Simple step instruction", "ur": "Roman Urdu instruction" }
+      }
+    ]
+  },
+  "saferAlternative": null
 }
+\`\`\`
+- Only populate "saferAlternative" (an object with { "brand": "Jenpharm", "name": "<exact SKU from 22 Jenpharm list below>", "subCategory": "...", "approxPricePkr": "PKR ...", "whereToBuy": "Official Brand Store • Dvago • Naheed • Daraz Mall", "bullets": { "en": ["..."], "ur": ["..."] } }) if the scanned product is unsafe, suspicious/fake, or unsuitable/clashing for "${userProfileType || "sensitive Pakistani skin"}". Otherwise set "saferAlternative": null.`
+    : `
+SAFER ALTERNATIVE RULE:
+- Only populate "saferAlternative" using an exact Jenpharm SKU from the list below if the scanned product is unsafe, suspicious/fake, or unsuitable for "${userProfileType || "sensitive Pakistani skin"}"; otherwise omit it.`;
+
+  return `You are DerméScan's strict Product Check, Authenticity Inspector & Formula Decoder for Pakistan.
+In Pakistan, fake copies of The Ordinary, CeraVe, La Roche-Posay, Garnier, L'Oreal, Sunplay, and popular local serums circulate on lookalike sites and social pages, and users also need plain-English clarity on what a bottle actually treats, its verified INCI actives, who should avoid it, routine clashes, and how to use it.
+
+INPUT PROVIDED:
+- 1. Product Name / Brand: "${productName || "Identify from uploaded packaging photos"}"
+- 2. User's Selected Skin / Hair Type: "${userProfileType || "Not specified (give balanced general suitability)"}"
+- 3. Store / Seller Input: "${storeInput || "(Not typed)"}"
+- 4. Suspicious Signs Reported by User: "${suspiciousSigns || "(None reported)"}"
+- Verified Store Whitelist Result: ${storeCheck.status} (${storeCheck.matchedStoreName || storeInput || "Unverified"})
+${storeCheck.officialDomainSuggestion ? `- IMPORTANT LOOKALIKE WARNING: The user pasted a potential copycat URL instead of the real site "${storeCheck.officialDomainSuggestion}".` : ""}
+- 5. Packaging Photos Uploaded: ${images.length}
+
+ZERO-MISTAKE AUTHENTICITY & DECODER RULES (FOLLOW STRICTLY):
+1. AUTHENTICITY RULES:
+   - Even if Store Check is "verified", ALWAYS inspect uploaded bottle/box photos AND reported Suspicious Signs ("${suspiciousSigns}") carefully for fake markers.
+   - If Store Check is "unverified" or "potential_copycat" AND ${images.length === 0 ? "NO photos are uploaded" : "photos are unclear"}: NEVER assume an unknown seller or lookalike URL is real! Set "packagingVerdict": "inconclusive" (or "suspicious_red_flags" if multiple fake signs are reported) and tell the user to upload clear Front Label, Back Barcode/Ingredients, and Batch-Code photos (or buy from ${storeCheck.officialDomainSuggestion || "naheed.pk, dvago.pk, skinstorepakistan.com, or reana.pk"}).
+   - Whenever ${images.length} > 0, inspect actual photo pixels for spelling typos, smudged inkjet fonts, missing/stickered batch codes & expiry dates, broken tamper seals, or unapproved steroid/whitening claims, reporting them in "packagingChecks".
+2. PRODUCT DECODER RULES:
+   - Identify the exact product ("identifiedProductName" & "identifiedBrand") from photos + text + verified ingredient lookup.
+   - Decode 2–5 key active ingredients in "keyActives" with plain-English benefits (avoid complex academic jargon).
+   - Explain clearly what skin types, hair porosities, or concerns it actually treats in "bestForSummary" & "bestForTags".
+   - Specifically evaluate compatibility with "${userProfileType || "Not specified"}" inside "profileMatchVerdict" (if not specified, set status: "general_info" and explain generally who benefits most).
+   - Clearly list who should avoid it ("whoShouldAvoid" — e.g., pregnancy/breastfeeding retinoid/BHA bans, fungal acne/dandruff oil triggers, low-porosity heavy-butter buildup) AND routine clashes ("routineClashes" — e.g., do not layer Vitamin C / AHAs / Benzoyl Peroxide with Retinol in the same routine).
+   - Provide 2–4 crisp **AM / PM / Weekly** steps in "howToUse.steps".
+3. VERIFIED 22 JENPHARM CATALOG (ONLY FOR "saferAlternative" IF NEEDED):
+   ${jenpharmCatalogList}
+4. LANGUAGE & CONCISENESS:
+   - Keep every bullet crisp and easy to read (max 10–14 words per bullet).
+    - Provide BOTH simple English ("en") AND natural Pakistani Roman Urdu in Latin letters ONLY ("ur" — NEVER Arabic/Urdu script) for ALL bilingual fields.
+${jsonBlockInstruction}`;
+}
+

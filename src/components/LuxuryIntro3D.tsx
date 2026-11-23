@@ -308,7 +308,7 @@ export function LuxuryIntro3D({ isOpen, onFinish }: LuxuryIntro3DProps) {
       role="dialog"
       aria-modal="true"
       aria-label="DerméScan 3D Brand Intro"
-      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#FAF6F7]/95 transition-[opacity,transform] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#FAF6F7]/95 dark:bg-[#161012]/95 transition-[opacity,transform,background-color] ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isFastSkip ? "duration-100" : "duration-500"
       } ${
         isDissolving
@@ -316,10 +316,10 @@ export function LuxuryIntro3D({ isOpen, onFinish }: LuxuryIntro3DProps) {
           : "scale-100 opacity-100"
       }`}
     >
-      {/* Lightweight radial warm-silk highlight (static gradient, zero blur) */}
+      {/* Lightweight radial warm-silk / evening-velvet highlight (static gradient, zero blur) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_46%,rgba(255,255,255,0.85)_0%,rgba(245,232,235,0.35)_52%,rgba(181,101,118,0.06)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_46%,rgba(255,255,255,0.85)_0%,rgba(245,232,235,0.35)_52%,rgba(181,101,118,0.06)_100%)] dark:bg-[radial-gradient(circle_at_50%_46%,rgba(33,24,27,0.9)_0%,rgba(22,16,18,0.92)_55%,rgba(212,131,149,0.08)_100%)]"
       />
 
       {/* Lightweight CSS champagne-rose floating light motes (transform + opacity only) */}

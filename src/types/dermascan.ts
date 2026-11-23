@@ -158,8 +158,29 @@ export interface StoreCheckResult {
   explanation: BilingualText;
 }
 
+export interface DecodedActiveIngredient {
+  ingredient: string;
+  roleBadge: BilingualText;
+  howItWorks: BilingualText;
+}
+
+export interface ProductUsageStep {
+  timing: "AM" | "PM" | "Weekly" | "Anytime";
+  timingBadge: BilingualText;
+  instruction: BilingualText;
+}
+
+export interface GroundingSource {
+  title: string;
+  uri: string;
+}
+
 export interface VerifyProductResponse {
   storeCheck: StoreCheckResult;
+  isSearchGrounded?: boolean;
+  groundingSources?: GroundingSource[];
+  identifiedProductName: string;
+  identifiedBrand: string;
   packagingVerdict: "likely_authentic" | "suspicious_red_flags" | "inconclusive";
   verdictBadge: BilingualText;
   summaryBullets: BilingualList;
@@ -170,6 +191,21 @@ export interface VerifyProductResponse {
   }[];
   pakistanCounterfeitTips: BilingualList;
   nextStepBullets: BilingualList;
+  bestForSummary: BilingualText;
+  bestForTags: string[];
+  profileMatchVerdict: {
+    status: "great_match" | "use_with_caution" | "not_recommended" | "general_info";
+    badge: BilingualText;
+    explanation: BilingualText;
+  };
+  keyActives: DecodedActiveIngredient[];
+  whoShouldAvoid: BilingualList;
+  routineClashes: BilingualList;
+  howToUse: {
+    scheduleBadge: BilingualText;
+    steps: ProductUsageStep[];
+  };
+  saferAlternative?: RecommendedProductPick | null;
 }
 
 export interface ApiErrorPayload {
@@ -183,4 +219,5 @@ export interface HealthProfile {
   currentMedicationsOrActives: string;
   ageGroup: string;
 }
+
 

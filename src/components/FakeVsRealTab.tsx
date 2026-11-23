@@ -7,6 +7,11 @@ import {
   CheckCircle2,
   Ban,
   Search,
+  Sparkles,
+  FlaskConical,
+  Clock,
+  Globe,
+  ArrowUpRight,
 } from "lucide-react";
 import {
   MultiAngleUploader,
@@ -21,6 +26,8 @@ import {
   RateLimitError,
   postApi,
 } from "../utils/apiClient.ts";
+import { getJenpharmAffiliateUrl } from "../data/jenpharmAffiliates.ts";
+import { getAuthenticBuyUrl } from "../data/products.ts";
 import type {
   Language,
   UploadedImage,
@@ -30,13 +37,13 @@ import type {
 const PACKAGING_SLOTS: AngleSlotConfig[] = [
   {
     slotId: "pack-front",
-    slotLabel: "1. Front Label / Typography",
-    hint: "Logo, font spacing & spelling clarity",
+    slotLabel: "1. Front Label / Product Name",
+    hint: "Brand name, typography & front packaging",
   },
   {
     slotId: "pack-batch",
-    slotLabel: "2. Back Barcode & Batch Code",
-    hint: "Stamped/engraved batch code, expiry & INCI",
+    slotLabel: "2. Back Ingredients, Barcode & Batch",
+    hint: "INCI ingredient list, stamped batch code & expiry",
   },
   {
     slotId: "pack-seal",
@@ -44,6 +51,16 @@ const PACKAGING_SLOTS: AngleSlotConfig[] = [
     hint: "Bottle finish, dropper or tamper seal",
   },
 ];
+
+const USER_PROFILE_TYPES = [
+  "Oily / Acne-Prone",
+  "Dry / Sensitive",
+  "Combination",
+  "Melasma / Pigmentation",
+  "Low-Porosity Hair",
+  "High-Porosity Hair",
+  "Dandruff Scalp",
+] as const;
 
 const SUSPICIOUS_SIGNS_CHIPS = [
   "Too-Cheap Price",
@@ -73,6 +90,7 @@ interface FakeVsRealTabProps {
 export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
   const [storeInput, setStoreInput] = useState("");
   const [productName, setProductName] = useState("");
+  const [userProfileType, setUserProfileType] = useState("");
   const [suspiciousSigns, setSuspiciousSigns] = useState("");
   const [imagesBySlot, setImagesBySlot] = useState<Record<string, UploadedImage>>(
     {}
@@ -107,8 +125,8 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     ) {
       setErrorMsg(
         language === "ur"
-          ? "Store URL/naam, product ka naam, ya packaging photo mein se kuch add karein."
-          : "Please enter a store URL/name, product name, or upload packaging photos."
+          ? "Product ka naam, store URL, ya bottle ki photo mein se kam az kam ek cheez add karein."
+          : "Please upload packaging photos or enter a product name or store link."
       );
       return;
     }
@@ -122,6 +140,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
         storeInput,
         websiteOrSeller: storeInput,
         productName,
+        userProfileType: userProfileType || undefined,
         suspiciousSigns: suspiciousSigns.trim(),
         images: uploadedList.map((img) => ({
           slotLabel: img.slotLabel,
@@ -149,6 +168,22 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
     }
   }
 
+  const saferAltAffiliateUrl = result?.saferAlternative
+    ? getJenpharmAffiliateUrl({
+        brand: result.saferAlternative.brand,
+        name: result.saferAlternative.name,
+        productId: result.saferAlternative.productId,
+      })
+    : null;
+
+  const saferAltBuyUrl = result?.saferAlternative
+    ? getAuthenticBuyUrl(
+        result.saferAlternative.brand,
+        result.saferAlternative.name,
+        result.saferAlternative.productId
+      )
+    : "";
+
   return (
     <div className="min-w-0 space-y-6">
       <TabHeaderIllustration variant="verify" language={language} />
@@ -161,47 +196,75 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               className="block text-xs font-bold text-[#1E181A]"
             >
               {language === "ur"
-                ? "1. Brand Aur Product Ka Naam"
-                : "1. Brand & Product Name"}
+                ? "1. Product Ka Naam / Brand (Optional)"
+                : "1. Product Name / Brand (Optional)"}
             </label>
             <input
               id="verify-product-name"
               type="text"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
-              placeholder="e.g., The Ordinary Niacinamide 10%, CeraVe Cleanser"
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              placeholder="Or type product name / brand if label is blurry"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
           <div className="min-w-0 space-y-1.5">
             <label
+              htmlFor="verify-profile-type"
+              className="block text-xs font-bold text-[#1E181A]"
+            >
+              {language === "ur"
+                ? "2. Meri Skin / Baal Ki Qism (Optional)"
+                : "2. My Skin / Hair Type (Optional)"}
+            </label>
+            <select
+              id="verify-profile-type"
+              value={userProfileType}
+              onChange={(e) => setUserProfileType(e.target.value)}
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-4 py-3 text-xs leading-relaxed text-[#1E181A] transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+            >
+              <option value="">
+                {language === "ur"
+                  ? "Munasibat check karne ke liye chunein (Optional)"
+                  : "Select skin or hair type to check suitability (Optional)"}
+              </option>
+              {USER_PROFILE_TYPES.map((typeOption) => (
+                <option key={typeOption} value={typeOption}>
+                  {typeOption}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="min-w-0 space-y-1.5 md:col-span-2">
+            <label
               htmlFor="verify-store-input"
               className="block text-xs font-bold text-[#1E181A]"
             >
               {language === "ur"
-                ? "2. Website / Seller Link Ya Store Ka Naam"
-                : "2. Website / Seller Link or Store Name"}
+                ? "3. Website / Seller Link Ya Store Ka Naam (Optional)"
+                : "3. Website / Seller Link or Store Name (Optional)"}
             </label>
             <input
               id="verify-store-input"
               type="text"
               value={storeInput}
               onChange={(e) => setStoreInput(e.target.value)}
-              placeholder="e.g., theordinary.com, urapra.com, dvago.pk, Instagram page..."
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              placeholder="e.g., dvago.pk, naheed.pk, theordinary.com, or Instagram seller..."
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-4 py-3 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
 
-          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/65 p-4 md:col-span-2">
+          <div className="flex min-w-0 flex-col justify-between space-y-2.5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-4 md:col-span-2">
             <div className="space-y-2">
               <label
                 htmlFor="verify-suspicious-signs"
                 className="block text-xs font-bold text-[#1E181A]"
               >
                 {language === "ur"
-                  ? "3. Shakk Wali Baatein (Suspicious Signs)"
-                  : "3. Suspicious Signs (Kya ajeeb ya fake laga?)"}
+                  ? "4. Shakk Wali Baatein (Agar Kuch Ajeeb Lage)"
+                  : "4. Suspicious Signs (Optional Fake Red Flags)"}
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {SUSPICIOUS_SIGNS_CHIPS.map((chip) => {
@@ -220,7 +283,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                       className={`min-h-[30px] rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         selected
                           ? "border-[#B56576] bg-[#F6ECEF] text-[#B56576]"
-                          : "border-[#E6D2D6] bg-white/95 text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
+                          : "border-[#E6D2D6] bg-white text-[#5E5055] hover:border-[#B56576] hover:bg-[#F6ECEF] hover:text-[#B56576]"
                       }`}
                     >
                       + {chip}
@@ -235,7 +298,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
               value={suspiciousSigns}
               onChange={(e) => setSuspiciousSigns(e.target.value)}
               placeholder="e.g. Price market se aadhi hai, smell ajeeb/tezi wali hai, ya bottom par batch code nahi hai..."
-              className="w-full rounded-2xl border border-[#E6D2D6] bg-white/95 px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
+              className="w-full rounded-2xl border border-[#E6D2D6] bg-white px-3.5 py-2.5 text-xs leading-relaxed text-[#1E181A] placeholder:text-[#5E5055]/60 transition-all focus:border-[#B56576] focus:ring-2 focus:ring-[#B56576]/15 focus:outline-none"
             />
           </div>
         </div>
@@ -243,8 +306,8 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
         <div>
           <h3 className="mb-3 text-xs font-bold text-[#1E181A]">
             {language === "ur"
-              ? "4. Bottle / Box Aur Batch Code Photos (Optional)"
-              : "4. Bottle, Box & Batch Code Photos (Optional)"}
+              ? "5. Bottle, Ingredients Aur Batch Code Photos (Upload Ya Live Camera)"
+              : "5. Bottle, Ingredients & Batch Code Photos (Upload or Camera)"}
           </h3>
           <MultiAngleUploader
             slots={PACKAGING_SLOTS}
@@ -274,11 +337,11 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
           <span>
             {isVerifying
               ? language === "ur"
-                ? "Store Aur Photos Check Ho Rahi Hain..."
-                : "Checking Store & Photos..."
+                ? "Live Search Se Product Decode Ho Raha Hai..."
+                : "Decoding Formula & Checking Authenticity..."
               : language === "ur"
-                ? "Store Aur Asli-Naqli Check Karein"
-                : "Check Store & Product"}
+                ? "Product Decode Aur Asli-Naqli Check Karein"
+                : "Decode Product & Check Authenticity"}
           </span>
         </button>
       </div>
@@ -300,16 +363,141 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
           language={language}
           customLabel={
             language === "ur"
-              ? "Store ki trust list aur bottle ki printing / batch code check ho raha hai..."
-              : "Checking store trust list and looking at bottle printing & batch codes..."
+              ? "Live search se product ke official ingredients, skin suitability aur bottle batch code ki jaanch ho rahi hai..."
+              : "Searching official ingredient lists, skin/hair suitability, and packaging authenticity markers..."
           }
         />
       )}
 
       {result && (
         <div className="min-w-0 space-y-6">
+          {/* Card 1: Product Identified & Authenticity Verdict */}
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <PackageCheck className="h-5 w-5 shrink-0 text-[#B56576]" />
+                  {result.isSearchGrounded && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[#E6D2D6] bg-[#FAF6F7] px-2.5 py-0.5 text-[10px] font-semibold text-[#8C3B4A]">
+                      <Globe className="h-3 w-3 text-[#B56576]" />
+                      {language === "ur"
+                        ? "Live Search Verified"
+                        : "Verified via Live Google Search"}
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-editorial break-words text-2xl font-semibold text-[#1E181A] sm:text-[26px]">
+                  {result.identifiedBrand &&
+                  !result.identifiedProductName
+                    .toLowerCase()
+                    .includes(result.identifiedBrand.toLowerCase())
+                    ? `${result.identifiedBrand} — ${result.identifiedProductName}`
+                    : result.identifiedProductName}
+                </h3>
+              </div>
+
+              <span
+                className={`inline-block max-w-full self-start whitespace-normal break-words rounded-full px-3.5 py-1.5 text-xs font-bold ${
+                  result.packagingVerdict === "likely_authentic"
+                    ? "border border-[#C3DFCE] bg-[#EFF7F2] text-[#2D6A4F]"
+                    : result.packagingVerdict === "suspicious_red_flags"
+                      ? "border border-[#E8C5CA] bg-[#FDF4F5] text-[#8C3B4A]"
+                      : "border border-[#EAD8DC] bg-[#F6ECEF] text-[#B56576]"
+                }`}
+              >
+                {result.verdictBadge[language]}
+              </span>
+            </div>
+
+            <ul className="mt-4 space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
+              {result.summaryBullets[language].map((b, i) => (
+                <li key={i} className="flex min-w-0 items-start gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
+                  <span className="min-w-0 break-words">{b}</span>
+                </li>
+              ))}
+            </ul>
+
+            {result.packagingChecks.length > 0 && (
+              <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
+                {result.packagingChecks.map((chk, idx) => (
+                  <div
+                    key={idx}
+                    className="flex min-w-0 items-start gap-2.5 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-4"
+                  >
+                    {chk.status === "pass" ? (
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#2D6A4F]" />
+                    ) : chk.status === "fail" ? (
+                      <Ban className="mt-0.5 h-4 w-4 shrink-0 text-[#8C3B4A]" />
+                    ) : (
+                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#B56576]" />
+                    )}
+                    <div className="min-w-0">
+                      <p className="break-words text-xs font-bold text-[#1E181A]">
+                        {chk.checkName[language]}
+                      </p>
+                      <p className="mt-1 break-words text-xs leading-relaxed text-[#5E5055]">
+                        {chk.detail[language]}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1E181A]">
+                {language === "ur"
+                  ? "Pakistan Mein Naqli Product Pehchanne Ke Tareeqay"
+                  : "Batch Code & Fake-Spotting Markers in Pakistan"}
+              </h4>
+              <ul className="mt-3 space-y-2 leading-relaxed">
+                {result.pakistanCounterfeitTips[language].map((tip, i) => (
+                  <li
+                    key={i}
+                    className="flex min-w-0 items-start gap-2 text-xs text-[#5E5055]"
+                  >
+                    <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B56576]" />
+                    <span className="min-w-0 break-words">{tip}</span>
+                  </li>
+                ))}
+              </ul>
+              {result.nextStepBullets[language].length > 0 && (
+                <ul className="mt-4 space-y-1.5 border-t border-[#EAD8DC] pt-3 text-xs font-medium leading-relaxed text-[#1E181A]">
+                  {result.nextStepBullets[language].map((step, i) => (
+                    <li key={i} className="flex min-w-0 items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
+                      <span className="min-w-0 break-words">{step}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {result.groundingSources && result.groundingSources.length > 0 && (
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#EAD8DC] pt-4">
+                <span className="text-[11px] font-semibold text-[#5E5055]">
+                  {language === "ur" ? "Search Sources:" : "Live Sources:"}
+                </span>
+                {result.groundingSources.map((src, i) => (
+                  <a
+                    key={i}
+                    href={src.uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex max-w-full items-center gap-1 rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-2.5 py-1 text-[11px] font-medium text-[#8C3B4A] transition-colors hover:border-[#B56576] hover:text-[#B56576]"
+                  >
+                    <span className="max-w-[180px] truncate">{src.title}</span>
+                    <ArrowUpRight className="h-3 w-3 shrink-0" />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Store & Seller Whitelist Card */}
           <div
-            className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] sm:p-8 ${
+            className={`min-w-0 overflow-x-hidden rounded-3xl border p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.1)] sm:p-7 ${
               result.storeCheck.status === "verified"
                 ? "border-[#C3DFCE] bg-[#EFF7F2]"
                 : result.storeCheck.status === "unverified" ||
@@ -330,20 +518,20 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
                         : "text-[#B56576]"
                   }`}
                 />
-                <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
+                <h3 className="font-editorial text-xl font-semibold text-[#1E181A]">
                   {language === "ur"
-                    ? "Store Aur Brand Check Result"
-                    : "Store & Brand Check"}
+                    ? "Store Aur Seller Check"
+                    : "Store & Seller Authenticity"}
                 </h3>
               </div>
 
               <span
                 className={`inline-block max-w-full self-start whitespace-normal break-words rounded-full px-3.5 py-1 text-xs font-bold ${
                   result.storeCheck.status === "verified"
-                    ? "bg-white/95 text-[#2D6A4F]"
+                    ? "bg-white text-[#2D6A4F]"
                     : result.storeCheck.status === "unverified" ||
                         result.storeCheck.status === "potential_copycat"
-                      ? "bg-white/95 text-[#8C3B4A]"
+                      ? "bg-white text-[#8C3B4A]"
                       : "bg-[#F6ECEF] text-[#B56576]"
                 }`}
               >
@@ -356,7 +544,7 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
             </p>
 
             {result.storeCheck.officialDomainSuggestion && (
-              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-[#E8C5CA] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#8C3B4A]">
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-[#E8C5CA] bg-white px-3.5 py-2 text-xs font-semibold text-[#8C3B4A]">
                 <span>
                   {language === "ur"
                     ? "Asli Official Website:"
@@ -369,92 +557,237 @@ export function FakeVsRealTab({ language }: FakeVsRealTabProps) {
             )}
           </div>
 
+          {/* Card 2: What It Is Actually Best For & Profile Fit */}
           <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
             <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
-                <PackageCheck className="h-5 w-5 shrink-0 text-[#B56576]" />
+                <Sparkles className="h-5 w-5 shrink-0 text-[#B56576]" />
                 <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
                   {language === "ur"
-                    ? "Bottle Aur Label Check"
-                    : "Packaging & Label Check"}
+                    ? "Yeh Product Asal Mein Kis Cheez Ke Liye Best Hai"
+                    : "What It Is Actually Best For"}
                 </h3>
               </div>
 
               <span
                 className={`inline-block max-w-full self-start whitespace-normal break-words rounded-full px-3.5 py-1 text-xs font-bold ${
-                  result.packagingVerdict === "likely_authentic"
-                    ? "bg-[#EFF7F2] text-[#2D6A4F]"
-                    : result.packagingVerdict === "suspicious_red_flags"
-                      ? "bg-[#FDF4F5] text-[#8C3B4A]"
-                      : "bg-[#F6ECEF] text-[#B56576]"
+                  result.profileMatchVerdict.status === "great_match"
+                    ? "border border-[#C3DFCE] bg-[#EFF7F2] text-[#2D6A4F]"
+                    : result.profileMatchVerdict.status === "not_recommended"
+                      ? "border border-[#E8C5CA] bg-[#FDF4F5] text-[#8C3B4A]"
+                      : result.profileMatchVerdict.status === "use_with_caution"
+                        ? "border border-[#E8C5CA] bg-[#FDF4F5] text-[#B56576]"
+                        : "border border-[#EAD8DC] bg-[#F6ECEF] text-[#8C3B4A]"
                 }`}
               >
-                {result.verdictBadge[language]}
+                {result.profileMatchVerdict.badge[language]}
               </span>
             </div>
 
-            <ul className="space-y-1.5 text-xs leading-relaxed text-[#5E5055]">
-              {result.summaryBullets[language].map((b, i) => (
-                <li key={i} className="flex min-w-0 items-start gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
-                  <span className="min-w-0 break-words">{b}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="text-xs leading-relaxed text-[#1E181A]">
+              {result.bestForSummary[language]}
+            </p>
 
-            {result.packagingChecks.length > 0 && (
-              <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
-                {result.packagingChecks.map((chk, idx) => (
+            {result.bestForTags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {result.bestForTags.map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="rounded-full border border-[#EAD8DC] bg-[#FAF6F7] px-3 py-1 text-[11px] font-semibold text-[#8C3B4A]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-4">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#B56576]">
+                {userProfileType
+                  ? language === "ur"
+                    ? `Aapki Profile (${userProfileType}) Ke Liye Verdict`
+                    : `Suitability for ${userProfileType}`
+                  : language === "ur"
+                    ? "Suitability Summary"
+                    : "Skin & Hair Profile Fit"}
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-[#5E5055]">
+                {result.profileMatchVerdict.explanation[language]}
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Key Active Ingredients Decoded */}
+          {result.keyActives.length > 0 && (
+            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+              <div className="mb-4 flex items-center gap-2.5">
+                <FlaskConical className="h-5 w-5 shrink-0 text-[#B56576]" />
+                <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
+                  {language === "ur"
+                    ? "Key Active Ingredients Ki Asaan Tafseel"
+                    : "Key Active Ingredients Decoded"}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {result.keyActives.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex min-w-0 items-start gap-2.5 overflow-x-hidden rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-4"
+                    className="flex min-w-0 flex-col justify-between gap-2 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-4"
                   >
-                    {chk.status === "pass" ? (
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#2D6A4F]" />
-                    ) : chk.status === "fail" ? (
-                      <Ban className="mt-0.5 h-4 w-4 shrink-0 text-[#8C3B4A]" />
-                    ) : (
-                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#B56576]" />
-                    )}
-                    <div className="min-w-0">
-                      <p className="break-words font-heading text-xs font-bold text-[#1E181A]">
-                        {chk.checkName[language]}
-                      </p>
-                      <p className="mt-1 break-words text-xs leading-relaxed text-[#5E5055]">
-                        {chk.detail[language]}
-                      </p>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h4 className="break-words text-xs font-bold text-[#1E181A]">
+                        {item.ingredient}
+                      </h4>
+                      <span className="rounded-full border border-[#EAD8DC] bg-white px-2.5 py-0.5 text-[10px] font-semibold text-[#B56576]">
+                        {item.roleBadge[language]}
+                      </span>
                     </div>
+                    <p className="break-words text-xs leading-relaxed text-[#5E5055]">
+                      {item.howItWorks[language]}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Card 4: Who Should Avoid It & Routine Clashes */}
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#E8C5CA] bg-[#FDF4F5] p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+            <div className="mb-4 flex items-center gap-2.5">
+              <AlertTriangle className="h-5 w-5 shrink-0 text-[#8C3B4A]" />
+              <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
+                {language === "ur"
+                  ? "Kin Logon Ko Avoid Karna Chahiye Aur Routine Clashes"
+                  : "Who Should Avoid It & Routine Clashes"}
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="rounded-2xl border border-[#E8C5CA] bg-white p-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#8C3B4A]">
+                  {language === "ur" ? "Who Should Avoid" : "Who Should Avoid It"}
+                </p>
+                <ul className="mt-2.5 space-y-2 text-xs leading-relaxed text-[#5E5055]">
+                  {result.whoShouldAvoid[language].map((warn, i) => (
+                    <li key={i} className="flex min-w-0 items-start gap-2">
+                      <Ban className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8C3B4A]" />
+                      <span className="min-w-0 break-words">{warn}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-[#E8C5CA] bg-white p-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#8C3B4A]">
+                  {language === "ur"
+                    ? "In Cheezon Ke Saath Na Lagayein"
+                    : "Do Not Mix / Routine Clashes"}
+                </p>
+                <ul className="mt-2.5 space-y-2 text-xs leading-relaxed text-[#5E5055]">
+                  {result.routineClashes[language].map((clash, i) => (
+                    <li key={i} className="flex min-w-0 items-start gap-2">
+                      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B56576]" />
+                      <span className="min-w-0 break-words">{clash}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 5: How & When to Use (+ Safer Jenpharm Affiliate Pick if recommended) */}
+          <div className="min-w-0 overflow-x-hidden rounded-3xl border border-[#EAD8DC] bg-white p-6 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:p-8">
+            <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2.5">
+                <Clock className="h-5 w-5 shrink-0 text-[#B56576]" />
+                <h3 className="font-editorial text-2xl font-semibold text-[#1E181A]">
+                  {language === "ur"
+                    ? "Kab Aur Kaise Istemal Karein"
+                    : "How & When to Use"}
+                </h3>
+              </div>
+
+              <span className="inline-block self-start rounded-full border border-[#EAD8DC] bg-[#F6ECEF] px-3.5 py-1 text-xs font-bold text-[#8C3B4A]">
+                {result.howToUse.scheduleBadge[language]}
+              </span>
+            </div>
+
+            {result.howToUse.steps.length > 0 && (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                {result.howToUse.steps.map((step, idx) => (
+                  <div
+                    key={idx}
+                    className="flex min-w-0 flex-col gap-2 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-4"
+                  >
+                    <span className="inline-block self-start rounded-full border border-[#EAD8DC] bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8C3B4A]">
+                      {step.timingBadge[language]}
+                    </span>
+                    <p className="break-words text-xs leading-relaxed text-[#1E181A]">
+                      {step.instruction[language]}
+                    </p>
                   </div>
                 ))}
               </div>
             )}
 
-            <div className="mt-5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7]/75 p-5">
-              <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-[#1E181A]">
-                {language === "ur"
-                  ? "Pakistan Mein Naqli Product Pehchanne Ke Tareeqay"
-                  : "How to Spot Fakes in Pakistan"}
-              </h4>
-              <ul className="mt-3 space-y-2 leading-relaxed">
-                {result.pakistanCounterfeitTips[language].map((tip, i) => (
-                  <li
-                    key={i}
-                    className="flex min-w-0 items-start gap-2 text-xs text-[#5E5055]"
-                  >
-                    <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B56576]" />
-                    <span className="min-w-0 break-words">{tip}</span>
-                  </li>
-                ))}
-              </ul>
-              <ul className="mt-4 space-y-1.5 border-t border-[#EAD8DC] pt-3 text-xs font-medium leading-relaxed text-[#1E181A]">
-                {result.nextStepBullets[language].map((step, i) => (
-                  <li key={i} className="flex min-w-0 items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
-                    <span className="min-w-0 break-words">{step}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {result.saferAlternative && (
+              <div className="mt-5 rounded-2xl border border-[#E6D2D6] bg-[#FAF6F7] p-5">
+                <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#B56576]">
+                      {language === "ur"
+                        ? "Safer / Behtar Pharmacy Alternative"
+                        : "Recommended Safer Match"}
+                    </p>
+                    <h4 className="font-editorial break-words text-xl font-semibold text-[#1E181A]">
+                      {result.saferAlternative.brand} —{" "}
+                      {result.saferAlternative.name}
+                    </h4>
+                    <p className="text-xs text-[#5E5055]">
+                      {result.saferAlternative.subCategory} ·{" "}
+                      {result.saferAlternative.approxPricePkr}
+                    </p>
+                  </div>
+
+                  {saferAltAffiliateUrl ? (
+                    <a
+                      href={saferAltAffiliateUrl}
+                      target="_blank"
+                      rel="sponsored noopener noreferrer"
+                      className="inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-[#BF6E7F] to-[#B56576] px-5 py-2 text-xs font-semibold text-white shadow-[0_8px_20px_-6px_rgba(181,101,118,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#B56576] hover:to-[#9E5263] active:scale-95 dark:from-[#D48395] dark:to-[#D48395] dark:text-[#161012] dark:hover:from-[#B56576] dark:hover:to-[#B56576] dark:hover:text-[#F7EFEF]"
+                    >
+                      Buy at the best price here →
+                    </a>
+                  ) : saferAltBuyUrl ? (
+                    <a
+                      href={saferAltBuyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-[40px] shrink-0 items-center justify-center gap-1.5 rounded-full border border-[#E6D2D6] bg-white px-4 py-2 text-xs font-semibold text-[#1E181A] transition-all hover:border-[#B56576] hover:text-[#B56576]"
+                    >
+                      <span>
+                        {language === "ur"
+                          ? "Asli Online Khareedein"
+                          : "Buy Original Online"}
+                      </span>
+                      <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
+                    </a>
+                  ) : null}
+                </div>
+
+                {result.saferAlternative.bullets?.[language]?.length > 0 && (
+                  <ul className="mt-3 space-y-1 text-xs leading-relaxed text-[#5E5055]">
+                    {result.saferAlternative.bullets[language].map((b, i) => (
+                      <li key={i} className="flex min-w-0 items-start gap-2">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B56576]" />
+                        <span className="min-w-0 break-words">{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

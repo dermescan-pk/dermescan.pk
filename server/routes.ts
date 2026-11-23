@@ -64,16 +64,18 @@ function handleRouteError(
   }
   const friendly = getFriendlyGeminiErrorMessage(error, fallbackMsg);
   const isTransientOverload =
-    friendly.status === 404 ||
     friendly.status === 429 ||
     friendly.status === 500 ||
     friendly.status === 502 ||
     friendly.status === 503 ||
     friendly.status === 504;
 
+  const rawErrorMessage =
+    error instanceof Error ? error.message : String(error);
+
   if (isTransientOverload) {
-    console.info(
-      `[DerméScan] ${fallbackMsg} (${friendly.status}): ${friendly.message}`
+    console.error(
+      `[DerméScan] ${fallbackMsg} (${friendly.status}): ${rawErrorMessage}`
     );
     return res.status(friendly.status === 429 ? 429 : 503).json({
       errorCode: "HIGH_TRAFFIC_OR_OVERLOAD",
@@ -81,7 +83,7 @@ function handleRouteError(
     });
   }
 
-  console.error(fallbackMsg, error);
+  console.error(`[DerméScan] ${fallbackMsg} (${friendly.status}): ${rawErrorMessage}`);
   const safeStatus = friendly.status === 403 ? 400 : friendly.status;
   return res.status(safeStatus).json({
     message: friendly.message,
@@ -219,6 +221,7 @@ export async function handleAnalyzeSkin(
       userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
+        temperature: 0.2,
         responseMimeType: "application/json",
         responseSchema: skinResponseSchema,
       },
@@ -285,6 +288,7 @@ export async function handleAnalyzeHair(
       userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
+        temperature: 0.2,
         responseMimeType: "application/json",
         responseSchema: hairResponseSchema,
       },
@@ -346,6 +350,7 @@ export async function handleCheckCream(
       userApiKey: extractUserGeminiKey(req.headers),
       contents: { parts },
       config: {
+        temperature: 0.2,
         responseMimeType: "application/json",
         responseSchema: steroidResponseSchema,
       },
@@ -393,48 +398,160 @@ export async function handleVerifyProduct(
     if (!storeInput && !productName && images.length === 0) {
       return res.status(400).json({
         message:
-          "Please enter a store URL/name, product name, or upload packaging photos to verify authenticity.",
+          "Please enter a store URL/name, product name, or upload packaging photos to decode and verify.",
       });
     }
 
+    const userApiKey = extractUserGeminiKey(req.headers);
     const storeCheck = checkStoreDeterministic(storeInput, productName);
-    const prompt = buildVerifyProductPrompt(body, storeCheck);
 
-    const parts: Array<
-      { text: string } | { inlineData: { mimeType: string; data: string } }
-    > = [{ text: prompt }];
+    const buildImageParts = (promptText: string) => {
+      const parts: Array<
+        { text: string } | { inlineData: { mimeType: string; data: string } }
+      > = [{ text: promptText }];
 
-    for (const img of images) {
-      parts.push({ text: `Packaging view: ${img.slotLabel}` });
-      parts.push({
-        inlineData: {
-          mimeType: img.mimeType || "image/jpeg",
-          data: img.base64,
+      for (const img of images) {
+        parts.push({ text: `Packaging view: ${img.slotLabel}` });
+        parts.push({
+          inlineData: {
+            mimeType: img.mimeType || "image/jpeg",
+            data: img.base64,
+          },
+        });
+      }
+      return parts;
+    };
+
+    type AiDecoderPayload = Omit<
+      VerifyProductResponse,
+      "storeCheck" | "isSearchGrounded" | "groundingSources"
+    >;
+
+    let aiParsed: AiDecoderPayload | null = null;
+    let isSearchGrounded = false;
+    let groundingSources: { title: string; uri: string }[] = [];
+
+    // 1) Primary call: Live Google Search Grounding (no responseMimeType allowed alongside tools)
+    try {
+      const groundedPrompt = buildVerifyProductPrompt(body, storeCheck, true);
+      const groundedResponse = await generateContentWithGeminiFallback({
+        userApiKey,
+        contents: { parts: buildImageParts(groundedPrompt) },
+        config: {
+          tools: [{ googleSearch: {} }],
+          temperature: 0.2,
         },
       });
+
+      const groundedText = groundedResponse.text;
+      if (!groundedText) {
+        throw new Error("Empty grounded response from Gemini.");
+      }
+
+      aiParsed = safeParseGeminiJson<AiDecoderPayload>(groundedText);
+      isSearchGrounded = true;
+
+      const rawChunks =
+        groundedResponse.candidates?.[0]?.groundingMetadata?.groundingChunks ||
+        [];
+      const seenUris = new Set<string>();
+      for (const chunk of rawChunks) {
+        const uri = chunk?.web?.uri?.trim();
+        const title = chunk?.web?.title?.trim();
+        if (uri && !seenUris.has(uri)) {
+          seenUris.add(uri);
+          groundingSources.push({
+            title: title || uri.replace(/^https?:\/\/(www\.)?/, "").split("/")[0],
+            uri,
+          });
+        }
+        if (groundingSources.length >= 5) break;
+      }
+    } catch (groundedError) {
+      if (isGeminiKeyFailure(groundedError)) {
+        throw groundedError;
+      }
+
+      const groundedErrMsg =
+        groundedError instanceof Error
+          ? groundedError.message
+          : String(groundedError);
+      console.error(
+        `[DerméScan] Grounded /api/verify-product failed, falling back to structured JSON mode: ${groundedErrMsg}`
+      );
+
+      // 2) Graceful fallback if Google Search temporarily hits rate limits or returns non-JSON
+      const fallbackPrompt = buildVerifyProductPrompt(body, storeCheck, false);
+      const fallbackResponse = await generateContentWithGeminiFallback({
+        userApiKey,
+        contents: { parts: buildImageParts(fallbackPrompt) },
+        config: {
+          temperature: 0.2,
+          responseMimeType: "application/json",
+          responseSchema: verifyPackagingSchema,
+        },
+      });
+
+      const fallbackText = fallbackResponse.text;
+      if (!fallbackText) {
+        throw new Error("Empty response from Gemini.");
+      }
+      aiParsed = safeParseGeminiJson<AiDecoderPayload>(fallbackText);
+      isSearchGrounded = false;
+      groundingSources = [];
     }
 
-    const response = await generateContentWithGeminiFallback({
-      userApiKey: extractUserGeminiKey(req.headers),
-      contents: { parts },
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: verifyPackagingSchema,
-      },
-    });
-
-    const rawText = response.text;
-    if (!rawText) {
-      throw new Error("Empty response from Gemini.");
-    }
-
-    const aiParsed = safeParseGeminiJson<
-      Omit<VerifyProductResponse, "storeCheck">
-    >(rawText);
+    const hydratedSaferAlt = aiParsed.saferAlternative
+      ? hydrateProductPicks([aiParsed.saferAlternative])[0] || null
+      : null;
 
     const fullResult: VerifyProductResponse = {
       storeCheck,
-      ...aiParsed,
+      isSearchGrounded,
+      groundingSources,
+      identifiedProductName:
+        aiParsed.identifiedProductName || productName || "Scanned Product",
+      identifiedBrand: aiParsed.identifiedBrand || brandName || "",
+      packagingVerdict: aiParsed.packagingVerdict || "inconclusive",
+      verdictBadge: aiParsed.verdictBadge || {
+        en: "Inspection Complete",
+        ur: "Jaanch Mukammal",
+      },
+      summaryBullets: aiParsed.summaryBullets || { en: [], ur: [] },
+      packagingChecks: Array.isArray(aiParsed.packagingChecks)
+        ? aiParsed.packagingChecks
+        : [],
+      pakistanCounterfeitTips: aiParsed.pakistanCounterfeitTips || {
+        en: [],
+        ur: [],
+      },
+      nextStepBullets: aiParsed.nextStepBullets || { en: [], ur: [] },
+      bestForSummary: aiParsed.bestForSummary || {
+        en: "See decoded active ingredients below for skin and hair suitability.",
+        ur: "Skin aur baalon ki munasibat ke liye neeche ingredients ki tafseel dekhein.",
+      },
+      bestForTags: Array.isArray(aiParsed.bestForTags)
+        ? aiParsed.bestForTags
+        : [],
+      profileMatchVerdict: aiParsed.profileMatchVerdict || {
+        status: "general_info",
+        badge: {
+          en: "General Suitability Overview",
+          ur: "Aam Suitability Jaiza",
+        },
+        explanation: {
+          en: "Select your skin or hair type above for a personalized match check.",
+          ur: "Apni skin ya baal ki qism ke mutabiq check karne ke liye upar dropdown chunein.",
+        },
+      },
+      keyActives: Array.isArray(aiParsed.keyActives) ? aiParsed.keyActives : [],
+      whoShouldAvoid: aiParsed.whoShouldAvoid || { en: [], ur: [] },
+      routineClashes: aiParsed.routineClashes || { en: [], ur: [] },
+      howToUse: aiParsed.howToUse || {
+        scheduleBadge: { en: "Follow Label", ur: "Label Ke Mutabiq" },
+        steps: [],
+      },
+      saferAlternative: hydratedSaferAlt,
     };
 
     return res.status(200).json(fullResult);
@@ -442,7 +559,7 @@ export async function handleVerifyProduct(
     return handleRouteError(
       res,
       error,
-      "Failed to verify product. Please try again."
+      "Failed to decode and verify product. Please try again."
     );
   }
 }

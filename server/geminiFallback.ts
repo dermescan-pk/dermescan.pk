@@ -5,10 +5,8 @@ import {
 } from "@google/genai";
 
 export const GEMINI_FALLBACK_MODELS = [
+  "gemini-3.5-flash",
   "gemini-3.5-flash-lite",
-  "gemini-3.8-flash",
-  "gemini-3.6-flash",
-  "gemini-2.5-flash",
 ] as const;
 
 export const FALLBACK_BACKOFF_MS = 800;
@@ -54,15 +52,17 @@ export function extractUserGeminiKey(
 
 export function getConfiguredGeminiKeys(userGeminiKey?: string): string[] {
   const cleanUserKey = (userGeminiKey || "").trim();
-  const primaryKey =
-    cleanUserKey && !PLACEHOLDER_KEYS.has(cleanUserKey)
-      ? cleanUserKey
-      : process.env.GEMINI_API_KEY;
-
-  const candidates = [
-    primaryKey,
+  const envKeys = [
+    process.env.GEMINI_API_KEY,
     process.env.GEMINI_API_KEY_2,
     process.env.GEMINI_API_KEY_3,
+  ].filter(Boolean);
+
+  const candidates = [
+    ...(cleanUserKey && !PLACEHOLDER_KEYS.has(cleanUserKey)
+      ? [cleanUserKey]
+      : []),
+    ...envKeys,
   ];
 
   const seen = new Set<string>();
@@ -171,6 +171,8 @@ function extractGeminiErrorDetails(error: unknown): {
     httpStatus = 404;
   } else if (!httpStatus && /\b403\b|PERMISSION_DENIED/i.test(readableMessage)) {
     httpStatus = 403;
+  } else if (!httpStatus && /\b400\b|INVALID_ARGUMENT/i.test(readableMessage)) {
+    httpStatus = 400;
   }
 
   return { httpStatus, readableMessage };
@@ -203,7 +205,6 @@ function isRetryableTransientFailure(error: unknown): boolean {
 
   return (
     httpStatus === 429 ||
-    httpStatus === 404 ||
     httpStatus === 500 ||
     httpStatus === 502 ||
     httpStatus === 503 ||
@@ -216,8 +217,6 @@ function isRetryableTransientFailure(error: unknown): boolean {
     lower.includes("internal error") ||
     lower.includes("high demand") ||
     lower.includes("peak demand") ||
-    lower.includes("not found") ||
-    lower.includes("no longer available") ||
     lower.includes("timed out") ||
     lower.includes("took too long") ||
     lower.includes("abort") ||
@@ -268,14 +267,15 @@ export interface GeminiFallbackParams
 
 /**
  * Multi-model + multi-key automatic fallback chain across peak traffic spikes:
- * Rotates strictly in priority order across Google's highest-quota free-tier models:
- *   1) `gemini-3.5-flash-lite`
- *   2) `gemini-3.8-flash`
- *   3) `gemini-3.6-flash`
- *   4) `gemini-2.5-flash`
- * Using primary key (`x-user-gemini-key` header if provided, else `process.env.GEMINI_API_KEY`),
- * then retries the same 4-model chain with `GEMINI_API_KEY_2` (and `GEMINI_API_KEY_3` if set),
- * automatically falling back on 429, 503, 404, 403, or 500 errors without passing `thinkingConfig`.
+ * Rotates strictly in priority order across Gemini 3.5 models:
+ *   1) `gemini-3.5-flash` (primary flagship 3.5 model)
+ *   2) `gemini-3.5-flash-lite` (fast high-quota 3.5 fallback)
+ * Enforces `temperature: 0.2` on every call and strips `thinkingConfig`.
+ * Automatically omits `responseMimeType` / `responseSchema` when `tools` (e.g. `googleSearch`)
+ * are provided. Rotates across all configured API keys (`GEMINI_API_KEY`, `GEMINI_API_KEY_2`,
+ * `GEMINI_API_KEY_3`, plus `x-user-gemini-key` if provided) on any error
+ * (`400`, `403`, `404`, `429`, `500`, `503`), logging the exact Google API
+ * error message (`err.message`) to `console.error`.
  */
 export async function generateContentWithGeminiFallback({
   userApiKey,
@@ -310,14 +310,32 @@ export async function generateContentWithGeminiFallback({
       },
     });
 
-    const { thinkingConfig: _ignoredThinkingConfig, ...safeConfig } =
-      params.config || {};
+    const {
+      thinkingConfig: _ignoredThinkingConfig,
+      responseMimeType: rawResponseMimeType,
+      responseSchema: rawResponseSchema,
+      ...restConfig
+    } = params.config || {};
+
+    const hasTools =
+      Array.isArray(restConfig.tools) && restConfig.tools.length > 0;
 
     return await ai.models.generateContent({
       ...params,
       model,
       config: {
-        ...safeConfig,
+        ...restConfig,
+        ...(hasTools
+          ? {}
+          : {
+              ...(rawResponseMimeType
+                ? { responseMimeType: rawResponseMimeType }
+                : {}),
+              ...(rawResponseSchema
+                ? { responseSchema: rawResponseSchema }
+                : {}),
+            }),
+        temperature: restConfig.temperature ?? 0.2,
         abortSignal: AbortSignal.timeout(timeoutMs),
       },
     });
@@ -364,11 +382,26 @@ export async function generateContentWithGeminiFallback({
         }
 
         const isExplicitFallbackStatus =
-          details.httpStatus === 429 ||
-          details.httpStatus === 503 ||
-          details.httpStatus === 404 ||
+          details.httpStatus === 400 ||
+          details.httpStatus === 401 ||
           details.httpStatus === 403 ||
-          details.httpStatus === 500;
+          details.httpStatus === 404 ||
+          details.httpStatus === 429 ||
+          details.httpStatus === 500 ||
+          details.httpStatus === 502 ||
+          details.httpStatus === 503 ||
+          details.httpStatus === 504;
+
+        const rawErrMessage =
+          err instanceof Error
+            ? err.message
+            : typeof err === "object" && err !== null && "message" in err
+              ? String((err as { message?: unknown }).message)
+              : String(err);
+
+        console.error(
+          `[DerméScan] Gemini API error for model "${model}" with key #${keyNumber} (status: ${details.httpStatus ?? "unknown"}): ${rawErrMessage}`
+        );
 
         const canRotate =
           isExplicitFallbackStatus ||
@@ -378,13 +411,9 @@ export async function generateContentWithGeminiFallback({
           throw err;
         }
 
-        console.info(
-          `[DerméScan] Model "${model}" with key #${keyNumber} failed (${details.httpStatus ?? "err"}); failing over...`
-        );
-
         // If the API key itself is invalid/unauthorized (401 or invalid key message),
         // skip remaining models on this key and rotate straight to the next configured key.
-        // On 403 (which may be a model-level restriction), continue trying remaining models on this key too.
+        // On 400, 403, 404, 429, 500, 503 continue rotating across all models and keys.
         if (
           keyFailure &&
           (details.httpStatus === 401 ||

@@ -59,16 +59,16 @@ const TAB_BANNER_COPY: Record<
   },
   verify: {
     eyebrow: {
-      en: "Authenticity Seal",
-      ur: "Asli vs Naqli Tasdeeq",
+      en: "Product Check & Decoder",
+      ur: "Product Check & Decoder",
     },
     title: {
-      en: "Official Store & Batch Inspector",
-      ur: "Store URL Aur Bottle Printing Check",
+      en: "Authenticity & Formula Decoder",
+      ur: "Asli-Naqli Aur Ingredients Decoder",
     },
     subtitle: {
-      en: "Exact-domain check and close-up packaging inspection.",
-      ur: "Official website aur bottle ke label, seal aur batch code ki jaanch.",
+      en: "Live search-verified packaging checks, decoded actives, and skin or hair suitability.",
+      ur: "Live search se asli-naqli pehchan, active ingredients aur skin/hair munasibat check.",
     },
   },
 };
@@ -334,8 +334,8 @@ function SteroidTubeShieldLineArt() {
         stroke="#B56576"
         strokeWidth="1.35"
         strokeLinejoin="round"
-        fill="#FDF8F9"
-        fillOpacity="0.7"
+        className="fill-[#FDF8F9] dark:fill-[#21181B]"
+        fillOpacity="0.85"
       />
       <path
         d="M72.5 39.5L76.3 43.2L84 35.2"
@@ -466,7 +466,7 @@ function AuthenticityDropperLineArt() {
         r="13.5"
         stroke="#B56576"
         strokeWidth="1.35"
-        fill="#FDF8F9"
+        className="fill-[#FDF8F9] dark:fill-[#21181B]"
       />
       <circle
         cx="88"
@@ -534,24 +534,24 @@ export function TabHeaderIllustration({
   return (
     <div
       ref={containerRef}
-      className="min-w-0 overflow-hidden rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] sm:px-8"
+      className="min-w-0 overflow-hidden rounded-3xl border border-[#EAD8DC] bg-white px-6 py-5 shadow-[0_8px_24px_-12px_rgba(181,101,118,0.12)] transition-colors duration-300 sm:px-8"
     >
       <div className="flex min-w-0 items-center justify-between gap-4">
         <div className="min-w-0 space-y-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#B56576]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#B56576] transition-colors duration-300">
             {copy.eyebrow[language]}
           </p>
-          <h2 className="font-editorial break-words text-2xl font-semibold leading-tight text-[#1E181A] sm:text-[26px]">
+          <h2 className="font-editorial break-words text-2xl font-semibold leading-tight text-[#1E181A] transition-colors duration-300 sm:text-[26px]">
             {copy.title[language]}
           </h2>
-          <p className="break-words text-xs leading-relaxed text-[#5E5055]">
+          <p className="break-words text-xs leading-relaxed text-[#5E5055] transition-colors duration-300">
             {copy.subtitle[language]}
           </p>
         </div>
 
         <div
           data-anim-paused={isAnimationPaused ? "true" : "false"}
-          className="tab-anim-stage flex min-h-16 min-w-28 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-2 py-1 sm:min-h-20 sm:min-w-36"
+          className="tab-anim-stage flex min-h-16 min-w-28 shrink-0 items-center justify-center rounded-2xl border border-[#EAD8DC] bg-[#FAF6F7]/70 px-2 py-1 transition-colors duration-300 sm:min-h-20 sm:min-w-36"
         >
           {isActive && (
             <>

@@ -44,6 +44,15 @@
     />
 
     <meta name="theme-color" content="#FAF6F7" />
+    <script>
+      try {
+        if (localStorage.getItem("dermescan_theme") === "dark") {
+          document.documentElement.classList.add("dark");
+          var metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) metaTheme.setAttribute("content", "#161012");
+        }
+      } catch (e) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -122,7 +131,7 @@
       }
     </script>
   </head>
-  <body class="min-h-screen overflow-x-hidden bg-gradient-to-br from-[#FDFBFC] via-[#FAF6F7] to-[#F5ECEE] text-[#1E181A] antialiased selection:bg-[#F6ECEF] selection:text-[#1E181A]">
+  <body class="min-h-screen overflow-x-hidden bg-gradient-to-br from-[#FDFBFC] via-[#FAF6F7] to-[#F5ECEE] text-[#1E181A] antialiased transition-colors duration-300 selection:bg-[#F6ECEF] selection:text-[#1E181A] dark:bg-[#161012] dark:from-[#161012] dark:via-[#161012] dark:to-[#1E1518] dark:text-[#F7EFEF] dark:selection:bg-[#D48395]/25 dark:selection:text-[#F7EFEF]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

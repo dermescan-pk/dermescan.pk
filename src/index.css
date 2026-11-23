@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark, .dark *));
+
 @theme inline {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-editorial: "Cormorant Garamond", Georgia, serif;
@@ -16,6 +18,17 @@ body {
   font-family: var(--font-sans);
   line-height: 1.625;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+html.dark body {
+  background-color: #161012;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(212, 131, 149, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 88% 16%, rgba(181, 101, 118, 0.08) 0%, transparent 42%),
+    radial-gradient(circle at 50% 92%, rgba(33, 24, 27, 0.9) 0%, transparent 55%),
+    linear-gradient(160deg, #161012 0%, #191214 48%, #1E1518 100%);
+  color: #F7EFEF;
 }
 
 .font-editorial {
@@ -563,3 +576,189 @@ body {
     animation-play-state: paused !important;
   }
 }
+
+/* Evening Velvet Dark Mode — Semantic Token Mapping */
+@layer utilities {
+  :where(html.dark) .bg-white,
+  :where(html.dark) .bg-\[\#FDFBFC\] {
+    background-color: #21181B;
+  }
+
+  :where(html.dark) .bg-white\/95,
+  :where(html.dark) .bg-white\/90,
+  :where(html.dark) .bg-white\/85,
+  :where(html.dark) .focus\:bg-white:focus {
+    background-color: rgba(33, 24, 27, 0.96);
+  }
+
+  :where(html.dark) .hover\:bg-white\/75:hover {
+    background-color: #2B1F23;
+  }
+
+  :where(html.dark) .bg-\[\#FAF6F7\],
+  :where(html.dark) .bg-\[\#FAF8F8\] {
+    background-color: #1B1316;
+  }
+
+  :where(html.dark) .bg-\[\#FAF6F7\]\/80,
+  :where(html.dark) .bg-\[\#FAF6F7\]\/75,
+  :where(html.dark) .bg-\[\#FAF6F7\]\/70,
+  :where(html.dark) .bg-\[\#FAF6F7\]\/65 {
+    background-color: rgba(27, 19, 22, 0.9);
+  }
+
+  :where(html.dark) .bg-\[\#F3E7EA\],
+  :where(html.dark) .bg-\[\#F6ECEF\],
+  :where(html.dark) .bg-\[\#F6ECEF\]\/80,
+  :where(html.dark) .bg-\[\#F6ECEF\]\/75,
+  :where(html.dark) .bg-\[\#F6ECEF\]\/60,
+  :where(html.dark) .bg-\[\#FDF4F5\],
+  :where(html.dark) .hover\:bg-\[\#F6ECEF\]:hover,
+  :where(html.dark) .hover\:bg-\[\#F6ECEF\]\/75:hover,
+  :where(html.dark) .hover\:bg-\[\#F6ECEF\]\/60:hover,
+  :where(html.dark) .hover\:bg-\[\#FAF8F8\]:hover {
+    background-color: #2B1F24;
+  }
+
+  :where(html.dark) .bg-\[\#EAD8DC\],
+  :where(html.dark) .bg-\[\#EAD8DC\]\/70,
+  :where(html.dark) .bg-\[\#EAD8DC\]\/50 {
+    background-color: #38282D;
+  }
+
+  :where(html.dark) .bg-\[\#EFF7F2\] {
+    background-color: #172B23;
+  }
+
+  :where(html.dark) .bg-\[\#E1F0E7\],
+  :where(html.dark) .hover\:bg-\[\#E1F0E7\]:hover {
+    background-color: #1E382D;
+  }
+
+  :where(html.dark) .border-\[\#EAD8DC\],
+  :where(html.dark) .border-\[\#E6D2D6\],
+  :where(html.dark) .border-\[\#E6DCE0\],
+  :where(html.dark) .border-\[\#E5DADF\],
+  :where(html.dark) .border-\[\#EAE0E2\],
+  :where(html.dark) .border-\[\#F0E8EA\],
+  :where(html.dark) .border-\[\#D2BFC6\],
+  :where(html.dark) .hover\:border-\[\#D2BFC6\]:hover {
+    border-color: #38282D;
+  }
+
+  :where(html.dark) .border-\[\#E8C5CA\],
+  :where(html.dark) .border-\[\#C96B78\] {
+    border-color: #59353F;
+  }
+
+  :where(html.dark) .border-\[\#C3DFCE\] {
+    border-color: #2C5947;
+  }
+
+  :where(html.dark) .border-\[\#B56576\],
+  :where(html.dark) .border-\[\#B56576\]\/60,
+  :where(html.dark) .border-\[\#B56576\]\/40,
+  :where(html.dark) .hover\:border-\[\#B56576\]:hover,
+  :where(html.dark) .focus\:border-\[\#B56576\]:focus {
+    border-color: #D48395;
+  }
+
+  :where(html.dark) .text-\[\#1E181A\],
+  :where(html.dark) .hover\:text-\[\#1E181A\]:hover {
+    color: #F7EFEF;
+  }
+
+  :where(html.dark) .text-\[\#5E5055\],
+  :where(html.dark) .text-\[\#5E5055\]\/75,
+  :where(html.dark) .text-\[\#7A686D\],
+  :where(html.dark) .text-\[\#6E6266\],
+  :where(html.dark) .text-\[\#4E4246\],
+  :where(html.dark) .text-\[\#8E8084\] {
+    color: #C9B6BC;
+  }
+
+  :where(html.dark) .placeholder\:text-\[\#5E5055\]\/60::placeholder,
+  :where(html.dark) .placeholder\:text-\[\#8E8084\]::placeholder {
+    color: #9A848B;
+  }
+
+  :where(html.dark) .text-\[\#B56576\],
+  :where(html.dark) .text-\[\#B56576\]\/85,
+  :where(html.dark) .text-\[\#B56576\]\/75,
+  :where(html.dark) .text-\[\#8C4858\],
+  :where(html.dark) .text-\[\#7A5660\],
+  :where(html.dark) .hover\:text-\[\#B56576\]:hover {
+    color: #D48395;
+  }
+
+  :where(html.dark) .text-\[\#8C3B4A\] {
+    color: #F0B2C0;
+  }
+
+  :where(html.dark) .text-\[\#2D6A4F\] {
+    color: #7BD4AC;
+  }
+
+  :where(html.dark) .bg-\[\#B56576\] {
+    background-color: #D48395;
+  }
+
+  :where(html.dark) .bg-\[\#B56576\].text-white {
+    color: #161012;
+  }
+
+  :where(html.dark) button.bg-\[\#B56576\]:hover,
+  :where(html.dark) a.bg-\[\#B56576\]:hover {
+    background-color: #B56576;
+  }
+
+  :where(html.dark) button.bg-\[\#B56576\].text-white:hover,
+  :where(html.dark) a.bg-\[\#B56576\].text-white:hover {
+    color: #F7EFEF;
+  }
+
+  :where(html.dark) .from-\[\#BF6E7F\],
+  :where(html.dark) .from-\[\#B56576\] {
+    --tw-gradient-from: #D48395;
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+
+  :where(html.dark) .to-\[\#B56576\],
+  :where(html.dark) .to-\[\#9E5263\] {
+    --tw-gradient-to: #C9768A;
+  }
+
+  :where(html.dark) .from-\[\#BF6E7F\].text-white,
+  :where(html.dark) .from-\[\#B56576\].text-white {
+    color: #161012;
+  }
+
+  :where(html.dark) .hover\:from-\[\#B56576\]:hover {
+    --tw-gradient-from: #B56576;
+  }
+
+  :where(html.dark) .hover\:to-\[\#9E5263\]:hover {
+    --tw-gradient-to: #B56576;
+  }
+
+  :where(html.dark) .from-\[\#BF6E7F\].text-white:hover,
+  :where(html.dark) .from-\[\#B56576\].text-white:hover {
+    color: #F7EFEF;
+  }
+
+  :where(html.dark) .ring-\[\#B56576\],
+  :where(html.dark) .focus\:ring-\[\#B56576\]\/15:focus {
+    --tw-ring-color: rgba(212, 131, 149, 0.35);
+  }
+}
+
+@layer components {
+  .rounded-3xl,
+  .rounded-2xl {
+    transition-property: background-color, border-color, color;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+
